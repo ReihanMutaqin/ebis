@@ -96,7 +96,7 @@ export const PLAYLISTS: Playlist[] = [
     key: 'developer',
     name: 'Developer Vibes',
     desc: 'Playlist Reihan 🔥',
-    url: 'https://open.spotify.com/embed/playlist/6VSx9EtQRJzYEgdvjvFxs2?utm_source=generator&theme=0',
+    url: 'https://open.spotify.com/embed/playlist/6VSx9EtQRJzYEgdvjvFxs2?utm_source=generator',
     icon: '🔥',
     color: '#e94560',
   },
