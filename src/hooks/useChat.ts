@@ -161,7 +161,7 @@ export function useChat(dataSummary: string) {
           'X-Title': 'FILTER SAKTI EBIS',
         },
         body: JSON.stringify({
-          model: 'openai/gpt-3.5-turbo:free',
+          model: 'openai/gpt-3.5-turbo',
           messages: [
             {
               role: 'system',
@@ -187,9 +187,11 @@ export function useChat(dataSummary: string) {
     } catch (error: unknown) {
       const errMsg = error instanceof Error ? error.message : 'Unknown error';
       let displayMsg = '❌ ' + errMsg;
-      if (errMsg.includes('401')) displayMsg = '❌ API Key tidak valid. Periksa kembali API Key-mu.';
+      if (errMsg.includes('401')) displayMsg = '❌ API Key tidak valid. Periksa kembali API Key-mu di ⚙️ Pengaturan.';
+      else if (errMsg.includes('402') || errMsg.includes('payment')) displayMsg = '💳 Saldo OpenRouter habis. Top up dulu di https://openrouter.ai/credits';
       else if (errMsg.includes('429')) displayMsg = '⏳ Rate limit tercapai. Tunggu sebentar ya...';
-      else if (errMsg.includes('Network')) displayMsg = '📡 Koneksi bermasalah. Cek internet kamu!';
+      else if (errMsg.includes('unavailable') || errMsg.includes('free')) displayMsg = '🚫 Model tidak tersedia. Coba lagi atau ganti model di pengaturan.';
+      else if (errMsg.includes('Network') || errMsg.includes('fetch')) displayMsg = '📡 Koneksi bermasalah. Cek internet kamu!';
 
       const botMsg: ChatMessage = { role: 'assistant', content: displayMsg, timestamp: Date.now() };
       setMessages(prev => [...prev, botMsg]);
