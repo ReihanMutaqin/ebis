@@ -1,4 +1,4 @@
-import { Star, RotateCcw } from 'lucide-react';
+import { Star, RotateCcw, SlidersHorizontal } from 'lucide-react';
 import type { Filters } from '@/types';
 
 interface FilterPanelProps {
@@ -29,100 +29,120 @@ export function FilterPanel({
   onReset,
 }: FilterPanelProps) {
   return (
-    <div className="pixel-card p-5 mb-6">
-      <h4 className="font-bold text-xl text-center mb-4 font-vt text-2xl">
-        ⚡ SETTING FILTER ⚡
+    <div className="pixel-card p-5 mb-5">
+      {/* Header */}
+      <h4 className="font-vt text-2xl font-bold text-center mb-4 flex items-center justify-center gap-2">
+        <SlidersHorizontal size={20} />
+        SETTING FILTER
+        <SlidersHorizontal size={20} />
       </h4>
 
-      {/* Quick buttons */}
-      <div className="mb-4 p-4 text-center bg-[#eee] border-2 border-black">
+      {/* Quick action buttons */}
+      <div className="flex gap-3 mb-5 justify-center flex-wrap">
         <button
+          id="btn-quick-modo"
           onClick={onQuickModo}
-          className="pixel-btn px-4 py-2 bg-[#facc15] text-black text-lg mr-3 mb-2 inline-flex items-center gap-2"
-          title="★ FITUR SAKTI ★ Otomatis centang filter TYPE: MO, AS, CN, CO, DO, MO+AS STATUS: OSS Fallout, Provisioning, dll."
+          className="pixel-btn px-5 py-2 bg-[#facc15] text-black text-xl"
+          title="Otomatis centang filter TYPE: MO, AS, CN, CO, DO, MO+AS — STATUS: OSS Fallout, Provisioning, dll."
         >
-          <Star size={18} /> QUICK MODO
+          <Star size={16} /> QUICK MODO
         </button>
         <button
+          id="btn-reset-filter"
           onClick={onReset}
-          className="pixel-btn px-4 py-2 bg-[#ef4444] text-white text-lg inline-flex items-center gap-2"
-          title="⚠ BAHAYA ⚠ Klik ini kalau mau menghapus semua filter dan kembali ke pengaturan awal."
+          className="pixel-btn px-5 py-2 bg-[#ef4444] text-white text-xl"
+          title="Reset semua filter ke pengaturan awal"
         >
-          <RotateCcw size={18} /> ATUR ULANG
+          <RotateCcw size={16} /> ATUR ULANG
         </button>
       </div>
 
-      {/* Filter row 1 */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-        <div className="text-center">
-          <label className="block font-bold mb-1 font-vt text-lg">PILIH WITEL</label>
+      {/* Top filters row */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
+        <div>
+          <label className="block font-vt text-base font-bold mb-1 tracking-wide uppercase text-gray-600 dark:text-gray-400">
+            Pilih Witel
+          </label>
           <select
+            id="select-witel"
             value={filters.witel}
             onChange={(e) => onWitelChange(e.target.value)}
-            className="pixel-select w-full"
+            className="pixel-select"
           >
-            <option value="">ALL WORLDS (SEMUA)</option>
+            <option value="">— Semua Witel —</option>
             {uniqueWitels.map(w => (
               <option key={w} value={w}>{w}</option>
             ))}
           </select>
         </div>
 
-        <div className="text-center">
-          <label className="block font-bold mb-1 font-vt text-lg">LAST UPDATE STATUS</label>
+        <div>
+          <label className="block font-vt text-base font-bold mb-1 tracking-wide uppercase text-gray-600 dark:text-gray-400">
+            Last Update Status
+          </label>
           <input
+            id="input-date"
             type="date"
             value={filters.dateFrom}
             onChange={(e) => onDateChange(e.target.value)}
-            className="pixel-input w-full"
+            className="pixel-input"
           />
         </div>
 
-        <div className="text-center">
-          <label className="block font-bold mb-1 font-vt text-lg">CARI (OPSIONAL)</label>
+        <div>
+          <label className="block font-vt text-base font-bold mb-1 tracking-wide uppercase text-gray-600 dark:text-gray-400">
+            Cari (Order / Nama)
+          </label>
           <input
+            id="input-search"
             type="text"
             value={filters.search}
             onChange={(e) => onSearchChange(e.target.value)}
-            placeholder="Order ID / Name..."
-            className="pixel-input w-full"
+            placeholder="Ketik SC order atau nama..."
+            className="pixel-input"
           />
         </div>
       </div>
 
-      {/* Filter row 2 - checkboxes */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 justify-center">
-        {/* Order Type */}
+      {/* Checkbox filters */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Order type */}
         <div className="filter-box">
-          <div className="filter-title">ORDER</div>
+          <div className="filter-title">📋 TYPE ORDER</div>
           <div className="filter-content">
-            {uniqueTypes.map(type => (
-              <label key={type}>
-                <input
-                  type="checkbox"
-                  checked={filters.types.includes(type)}
-                  onChange={() => onToggleType(type)}
-                />
-                {type}
-              </label>
-            ))}
+            {uniqueTypes.length === 0
+              ? <p className="text-gray-400 text-sm italic">Belum ada data</p>
+              : uniqueTypes.map(type => (
+                <label key={type} id={`chk-type-${type}`}>
+                  <input
+                    type="checkbox"
+                    checked={filters.types.includes(type)}
+                    onChange={() => onToggleType(type)}
+                  />
+                  {type}
+                </label>
+              ))
+            }
           </div>
         </div>
 
         {/* Status */}
         <div className="filter-box">
-          <div className="filter-title">STATUS</div>
+          <div className="filter-title">🔖 STATUS</div>
           <div className="filter-content">
-            {uniqueStatuses.map(status => (
-              <label key={status}>
-                <input
-                  type="checkbox"
-                  checked={filters.statuses.includes(status)}
-                  onChange={() => onToggleStatus(status)}
-                />
-                {status}
-              </label>
-            ))}
+            {uniqueStatuses.length === 0
+              ? <p className="text-gray-400 text-sm italic">Belum ada data</p>
+              : uniqueStatuses.map(status => (
+                <label key={status} id={`chk-status-${status.replace(/\s+/g, '-')}`}>
+                  <input
+                    type="checkbox"
+                    checked={filters.statuses.includes(status)}
+                    onChange={() => onToggleStatus(status)}
+                  />
+                  {status}
+                </label>
+              ))
+            }
           </div>
         </div>
       </div>

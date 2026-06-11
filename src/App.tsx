@@ -106,13 +106,15 @@ export default function App() {
         )}
 
         {/* Footer */}
-        <footer className="text-center text-sm mt-10 p-5 bg-black text-white border-4 border-white font-vt">
-          <p>
-            © 2025 <b>By Reihan Mutaqin</b>
+        <footer className="text-center mt-10 py-5 px-4 font-vt" style={{ background: '#000', borderTop: '4px solid #facc15' }}>
+          <p className="text-[#facc15] text-xl font-bold mb-1 tracking-widest">★ FILTER SAKTI EBIS ★</p>
+          <p className="text-gray-400 text-base mb-1">
+            © 2025 &nbsp;<span className="text-white font-bold">Reihan Mutaqin</span>
           </p>
-          <p>
-            Email <a href="mailto:reyhanmutakin1@gmail.com" className="underline text-blue-400">reyhanmutakin1@gmail.com</a> |{' '}
-            Telegram <a href="https://t.me/Rei219" target="_blank" rel="noopener noreferrer" className="underline text-blue-400">@Rei219</a>
+          <p className="text-base text-gray-500">
+            <a href="mailto:reyhanmutakin1@gmail.com" className="hover:text-blue-400 transition-colors underline">reyhanmutakin1@gmail.com</a>
+            {' · '}
+            <a href="https://t.me/Rei219" target="_blank" rel="noopener noreferrer" className="hover:text-blue-400 transition-colors underline">Telegram @Rei219</a>
           </p>
         </footer>
       </div>

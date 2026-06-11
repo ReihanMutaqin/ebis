@@ -1,4 +1,4 @@
-import { Save } from 'lucide-react';
+import { Database } from 'lucide-react';
 import type { FileInfo } from '@/types';
 
 interface DataInfoProps {
@@ -7,29 +7,36 @@ interface DataInfoProps {
 
 export function DataInfo({ info }: DataInfoProps) {
   return (
-    <div className="pixel-card p-5 mb-6" style={{ background: '#fff8e1' }}>
-      <h4 className="font-bold text-xl border-b-[3px] border-black pb-2 mb-4 flex items-center gap-2 font-vt">
-        <Save size={22} /> INFORMASI DATA
+    <div className="pixel-card p-4 mb-5">
+      <h4 className="font-vt text-xl font-bold border-b-[3px] border-black dark:border-[#2a3a5a] pb-2 mb-4 flex items-center gap-2">
+        <Database size={20} />
+        INFORMASI DATA
       </h4>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-center font-vt text-lg">
-        <div className="lg:border-r-2 lg:border-black">
-          <p className="font-bold text-base">NAMA FILE</p>
-          <p className="truncate px-2">{info.name}</p>
-        </div>
-        <div className="lg:border-r-2 lg:border-black">
-          <p className="font-bold text-base">WAKTU</p>
-          <p>{info.time}</p>
-        </div>
-        <div className="lg:border-r-2 lg:border-black">
-          <p className="font-bold text-base">UKURAN</p>
-          <p>{info.size}</p>
-        </div>
-        <div>
-          <p className="font-bold text-base">TOTAL BARIS</p>
-          <span className="inline-block bg-[#ef4444] text-white px-3 py-1 font-pixel text-sm">
-            {info.rows}
-          </span>
-        </div>
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 text-center font-vt">
+        {[
+          { label: 'NAMA FILE',   value: info.name,         truncate: true },
+          { label: 'WAKTU',       value: info.time,         truncate: false },
+          { label: 'UKURAN',      value: info.size,         truncate: false },
+          { label: 'TOTAL BARIS', value: String(info.rows), badge: true },
+        ].map(({ label, value, truncate, badge }) => (
+          <div
+            key={label}
+            className="bg-gray-50 dark:bg-[#0f2744] border-2 border-black dark:border-[#2a3a5a] px-3 py-3"
+          >
+            <p className="text-xs font-bold tracking-widest text-gray-500 dark:text-gray-400 mb-1 font-pixel" style={{ fontSize: '0.6rem' }}>
+              {label}
+            </p>
+            {badge ? (
+              <span className="inline-block bg-[#ef4444] text-white px-3 py-1 font-pixel text-sm border border-black">
+                {value}
+              </span>
+            ) : (
+              <p className={`text-lg font-bold text-gray-800 dark:text-gray-200 ${truncate ? 'truncate' : ''}`}>
+                {value}
+              </p>
+            )}
+          </div>
+        ))}
       </div>
     </div>
   );
