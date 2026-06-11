@@ -93,11 +93,11 @@ export const PLAYLISTS: Playlist[] = [
     color: '#0d6efd',
   },
   {
-    key: 'develover',
-    name: 'Fav Developer',
-    desc: 'Playlist Favorit Developer',
-    url: 'https://open.spotify.com/embed/playlist/6VSx9EtQRJzYEgdvjvFxs2?utm_source=generator',
-    icon: '\ud83d\udcbb',
-    color: '#6f42c1',
+    key: 'developer',
+    name: 'Developer Vibes',
+    desc: 'Playlist Reihan 🔥',
+    url: 'https://open.spotify.com/embed/playlist/6VSx9EtQRJzYEgdvjvFxs2?utm_source=generator&theme=0',
+    icon: '🔥',
+    color: '#e94560',
   },
 ];
