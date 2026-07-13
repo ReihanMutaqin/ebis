@@ -2,7 +2,7 @@ import { useState, useCallback, useRef } from 'react';
 import type { ChatMessage } from '@/types';
 
 const MAX_HISTORY = 20;
-const API_URL = 'https://openrouter.ai/api/v1/chat/completions';
+const API_URL = 'https://api.groq.com/openai/v1/chat/completions';
 
 function loadChat(): ChatMessage[] {
   try {
@@ -122,11 +122,11 @@ export function useChat(dataSummary: string) {
   const sendMessage = useCallback(async (message: string) => {
     if (!message.trim() || typingRef.current) return;
 
-    const key = apiKey.trim();
+    const key = apiKey.trim() || import.meta.env.VITE_GROQ_API_KEY;
     if (!key) {
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: '⚠️ API Key belum diatur. Klik ikon pengaturan (⚙️) di atas untuk memasukkan OpenRouter API Key-mu.\n\nDapatkan API Key gratis di https://openrouter.ai/keys',
+        content: '⚠️ API Key belum diatur. Klik ikon pengaturan (⚙️) di atas untuk memasukkan Groq API Key-mu.\n\nDapatkan API Key gratis di https://console.groq.com/keys',
         timestamp: Date.now(),
       }]);
       return;
@@ -161,7 +161,7 @@ export function useChat(dataSummary: string) {
           'X-Title': 'FILTER SAKTI EBIS',
         },
         body: JSON.stringify({
-          model: 'openai/gpt-3.5-turbo',
+          model: 'llama3-8b-8192',
           messages: [
             {
               role: 'system',
@@ -187,8 +187,8 @@ export function useChat(dataSummary: string) {
     } catch (error: unknown) {
       const errMsg = error instanceof Error ? error.message : 'Unknown error';
       let displayMsg = '❌ ' + errMsg;
-      if (errMsg.includes('401')) displayMsg = '❌ API Key tidak valid. Periksa kembali API Key-mu di ⚙️ Pengaturan.';
-      else if (errMsg.includes('402') || errMsg.includes('payment')) displayMsg = '💳 Saldo OpenRouter habis. Top up dulu di https://openrouter.ai/credits';
+      if (errMsg.includes('401')) displayMsg = '❌ API Key tidak valid. Periksa kembali API Key-mu di ⚙️ Pengaturan atau file .env';
+      else if (errMsg.includes('402') || errMsg.includes('payment')) displayMsg = '💳 Kuota Groq habis/terkena limit.';
       else if (errMsg.includes('429')) displayMsg = '⏳ Rate limit tercapai. Tunggu sebentar ya...';
       else if (errMsg.includes('unavailable') || errMsg.includes('free')) displayMsg = '🚫 Model tidak tersedia. Coba lagi atau ganti model di pengaturan.';
       else if (errMsg.includes('Network') || errMsg.includes('fetch')) displayMsg = '📡 Koneksi bermasalah. Cek internet kamu!';
