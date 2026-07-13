@@ -109,7 +109,7 @@ export default function App() {
         <footer className="text-center mt-8 py-4 px-4 border-t border-gray-200 dark:border-[#1e2d45]">
           <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-0.5">Filter Sakti EBIS</p>
           <p className="text-xs text-gray-400">
-            © 2025 <span className="font-medium text-gray-500 dark:text-gray-400">Reihan Mutaqin</span>
+            © 2026 <span className="font-medium text-gray-500 dark:text-gray-400">Reihan x Dheo</span>
             {' · '}
             <a href="mailto:reyhanmutakin1@gmail.com" className="hover:text-blue-500 transition-colors">reyhanmutakin1@gmail.com</a>
             {' · '}
