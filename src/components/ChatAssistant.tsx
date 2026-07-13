@@ -323,7 +323,7 @@ export function ChatAssistant({
           onChange={(e) => setDraft(e.target.value)}
           onKeyDown={handleKeyPress}
           placeholder="Ketik pesan..."
-          className="flex-1 pixel-input text-base py-2"
+          className="flex-1 pro-input text-sm py-2"
           autoFocus
         />
         {('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) && (

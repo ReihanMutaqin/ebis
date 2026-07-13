@@ -29,45 +29,46 @@ export function FilterPanel({
   onReset,
 }: FilterPanelProps) {
   return (
-    <div className="pixel-card p-5 mb-5">
+    <div className="pro-card p-5 mb-5">
       {/* Header */}
-      <h4 className="font-vt text-2xl font-bold text-center mb-4 flex items-center justify-center gap-2">
-        <SlidersHorizontal size={20} />
-        SETTING FILTER
-        <SlidersHorizontal size={20} />
-      </h4>
+      <div className="flex items-center justify-between mb-4">
+        <h4 className="font-semibold text-sm text-gray-700 dark:text-gray-300 flex items-center gap-2">
+          <SlidersHorizontal size={16} className="text-blue-500" />
+          Pengaturan Filter
+        </h4>
 
-      {/* Quick action buttons */}
-      <div className="flex gap-3 mb-5 justify-center flex-wrap">
-        <button
-          id="btn-quick-modo"
-          onClick={onQuickModo}
-          className="pixel-btn px-5 py-2 bg-[#facc15] text-black text-xl"
-          title="Otomatis centang filter TYPE: MO, AS, CN, CO, DO, MO+AS — STATUS: OSS Fallout, Provisioning, dll."
-        >
-          <Star size={16} /> QUICK MODO
-        </button>
-        <button
-          id="btn-reset-filter"
-          onClick={onReset}
-          className="pixel-btn px-5 py-2 bg-[#ef4444] text-white text-xl"
-          title="Reset semua filter ke pengaturan awal"
-        >
-          <RotateCcw size={16} /> ATUR ULANG
-        </button>
+        {/* Quick action buttons */}
+        <div className="flex gap-2">
+          <button
+            id="btn-quick-modo"
+            onClick={onQuickModo}
+            className="pro-btn pro-btn-warning !text-xs !py-1.5 !px-3"
+            title="Otomatis centang filter TYPE: MO, AS, CN, CO, DO, MO+AS — STATUS: OSS Fallout, Provisioning, dll."
+          >
+            <Star size={13} /> Quick MODO
+          </button>
+          <button
+            id="btn-reset-filter"
+            onClick={onReset}
+            className="pro-btn pro-btn-ghost !text-xs !py-1.5 !px-3"
+            title="Reset semua filter ke pengaturan awal"
+          >
+            <RotateCcw size={13} /> Reset
+          </button>
+        </div>
       </div>
 
       {/* Top filters row */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
         <div>
-          <label className="block font-vt text-base font-bold mb-1 tracking-wide uppercase text-gray-600 dark:text-gray-400">
+          <label className="block pro-section-title mb-1.5">
             Pilih Witel
           </label>
           <select
             id="select-witel"
             value={filters.witel}
             onChange={(e) => onWitelChange(e.target.value)}
-            className="pixel-select"
+            className="pro-select"
           >
             <option value="">— Semua Witel —</option>
             {uniqueWitels.map(w => (
@@ -77,7 +78,7 @@ export function FilterPanel({
         </div>
 
         <div>
-          <label className="block font-vt text-base font-bold mb-1 tracking-wide uppercase text-gray-600 dark:text-gray-400">
+          <label className="block pro-section-title mb-1.5">
             Last Update Status
           </label>
           <input
@@ -85,12 +86,12 @@ export function FilterPanel({
             type="date"
             value={filters.dateFrom}
             onChange={(e) => onDateChange(e.target.value)}
-            className="pixel-input"
+            className="pro-input"
           />
         </div>
 
         <div>
-          <label className="block font-vt text-base font-bold mb-1 tracking-wide uppercase text-gray-600 dark:text-gray-400">
+          <label className="block pro-section-title mb-1.5">
             Cari (Order / Nama)
           </label>
           <input
@@ -99,7 +100,7 @@ export function FilterPanel({
             value={filters.search}
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder="Ketik SC order atau nama..."
-            className="pixel-input"
+            className="pro-input"
           />
         </div>
       </div>
@@ -108,10 +109,10 @@ export function FilterPanel({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Order type */}
         <div className="filter-box">
-          <div className="filter-title">📋 TYPE ORDER</div>
+          <div className="filter-title">📋 Type Order</div>
           <div className="filter-content">
             {uniqueTypes.length === 0
-              ? <p className="text-gray-400 text-sm italic">Belum ada data</p>
+              ? <p className="text-gray-400 text-xs italic py-2">Belum ada data</p>
               : uniqueTypes.map(type => (
                 <label key={type} id={`chk-type-${type}`}>
                   <input
@@ -128,10 +129,10 @@ export function FilterPanel({
 
         {/* Status */}
         <div className="filter-box">
-          <div className="filter-title">🔖 STATUS</div>
+          <div className="filter-title">🔖 Status</div>
           <div className="filter-content">
             {uniqueStatuses.length === 0
-              ? <p className="text-gray-400 text-sm italic">Belum ada data</p>
+              ? <p className="text-gray-400 text-xs italic py-2">Belum ada data</p>
               : uniqueStatuses.map(status => (
                 <label key={status} id={`chk-status-${status.replace(/\s+/g, '-')}`}>
                   <input

@@ -1,4 +1,4 @@
-import { X, Sun, Moon, KeyRound } from 'lucide-react';
+import { X, Sun, Moon, KeyRound, Settings } from 'lucide-react';
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -13,58 +13,69 @@ export function SettingsModal({ isOpen, onClose, apiKey, onApiKeyChange, isDark,
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[10002] flex items-center justify-center bg-black/60" onClick={onClose}>
+    <div className="fixed inset-0 z-[10002] flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={onClose}>
       <div
-        className="bg-white dark:bg-[#16213e] border-[3px] border-black p-6 max-w-md w-full mx-4"
-        style={{ boxShadow: '8px 8px 0px rgba(0,0,0,0.8)' }}
+        className="bg-white dark:bg-[#0d1526] border border-gray-200 dark:border-[#1e2d45] rounded-2xl shadow-2xl p-6 max-w-md w-full mx-4"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="font-pixel text-lg text-[#f0a500]">⚙️ PENGATURAN</h2>
-          <button onClick={onClose} className="p-1 hover:bg-gray-200 dark:hover:bg-[#0f3460] rounded cursor-pointer">
-            <X size={20} />
-          </button>
-        </div>
-
-        {/* API Key */}
-        <div className="mb-6">
-          <label className="block font-bold mb-2 font-vt text-lg flex items-center gap-2">
-            <KeyRound size={18} /> OpenRouter API Key
-          </label>
-          <input
-            type="password"
-            value={apiKey}
-            onChange={(e) => onApiKeyChange(e.target.value)}
-            placeholder="sk-or-..."
-            className="pixel-input w-full text-base"
-          />
-          <p className="text-sm text-gray-500 mt-1 font-vt">
-            API key disimpan di browser kamu (localStorage). Dapatkan gratis di{' '}
-            <a href="https://openrouter.ai/keys" target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">
-              openrouter.ai
-            </a>
-          </p>
-        </div>
-
-        {/* Theme */}
-        <div className="mb-4">
-          <label className="block font-bold mb-2 font-vt text-lg">Tema</label>
+        {/* Header */}
+        <div className="flex items-center justify-between mb-5">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center">
+              <Settings size={15} className="text-blue-600 dark:text-blue-400" />
+            </div>
+            <h2 className="font-semibold text-gray-800 dark:text-gray-100">Pengaturan</h2>
+          </div>
           <button
-            onClick={onToggleTheme}
-            className="pixel-btn px-4 py-2 bg-gray-200 dark:bg-[#0f3460] text-black dark:text-white flex items-center gap-2"
+            onClick={onClose}
+            className="pro-btn pro-btn-ghost !px-2 !py-1.5"
           >
-            {isDark ? <Sun size={18} /> : <Moon size={18} />}
-            {isDark ? 'Mode Terang ☀️' : 'Mode Gelap 🌙'}
+            <X size={16} />
           </button>
         </div>
 
-        {/* Save */}
-        <button
-          onClick={onClose}
-          className="pixel-btn w-full px-4 py-3 bg-[#3b82f6] text-white font-vt text-xl"
-        >
-          SIMPAN
-        </button>
+        <div className="space-y-5">
+          {/* API Key */}
+          <div>
+            <label className="block pro-section-title mb-1.5 flex items-center gap-1.5">
+              <KeyRound size={12} />
+              OpenRouter API Key
+            </label>
+            <input
+              type="password"
+              value={apiKey}
+              onChange={(e) => onApiKeyChange(e.target.value)}
+              placeholder="sk-or-..."
+              className="pro-input"
+            />
+            <p className="text-xs text-gray-400 mt-1.5">
+              Disimpan di browser (localStorage). Dapatkan gratis di{' '}
+              <a href="https://openrouter.ai/keys" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+                openrouter.ai
+              </a>
+            </p>
+          </div>
+
+          {/* Theme */}
+          <div>
+            <label className="block pro-section-title mb-1.5">Tema Tampilan</label>
+            <button
+              onClick={onToggleTheme}
+              className="pro-btn pro-btn-ghost w-full justify-center"
+            >
+              {isDark ? <Sun size={15} /> : <Moon size={15} />}
+              {isDark ? 'Beralih ke Mode Terang' : 'Beralih ke Mode Gelap'}
+            </button>
+          </div>
+
+          {/* Save */}
+          <button
+            onClick={onClose}
+            className="pro-btn pro-btn-primary w-full justify-center !py-2.5"
+          >
+            Simpan & Tutup
+          </button>
+        </div>
       </div>
     </div>
   );

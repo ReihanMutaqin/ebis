@@ -106,15 +106,14 @@ export default function App() {
         )}
 
         {/* Footer */}
-        <footer className="text-center mt-10 py-5 px-4 font-vt" style={{ background: '#000', borderTop: '4px solid #facc15' }}>
-          <p className="text-[#facc15] text-xl font-bold mb-1 tracking-widest">★ FILTER SAKTI EBIS ★</p>
-          <p className="text-gray-400 text-base mb-1">
-            © 2025 &nbsp;<span className="text-white font-bold">Reihan Mutaqin</span>
-          </p>
-          <p className="text-base text-gray-500">
-            <a href="mailto:reyhanmutakin1@gmail.com" className="hover:text-blue-400 transition-colors underline">reyhanmutakin1@gmail.com</a>
+        <footer className="text-center mt-8 py-4 px-4 border-t border-gray-200 dark:border-[#1e2d45]">
+          <p className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-0.5">Filter Sakti EBIS</p>
+          <p className="text-xs text-gray-400">
+            © 2025 <span className="font-medium text-gray-500 dark:text-gray-400">Reihan Mutaqin</span>
             {' · '}
-            <a href="https://t.me/Rei219" target="_blank" rel="noopener noreferrer" className="hover:text-blue-400 transition-colors underline">Telegram @Rei219</a>
+            <a href="mailto:reyhanmutakin1@gmail.com" className="hover:text-blue-500 transition-colors">reyhanmutakin1@gmail.com</a>
+            {' · '}
+            <a href="https://t.me/Rei219" target="_blank" rel="noopener noreferrer" className="hover:text-blue-500 transition-colors">Telegram @Rei219</a>
           </p>
         </footer>
       </div>

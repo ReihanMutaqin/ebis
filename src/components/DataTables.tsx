@@ -42,9 +42,9 @@ export function DataTables({ data, headers, filteredData, onToast }: DataTablesP
   const copyAll = useCallback(() => {
     const result = filteredData.map(row => buildRowText(row)).join('\n');
     navigator.clipboard.writeText(result.trim()).then(() => {
-      onToast('✅ DATA EBIS BERHASIL DICOPY!');
+      onToast('✅ Data EBIS berhasil disalin ke clipboard!');
     }).catch(() => {
-      onToast('❌ Gagal copy data');
+      onToast('❌ Gagal menyalin data');
     });
   }, [filteredData, buildRowText, onToast]);
 
@@ -59,7 +59,7 @@ export function DataTables({ data, headers, filteredData, onToast }: DataTablesP
       text += val + '\n';
     });
     navigator.clipboard.writeText(text.trim()).then(() => {
-      onToast(`📋 Kolom "${colName}" berhasil dicopy!`);
+      onToast(`📋 Kolom "${colName}" berhasil disalin!`);
     });
   }, [filteredData, onToast]);
 
@@ -68,36 +68,36 @@ export function DataTables({ data, headers, filteredData, onToast }: DataTablesP
     if (!row) return;
     const text = buildRowText(row);
     navigator.clipboard.writeText(text).then(() => {
-      onToast('✅ 1 Baris EBIS berhasil dicopy!');
+      onToast('✅ 1 baris berhasil disalin (format EBIS)!');
     }).catch(() => {
-      onToast('❌ Gagal copy baris');
+      onToast('❌ Gagal menyalin baris');
     });
   }, [filteredData, buildRowText, onToast]);
 
   const tabClass = (tab: 'summary' | 'full') =>
-    `pixel-btn px-4 py-2 text-lg flex items-center gap-2 ${
+    `pro-btn flex items-center gap-2 !text-sm ${
       activeTab === tab
-        ? 'bg-[#ef4444] text-white border-black shadow-[4px_4px_0px_#000]'
-        : 'bg-white dark:bg-[#0f2744] text-black dark:text-gray-300 border-black/40'
+        ? 'pro-btn-primary'
+        : 'pro-btn-ghost'
     }`;
 
   return (
-    <div className="pixel-card p-5 mb-6">
+    <div className="pro-card p-5 mb-6">
 
       {/* Tabs */}
       <div className="flex gap-2 mb-4 flex-wrap">
         <button id="tab-summary" onClick={() => setActiveTab('summary')} className={tabClass('summary')}>
-          <BarChart3 size={17} />
-          RINGKASAN
-          <span className="ml-1 px-2 py-0.5 text-xs border border-black bg-white text-black">
+          <BarChart3 size={15} />
+          Ringkasan
+          <span className="ml-1 px-2 py-0.5 text-xs rounded-full bg-white/20 dark:bg-black/30">
             {filteredData.length} / {data.length}
           </span>
         </button>
 
         <button id="tab-full" onClick={() => setActiveTab('full')} className={tabClass('full')}>
-          <FileText size={17} />
-          FULL DATA
-          <span className="ml-1 px-2 py-0.5 text-xs border border-black bg-white text-black">
+          <FileText size={15} />
+          Full Data
+          <span className="ml-1 px-2 py-0.5 text-xs rounded-full bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300">
             {filteredData.length} / {data.length}
           </span>
         </button>
@@ -110,29 +110,29 @@ export function DataTables({ data, headers, filteredData, onToast }: DataTablesP
           <button
             id="btn-copy-all"
             onClick={copyAll}
-            className="pixel-btn w-full mb-4 px-4 py-2.5 bg-[#22c55e] text-black text-xl justify-center"
+            className="pro-btn pro-btn-success w-full mb-4 justify-center !py-2.5"
           >
-            <Clipboard size={18} />
-            COPY SEMUA DATA KE CLIPBOARD
-            <span className="ml-2 px-2 py-0.5 text-sm border border-black bg-white">
+            <Clipboard size={16} />
+            Salin Semua Data ke Clipboard
+            <span className="ml-2 px-2 py-0.5 text-xs rounded-full bg-white/20">
               {filteredData.length} baris
             </span>
           </button>
 
           {/* Helper hint */}
-          <div className="flex gap-4 mb-3 text-sm font-vt text-gray-500 dark:text-gray-400 flex-wrap">
+          <div className="flex gap-4 mb-3 text-xs text-gray-400 dark:text-gray-500 flex-wrap">
             <span className="flex items-center gap-1">
-              <Copy size={13} className="text-blue-500" />
-              Klik <strong>header kolom</strong> → copy seluruh kolom
+              <Copy size={11} className="text-blue-400" />
+              Klik <strong className="text-gray-600 dark:text-gray-300">header kolom</strong> → salin seluruh kolom
             </span>
             <span className="flex items-center gap-1">
-              <Copy size={13} className="text-green-500" />
-              Klik <strong>isi baris</strong> → copy 1 baris penuh (format EBIS)
+              <Copy size={11} className="text-green-400" />
+              Klik <strong className="text-gray-600 dark:text-gray-300">isi baris</strong> → salin 1 baris (format EBIS)
             </span>
           </div>
 
-          <div className="pixel-table-wrap">
-            <table className="pixel-table">
+          <div className="pro-table-wrap">
+            <table className="pro-table">
               <thead>
                 <tr>
                   <th className="w-8 text-center cursor-default">#</th>
@@ -140,7 +140,7 @@ export function DataTables({ data, headers, filteredData, onToast }: DataTablesP
                     <th
                       key={col}
                       onClick={() => copyColumn(col)}
-                      title={`Klik untuk copy kolom "${col}"`}
+                      title={`Klik untuk salin kolom "${col}"`}
                     >
                       {col}
                     </th>
@@ -160,14 +160,14 @@ export function DataTables({ data, headers, filteredData, onToast }: DataTablesP
                 ) : (
                   filteredData.map((row, rowIdx) => (
                     <tr key={rowIdx}>
-                      <td className="text-center text-gray-400 text-sm select-none">
+                      <td className="text-center text-gray-400 text-xs select-none">
                         {rowIdx + 1}
                       </td>
                       {SUMMARY_COLS.map((col) => (
                         <td
                           key={col}
                           onClick={() => copyRow(rowIdx)}
-                          title="Klik untuk copy 1 baris ini (format EBIS)"
+                          title="Klik untuk salin 1 baris ini (format EBIS)"
                         >
                           {col === 'ORDER' && row[col] ? 'SC' + row[col] : (row[col] || '')}
                         </td>
@@ -185,12 +185,12 @@ export function DataTables({ data, headers, filteredData, onToast }: DataTablesP
       {activeTab === 'full' && (
         <div>
           {filteredData.length === 0 ? (
-            <p className="text-center py-8 text-gray-400 italic font-vt">
+            <p className="text-center py-8 text-gray-400 italic text-sm">
               Tidak ada data yang sesuai filter
             </p>
           ) : (
-            <div className="pixel-table-wrap">
-              <table className="pixel-table">
+            <div className="pro-table-wrap">
+              <table className="pro-table">
                 <thead>
                   <tr>
                     <th className="w-8 text-center cursor-default">#</th>
@@ -200,7 +200,7 @@ export function DataTables({ data, headers, filteredData, onToast }: DataTablesP
                 <tbody>
                   {filteredData.map((row, rowIdx) => (
                     <tr key={rowIdx}>
-                      <td className="text-center text-gray-400 text-sm select-none">
+                      <td className="text-center text-gray-400 text-xs select-none">
                         {rowIdx + 1}
                       </td>
                       {headers.map(h => (
