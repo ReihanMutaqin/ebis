@@ -59,11 +59,13 @@ export function FileUpload({ onFileSelect }: FileUploadProps) {
         onDrop={handleDrop}
         onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
         onDragLeave={() => setDragOver(false)}
-        className="rounded-xl text-center p-8 cursor-pointer transition-all duration-200 select-none border-2 border-dashed"
-        style={{
-          borderColor:     dragOver ? '#2563eb' : (selectedFile ? '#16a34a' : '#cbd5e1'),
-          backgroundColor: dragOver ? '#eff6ff' : (selectedFile ? '#f0fdf4' : '#f8fafc'),
-        }}
+        className={`rounded-xl text-center p-8 cursor-pointer transition-all duration-200 select-none border-2 border-dashed ${
+          dragOver 
+            ? 'border-blue-600 bg-blue-50 dark:border-blue-500 dark:bg-blue-500/10' 
+            : selectedFile 
+              ? 'border-green-600 bg-green-50 dark:border-green-500 dark:bg-green-500/10' 
+              : 'border-slate-300 bg-slate-50 dark:border-[#2a3f5f] dark:bg-[#152033]'
+        }`}
         id="dropzone"
       >
         {selectedFile ? (
