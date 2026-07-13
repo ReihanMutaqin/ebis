@@ -5,9 +5,11 @@ interface SettingsModalProps {
   onClose: () => void;
   isDark: boolean;
   onToggleTheme: () => void;
+  aiProvider: 'R' | 'D';
+  onProviderChange: (val: 'R' | 'D') => void;
 }
 
-export function SettingsModal({ isOpen, onClose, isDark, onToggleTheme }: SettingsModalProps) {
+export function SettingsModal({ isOpen, onClose, isDark, onToggleTheme, aiProvider, onProviderChange }: SettingsModalProps) {
   if (!isOpen) return null;
 
   return (
@@ -33,6 +35,27 @@ export function SettingsModal({ isOpen, onClose, isDark, onToggleTheme }: Settin
         </div>
 
         <div className="space-y-5">
+          {/* AI Provider */}
+          <div>
+            <label className="block pro-section-title mb-1.5 flex items-center gap-1.5">
+              Provider AI
+            </label>
+            <div className="flex gap-2">
+              <button
+                onClick={() => onProviderChange('R')}
+                className={`flex-1 py-2 rounded-lg border text-sm font-medium transition-colors ${aiProvider === 'R' ? 'border-blue-500 bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300' : 'border-gray-200 text-gray-600 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-800'}`}
+              >
+                AI R (OpenRouter)
+              </button>
+              <button
+                onClick={() => onProviderChange('D')}
+                className={`flex-1 py-2 rounded-lg border text-sm font-medium transition-colors ${aiProvider === 'D' ? 'border-green-500 bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-300' : 'border-gray-200 text-gray-600 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-800'}`}
+              >
+                AI D (Groq)
+              </button>
+            </div>
+          </div>
+
           {/* Theme */}
           <div>
             <label className="block pro-section-title mb-1.5">Tema Tampilan</label>

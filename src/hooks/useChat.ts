@@ -2,7 +2,6 @@ import { useState, useCallback, useRef } from 'react';
 import type { ChatMessage } from '@/types';
 
 const MAX_HISTORY = 20;
-const API_URL = 'https://api.groq.com/openai/v1/chat/completions';
 
 function loadChat(): ChatMessage[] {
   try {
@@ -37,6 +36,9 @@ export function useChat(dataSummary: string) {
   const [draft, setDraft] = useState(() => {
     try { return localStorage.getItem('ebis_chat_draft') || ''; } catch { return ''; }
   });
+  const [aiProvider, setAiProviderState] = useState<'R' | 'D'>(() => {
+    try { return (localStorage.getItem('ebis_ai_provider') as 'R' | 'D') || 'D'; } catch { return 'D'; }
+  });
   const [isTyping, setIsTyping] = useState(false);
   const [isDataAttached, setIsDataAttachedState] = useState(() => {
     try { return localStorage.getItem('ebis_data_attached') !== 'false'; } catch { return true; }
@@ -51,6 +53,11 @@ export function useChat(dataSummary: string) {
       saveChat(next);
       return next;
     });
+  }, []);
+
+  const setAiProvider = useCallback((val: 'R' | 'D') => {
+    setAiProviderState(val);
+    try { localStorage.setItem('ebis_ai_provider', val); } catch { /* ignore */ }
   }, []);
 
   const setIsDataAttached = useCallback((val: boolean) => {
@@ -114,11 +121,15 @@ export function useChat(dataSummary: string) {
   const sendMessage = useCallback(async (message: string) => {
     if (!message.trim() || typingRef.current) return;
 
-    const key = import.meta.env.VITE_GROQ_API_KEY;
+    const isGroq = aiProvider === 'D';
+    const key = isGroq ? import.meta.env.VITE_GROQ_API_KEY : import.meta.env.VITE_OPENROUTER_API_KEY;
+    const apiUrl = isGroq ? 'https://api.groq.com/openai/v1/chat/completions' : 'https://openrouter.ai/api/v1/chat/completions';
+    const modelUsed = isGroq ? 'llama-3.1-8b-instant' : 'meta-llama/llama-3.1-8b-instruct:free';
+
     if (!key) {
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: '⚠️ API Key belum diatur. Klik ikon pengaturan (⚙️) di atas untuk memasukkan Groq API Key-mu.\n\nDapatkan API Key gratis di https://console.groq.com/keys',
+        content: `⚠️ API Key belum diatur untuk ${isGroq ? 'Groq' : 'OpenRouter'} di file .env.`,
         timestamp: Date.now(),
       }]);
       return;
@@ -144,7 +155,7 @@ export function useChat(dataSummary: string) {
 
       const summary = isDataAttached ? dataSummary || 'Data tersedia.' : 'Mode Cepat: Tanpa data.';
 
-      const response = await fetch(API_URL, {
+      const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${key}`,
@@ -153,7 +164,7 @@ export function useChat(dataSummary: string) {
           'X-Title': 'FILTER SAKTI EBIS',
         },
         body: JSON.stringify({
-          model: 'llama-3.1-8b-instant',
+          model: modelUsed,
           messages: [
             {
               role: 'system',
@@ -179,10 +190,10 @@ export function useChat(dataSummary: string) {
     } catch (error: unknown) {
       const errMsg = error instanceof Error ? error.message : 'Unknown error';
       let displayMsg = '❌ ' + errMsg;
-      if (errMsg.includes('401')) displayMsg = '❌ API Key tidak valid. Periksa kembali API Key-mu di ⚙️ Pengaturan atau file .env';
-      else if (errMsg.includes('402') || errMsg.includes('payment')) displayMsg = '💳 Kuota Groq habis/terkena limit.';
+      if (errMsg.includes('401')) displayMsg = `❌ API Key tidak valid. Periksa kembali API Key-mu di file .env`;
+      else if (errMsg.includes('402') || errMsg.includes('payment')) displayMsg = `💳 Kuota ${isGroq ? 'Groq' : 'OpenRouter'} habis/terkena limit.`;
       else if (errMsg.includes('429')) displayMsg = '⏳ Rate limit tercapai. Tunggu sebentar ya...';
-      else if (errMsg.includes('unavailable') || errMsg.includes('free')) displayMsg = '🚫 Model tidak tersedia. Coba lagi atau ganti model di pengaturan.';
+      else if (errMsg.includes('unavailable') || errMsg.includes('free')) displayMsg = '🚫 Model tidak tersedia saat ini. Coba ganti provider di pengaturan.';
       else if (errMsg.includes('Network') || errMsg.includes('fetch')) displayMsg = '📡 Koneksi bermasalah. Cek internet kamu!';
 
       const botMsg: ChatMessage = { role: 'assistant', content: displayMsg, timestamp: Date.now() };
@@ -191,7 +202,7 @@ export function useChat(dataSummary: string) {
       typingRef.current = false;
       setIsTyping(false);
     }
-  }, [messages, dataSummary, isDataAttached, setMessages]);
+  }, [aiProvider, messages, dataSummary, isDataAttached, setMessages]);
 
   const handleCommand = useCallback((cmd: string): boolean => {
     const lower = cmd.toLowerCase();
@@ -247,11 +258,13 @@ Esc = Tutup`,
   return {
     messages,
     draft,
+    aiProvider,
     isTyping,
     isDataAttached,
     isOpen,
     isMaximized,
     setDraft,
+    setAiProvider,
     setIsDataAttached,
     toggleChat,
     toggleMaximize,

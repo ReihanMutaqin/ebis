@@ -140,6 +140,8 @@ export default function App() {
         onClose={() => setShowSettings(false)}
         isDark={theme.isDark}
         onToggleTheme={theme.toggle}
+        aiProvider={chat.aiProvider}
+        onProviderChange={chat.setAiProvider}
       />
 
       {/* Toasts */}
