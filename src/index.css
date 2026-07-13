@@ -360,3 +360,11 @@
 .bot-content a { color: #2563eb; text-decoration: underline; }
 .dark .bot-content code { background: #0f2744; border-color: #1e3a5f; color: #93c5fd; }
 .dark .bot-content pre  { background: #060d1a; }
+
+/* AI Table Styles */
+.bot-content table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.9em; border: 2px solid #000; box-shadow: 2px 2px 0px #000; background: #fff; }
+.bot-content th, .bot-content td { border: 1px solid #000; padding: 6px 10px; text-align: left; }
+.bot-content th { background-color: #facc15; font-weight: bold; }
+.dark .bot-content table { background: #1a1a2e; border-color: #000; }
+.dark .bot-content th, .dark .bot-content td { border-color: #000; }
+.dark .bot-content th { background-color: #0f3460; color: #fff; }
