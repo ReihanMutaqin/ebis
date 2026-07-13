@@ -190,7 +190,7 @@ Bantu user soal data EBIS, filter, dan hal teknis lainnya. Jawab terstruktur dan
         throw new Error(data.error.message || 'API Error');
       }
 
-      const botReply = data.choices?.[0]?.message?.content || 'Maaf, tidak ada respons.';
+      const botReply = data.choices?.[0]?.message?.content || 'Maaf, API (OpenRouter/Groq) tidak memberikan respons untuk pertanyaan ini. Coba ulangi atau ganti model providernya di pengaturan.';
       const botMsg: ChatMessage = { role: 'assistant', content: botReply, timestamp: Date.now() };
       const finalMessages = [...newMessages, botMsg];
       setMessages(finalMessages);

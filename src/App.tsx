@@ -64,7 +64,7 @@ export default function App() {
     const dates = getTop(orderStateCounts, 15);
     const topMsg = getTop(msgCounts, 5);
 
-    return `Total data: ${rows.length} baris.\nWITEL (Top 15): [${wit}]\nSTO (Top 15): [${sto}]\nStatus (Top 15): [${st}]\nDate (Top 15): [${dates}]\nTop Status Msg: [${topMsg}]`;
+    return `Data Terfilter (yang sedang ditampilkan di tabel saat ini): ${rows.length} baris.\nWITEL (Top 15): [${wit}]\nSTO (Top 15): [${sto}]\nStatus (Top 15): [${st}]\nDate (Top 15): [${dates}]\nTop Status Msg: [${topMsg}]`;
   }, [data, filters.filteredData]);
 
   const chat = useChat(dataSummary);
