@@ -39,7 +39,7 @@ export function FileUpload({ onFileSelect }: FileUploadProps) {
     const dd    = String(today.getDate()).padStart(2, '0');
     const tanggalAwal  = `${yyyy}${mm}01`;
     const tanggalAkhir = `${yyyy}${mm}${dd}`;
-    const url = `https://xpro.telkom.co.id/hsi/detail-home/TOT_ORDER/2/JAKARTA%20OUTER/ALL/ALL/STO/ALL/all/ALL/undefined/ALL/all/ALL/all/ALL/${tanggalAwal}/${tanggalAkhir}/true`;
+    const url = `https://xpro.telkom.co.id/hsi/detail-home/TOT_ORDER/2/ALL/ALL/ALL/STO/ALL/NEW%20SALES/ALL/undefined/ALL/all/ALL/all/ALL/${tanggalAwal}/${tanggalAkhir}/true`;
     window.open(url, '_blank');
   }, []);
 
