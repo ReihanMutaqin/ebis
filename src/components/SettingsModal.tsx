@@ -57,7 +57,7 @@ export function SettingsModal({ isOpen, onClose, isDark, onToggleTheme, aiProvid
                 onClick={() => onProviderChange('R2')}
                 className={`w-full py-2 px-3 rounded-lg border text-sm font-medium transition-colors text-left ${aiProvider === 'R2' ? 'border-purple-500 bg-purple-50 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300' : 'border-gray-200 text-gray-600 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-800'}`}
               >
-                🐬 AI R2 (OpenRouter - Dolphin)
+                🤖 AI R2 (OpenRouter - Nemotron)
               </button>
             </div>
           </div>

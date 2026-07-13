@@ -127,7 +127,7 @@ export function useChat(dataSummary: string) {
     
     let modelUsed = 'llama-3.1-8b-instant';
     if (aiProvider === 'R') modelUsed = 'tencent/hy3:free';
-    if (aiProvider === 'R2') modelUsed = 'cognitivecomputations/dolphin-mistral-24b-venice-edition:free';
+    if (aiProvider === 'R2') modelUsed = 'nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free';
 
     if (!key) {
       setMessages(prev => [...prev, {
@@ -188,6 +188,14 @@ Bantu user soal data EBIS, filter, dan hal teknis lainnya. Jawab terstruktur dan
           max_tokens: 2000,
         }),
       });
+
+      if (!response.ok) {
+        if (response.status === 429) throw new Error('429 Rate limit tercapai.');
+        const errText = await response.text();
+        let errMsg = `API Error ${response.status}`;
+        try { errMsg = JSON.parse(errText).error.message; } catch { /* ignore */ }
+        throw new Error(errMsg);
+      }
 
       const data = await response.json();
 
