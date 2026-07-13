@@ -9,9 +9,7 @@ interface FilterPanelProps {
   onWitelChange: (w: string) => void;
   onDateChange: (d: string) => void;
   onSearchChange: (s: string) => void;
-  onToggleType: (t: string) => void;
   onToggleStatus: (s: string) => void;
-  onQuickModo: () => void;
   onReset: () => void;
 }
 
@@ -25,7 +23,6 @@ export function FilterPanel({
   onSearchChange,
   onToggleType,
   onToggleStatus,
-  onQuickModo,
   onReset,
 }: FilterPanelProps) {
   return (
@@ -39,14 +36,6 @@ export function FilterPanel({
 
         {/* Quick action buttons */}
         <div className="flex gap-2">
-          <button
-            id="btn-quick-modo"
-            onClick={onQuickModo}
-            className="pro-btn pro-btn-warning !text-xs !py-1.5 !px-3"
-            title="Otomatis centang filter TYPE: MO, AS, CN, CO, DO, MO+AS — STATUS: OSS Fallout, Provisioning, dll."
-          >
-            <Star size={13} /> Quick MODO
-          </button>
           <button
             id="btn-reset-filter"
             onClick={onReset}

@@ -116,7 +116,6 @@ export default function App() {
             onSearchChange={filters.setSearch}
             onToggleType={filters.toggleType}
             onToggleStatus={filters.toggleStatus}
-            onQuickModo={filters.quickModo}
             onReset={filters.resetFilter}
           />
         )}

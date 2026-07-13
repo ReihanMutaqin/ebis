@@ -1,6 +1,5 @@
 import { useState, useMemo, useCallback } from 'react';
 import type { EBISData, Filters } from '@/types';
-import { QUICK_MODO_TYPES, QUICK_MODO_STATUSES } from '@/types';
 
 export function useFilters(data: EBISData[]) {
   const [filters, setFilters] = useState<Filters>({
@@ -85,14 +84,6 @@ export function useFilters(data: EBISData[]) {
     }));
   }, []);
 
-  const quickModo = useCallback(() => {
-    setFilters(prev => ({
-      ...prev,
-      types: QUICK_MODO_TYPES.filter(t => uniqueTypes.includes(t)),
-      statuses: QUICK_MODO_STATUSES.filter(s => uniqueStatuses.includes(s)),
-    }));
-  }, [uniqueTypes, uniqueStatuses]);
-
   const resetFilter = useCallback(() => {
     setFilters({
       witel: '',
@@ -124,7 +115,6 @@ export function useFilters(data: EBISData[]) {
     setSearch,
     toggleType,
     toggleStatus,
-    quickModo,
     resetFilter,
     initFilters,
   };
