@@ -168,7 +168,14 @@ export function useChat(dataSummary: string) {
           messages: [
             {
               role: 'system',
-              content: `[SYSTEM] Kamu adalah Asisten Sakti untuk aplikasi FILTER SAKTI EBIS. Gaya bahasa: santai, gaul, asyik. Waktu: ${infoWaktu}. Data: ${summary}. Bantu user soal data EBIS, filter, dan hal teknis lainnya. Jawab langsung ke intinya.`,
+              content: `[SYSTEM] Kamu adalah Asisten Sakti untuk aplikasi FILTER SAKTI EBIS. Gaya bahasa: santai, gaul, asyik. Waktu: ${infoWaktu}. Data summary saat ini: ${summary}. 
+Karakter/Aturan Penting saat diminta analisa data:
+1. Pastikan yang diutamakan adalah data dengan WITEL_OLD: JAKSEL, JAKTIM, dan JAKPUS.
+2. Tampilkan analisa/rincian data STO-nya.
+3. Sebutkan STATUS RESUME-nya apa.
+4. Sebutkan STATUS MESSAGE-nya apa.
+5. Sebutkan ORDER STATE-nya apa.
+Bantu user soal data EBIS, filter, dan hal teknis lainnya. Jawab terstruktur dan langsung ke intinya.`,
             },
             ...newMessages.slice(-MAX_HISTORY).map(m => ({ role: m.role, content: m.content })),
           ],

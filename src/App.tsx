@@ -31,15 +31,37 @@ export default function App() {
     const rows = filters.filteredData;
     const statusCounts: Record<string, number> = {};
     const stoCounts: Record<string, number> = {};
+    const witelCounts: Record<string, number> = {};
+    const orderStateCounts: Record<string, number> = {};
+    const msgCounts: Record<string, number> = {};
+
     rows.forEach(r => {
       const s = r['STATUS RESUME'] || 'KOSONG';
       const sto = r['STO'] || 'KOSONG';
+      const witel = r['WITEL_OLD'] || 'KOSONG';
+      const state = r['ORDER STATE'] || 'KOSONG';
+      const msg = r['STATUS MESSAGE'] || 'KOSONG';
+
       statusCounts[s] = (statusCounts[s] || 0) + 1;
       stoCounts[sto] = (stoCounts[sto] || 0) + 1;
+      witelCounts[witel] = (witelCounts[witel] || 0) + 1;
+      orderStateCounts[state] = (orderStateCounts[state] || 0) + 1;
+      msgCounts[msg] = (msgCounts[msg] || 0) + 1;
     });
+
     const st = Object.entries(statusCounts).map(([k, v]) => `${k}: ${v}`).join(', ');
     const sto = Object.entries(stoCounts).map(([k, v]) => `${k}: ${v}`).join(', ');
-    return `Total data: ${rows.length} baris. Status: [${st}]. STO: [${sto}].`;
+    const wit = Object.entries(witelCounts).map(([k, v]) => `${k}: ${v}`).join(', ');
+    const ord = Object.entries(orderStateCounts).map(([k, v]) => `${k}: ${v}`).join(', ');
+    
+    // Top 5 status messages to avoid context overflow
+    const topMsg = Object.entries(msgCounts)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5)
+      .map(([k, v]) => `${k.substring(0, 30)}: ${v}`)
+      .join(' | ');
+
+    return `Total data: ${rows.length} baris.\nWITEL: [${wit}]\nSTO: [${sto}]\nStatus: [${st}]\nOrder State: [${ord}]\nTop Status Msg: [${topMsg}]`;
   }, [data, filters.filteredData]);
 
   const chat = useChat(dataSummary);
