@@ -15,7 +15,6 @@ interface ChatAssistantProps {
   isDataAttached: boolean;
   isOpen: boolean;
   isMaximized: boolean;
-  apiKey: string;
   setDraft: (d: string) => void;
   toggleChat: () => void;
   toggleMaximize: () => void;

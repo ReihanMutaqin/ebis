@@ -123,7 +123,6 @@ export default function App() {
         isDataAttached={chat.isDataAttached}
         isOpen={chat.isOpen}
         isMaximized={chat.isMaximized}
-        apiKey={chat.apiKey}
         setDraft={chat.setDraft}
         toggleChat={chat.toggleChat}
         toggleMaximize={chat.toggleMaximize}
@@ -139,8 +138,6 @@ export default function App() {
       <SettingsModal
         isOpen={showSettings}
         onClose={() => setShowSettings(false)}
-        apiKey={chat.apiKey}
-        onApiKeyChange={chat.setApiKey}
         isDark={theme.isDark}
         onToggleTheme={theme.toggle}
       />

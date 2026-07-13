@@ -3,13 +3,11 @@ import { X, Sun, Moon, KeyRound, Settings } from 'lucide-react';
 interface SettingsModalProps {
   isOpen: boolean;
   onClose: () => void;
-  apiKey: string;
-  onApiKeyChange: (key: string) => void;
   isDark: boolean;
   onToggleTheme: () => void;
 }
 
-export function SettingsModal({ isOpen, onClose, apiKey, onApiKeyChange, isDark, onToggleTheme }: SettingsModalProps) {
+export function SettingsModal({ isOpen, onClose, isDark, onToggleTheme }: SettingsModalProps) {
   if (!isOpen) return null;
 
   return (
@@ -35,27 +33,6 @@ export function SettingsModal({ isOpen, onClose, apiKey, onApiKeyChange, isDark,
         </div>
 
         <div className="space-y-5">
-          {/* API Key */}
-          <div>
-            <label className="block pro-section-title mb-1.5 flex items-center gap-1.5">
-              <KeyRound size={12} />
-              OpenRouter API Key
-            </label>
-            <input
-              type="password"
-              value={apiKey}
-              onChange={(e) => onApiKeyChange(e.target.value)}
-              placeholder="sk-or-..."
-              className="pro-input"
-            />
-            <p className="text-xs text-gray-400 mt-1.5">
-              Disimpan di browser (localStorage). Dapatkan gratis di{' '}
-              <a href="https://openrouter.ai/keys" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
-                openrouter.ai
-              </a>
-            </p>
-          </div>
-
           {/* Theme */}
           <div>
             <label className="block pro-section-title mb-1.5">Tema Tampilan</label>

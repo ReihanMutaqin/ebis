@@ -37,9 +37,6 @@ export function useChat(dataSummary: string) {
   const [draft, setDraft] = useState(() => {
     try { return localStorage.getItem('ebis_chat_draft') || ''; } catch { return ''; }
   });
-  const [apiKey, setApiKeyState] = useState(() => {
-    try { return localStorage.getItem('ebis_api_key') || ''; } catch { return ''; }
-  });
   const [isTyping, setIsTyping] = useState(false);
   const [isDataAttached, setIsDataAttachedState] = useState(() => {
     try { return localStorage.getItem('ebis_data_attached') !== 'false'; } catch { return true; }
@@ -54,11 +51,6 @@ export function useChat(dataSummary: string) {
       saveChat(next);
       return next;
     });
-  }, []);
-
-  const setApiKey = useCallback((key: string) => {
-    setApiKeyState(key);
-    try { localStorage.setItem('ebis_api_key', key); } catch { /* ignore */ }
   }, []);
 
   const setIsDataAttached = useCallback((val: boolean) => {
@@ -122,7 +114,7 @@ export function useChat(dataSummary: string) {
   const sendMessage = useCallback(async (message: string) => {
     if (!message.trim() || typingRef.current) return;
 
-    const key = apiKey.trim() || import.meta.env.VITE_GROQ_API_KEY;
+    const key = import.meta.env.VITE_GROQ_API_KEY;
     if (!key) {
       setMessages(prev => [...prev, {
         role: 'assistant',
@@ -161,7 +153,7 @@ export function useChat(dataSummary: string) {
           'X-Title': 'FILTER SAKTI EBIS',
         },
         body: JSON.stringify({
-          model: 'llama3-8b-8192',
+          model: 'llama-3.1-8b-instant',
           messages: [
             {
               role: 'system',
@@ -199,7 +191,7 @@ export function useChat(dataSummary: string) {
       typingRef.current = false;
       setIsTyping(false);
     }
-  }, [apiKey, messages, dataSummary, isDataAttached, setMessages]);
+  }, [messages, dataSummary, isDataAttached, setMessages]);
 
   const handleCommand = useCallback((cmd: string): boolean => {
     const lower = cmd.toLowerCase();
@@ -255,13 +247,11 @@ Esc = Tutup`,
   return {
     messages,
     draft,
-    apiKey,
     isTyping,
     isDataAttached,
     isOpen,
     isMaximized,
     setDraft,
-    setApiKey,
     setIsDataAttached,
     toggleChat,
     toggleMaximize,
