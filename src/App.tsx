@@ -39,13 +39,13 @@ export default function App() {
       const s = r['STATUS RESUME'] || 'KOSONG';
       const sto = r['STO'] || 'KOSONG';
       const witel = r['WITEL_OLD'] || 'KOSONG';
-      const state = r['ORDER STATE'] || 'KOSONG';
+      const date = r['ORDER DATE'] || r['TGL ORDER'] || r['DATE'] || 'KOSONG';
       const msg = r['STATUS MESSAGE'] || 'KOSONG';
 
       statusCounts[s] = (statusCounts[s] || 0) + 1;
       stoCounts[sto] = (stoCounts[sto] || 0) + 1;
       witelCounts[witel] = (witelCounts[witel] || 0) + 1;
-      orderStateCounts[state] = (orderStateCounts[state] || 0) + 1;
+      orderStateCounts[date] = (orderStateCounts[date] || 0) + 1;
       msgCounts[msg] = (msgCounts[msg] || 0) + 1;
     });
 
@@ -61,10 +61,10 @@ export default function App() {
     const st = getTop(statusCounts, 15);
     const sto = getTop(stoCounts, 15);
     const wit = getTop(witelCounts, 15);
-    const ord = getTop(orderStateCounts, 15);
+    const dates = getTop(orderStateCounts, 15);
     const topMsg = getTop(msgCounts, 5);
 
-    return `Total data: ${rows.length} baris.\nWITEL (Top 15): [${wit}]\nSTO (Top 15): [${sto}]\nStatus (Top 15): [${st}]\nOrder State (Top 15): [${ord}]\nTop Status Msg: [${topMsg}]`;
+    return `Total data: ${rows.length} baris.\nWITEL (Top 15): [${wit}]\nSTO (Top 15): [${sto}]\nStatus (Top 15): [${st}]\nDate (Top 15): [${dates}]\nTop Status Msg: [${topMsg}]`;
   }, [data, filters.filteredData]);
 
   const chat = useChat(dataSummary);
