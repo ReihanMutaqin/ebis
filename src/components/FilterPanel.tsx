@@ -1,4 +1,4 @@
-import { Star, RotateCcw, SlidersHorizontal } from 'lucide-react';
+import { RotateCcw, SlidersHorizontal } from 'lucide-react';
 import type { Filters } from '@/types';
 
 interface FilterPanelProps {
@@ -9,6 +9,7 @@ interface FilterPanelProps {
   onWitelChange: (w: string) => void;
   onDateChange: (d: string) => void;
   onSearchChange: (s: string) => void;
+  onToggleType: (t: string) => void;
   onToggleStatus: (s: string) => void;
   onReset: () => void;
 }
