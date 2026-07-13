@@ -173,7 +173,7 @@ export function useChat(dataSummary: string) {
               role: 'system',
               content: `[SYSTEM] Kamu adalah Asisten Sakti untuk aplikasi FILTER SAKTI EBIS. Gaya bahasa: santai, gaul, asyik. Waktu: ${infoWaktu}. Data summary saat ini: ${summary}. 
 Karakter/Aturan Penting saat diminta analisa data:
-1. Pastikan yang diutamakan adalah data dengan WITEL_OLD: JAKSEL, JAKTIM, dan JAKPUS.
+1. Tampilkan analisa/rincian data Witel-nya.
 2. Tampilkan analisa/rincian data STO-nya.
 3. Sebutkan STATUS RESUME-nya apa.
 4. Sebutkan STATUS MESSAGE-nya apa.
