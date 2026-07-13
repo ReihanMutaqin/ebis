@@ -124,7 +124,7 @@ export function useChat(dataSummary: string) {
     const isGroq = aiProvider === 'D';
     const key = isGroq ? import.meta.env.VITE_GROQ_API_KEY : import.meta.env.VITE_OPENROUTER_API_KEY;
     const apiUrl = isGroq ? 'https://api.groq.com/openai/v1/chat/completions' : 'https://openrouter.ai/api/v1/chat/completions';
-    const modelUsed = isGroq ? 'llama-3.1-8b-instant' : 'meta-llama/llama-3.1-8b-instruct:free';
+    const modelUsed = isGroq ? 'llama-3.1-8b-instant' : 'tencent/hy3:free';
 
     if (!key) {
       setMessages(prev => [...prev, {
