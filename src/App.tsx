@@ -111,9 +111,6 @@ export default function App() {
           <p className="text-xs text-gray-400">
             © 2026 <span className="font-medium text-gray-500 dark:text-gray-400">Reihan x Dheo</span>
             {' · '}
-            <a href="mailto:reyhanmutakin1@gmail.com" className="hover:text-blue-500 transition-colors">reyhanmutakin1@gmail.com</a>
-            {' · '}
-            <a href="https://t.me/Rei219" target="_blank" rel="noopener noreferrer" className="hover:text-blue-500 transition-colors">Telegram @Rei219</a>
           </p>
         </footer>
       </div>
