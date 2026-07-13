@@ -71,6 +71,7 @@ export function FilterPanel({
             className="pro-select"
           >
             <option value="">— Semua Witel —</option>
+            <option value="SOUTHERN">SOUTHERN (JAKSEL, JAKTIM, JAKPUS)</option>
             {uniqueWitels.map(w => (
               <option key={w} value={w}>{w}</option>
             ))}

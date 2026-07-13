@@ -33,7 +33,13 @@ export function useFilters(data: EBISData[]) {
   // Apply filters
   const filteredData = useMemo(() => {
     return data.filter(row => {
-      if (filters.witel && row.WITEL_OLD !== filters.witel) return false;
+      if (filters.witel) {
+        if (filters.witel === 'SOUTHERN') {
+          if (!['JAKSEL', 'JAKTIM', 'JAKPUS'].includes(row.WITEL_OLD || '')) return false;
+        } else {
+          if (row.WITEL_OLD !== filters.witel) return false;
+        }
+      }
       if (filters.dateFrom && row['LAST UPDATE STATUS']) {
         const datePart = row['LAST UPDATE STATUS'].substring(0, 10);
         if (datePart < filters.dateFrom) return false;
