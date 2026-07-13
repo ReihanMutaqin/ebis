@@ -68,7 +68,26 @@ export default function App() {
     const topMsg = getTop(msgCounts, 5);
     const ord = getTop(orderCounts, 15);
 
-    return `Data Terfilter (yang sedang ditampilkan di tabel saat ini): ${rows.length} baris.\nWITEL (Top 15): [${wit}]\nSTO (Top 15): [${sto}]\nStatus (Top 15): [${st}]\nDate (Top 15): [${dates}]\nOrder (Top 15): [${ord}]\nTop Status Msg: [${topMsg}]`;
+    // Provide actual correlated data for the first 20 rows to prevent hallucination
+    const sampleRows = rows.slice(0, 20).map(r => ({
+      ORDER: r['ORDER'] || '',
+      TANGGAL: r['LAST UPDATE STATUS'] || r['ORDER DATE'] || r['TGL ORDER'] || '',
+      WITEL: r['WITEL_OLD'] || '',
+      STO: r['STO'] || '',
+      STATUS: r['STATUS RESUME'] || ''
+    }));
+
+    return `Data Terfilter (yang sedang ditampilkan di tabel saat ini): ${rows.length} baris.
+Ringkasan Frekuensi:
+WITEL (Top 15): [${wit}]
+STO (Top 15): [${sto}]
+Status (Top 15): [${st}]
+Date (Top 15): [${dates}]
+Order (Top 15): [${ord}]
+Top Status Msg: [${topMsg}]
+
+Data Sample (20 Baris Pertama Teratas dari tabel):
+${JSON.stringify(sampleRows)}`;
   }, [data, filters.filteredData]);
 
   const chat = useChat(dataSummary);
