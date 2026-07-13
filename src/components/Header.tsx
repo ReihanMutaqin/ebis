@@ -23,7 +23,7 @@ export function Header({ onSettings, isDark, onToggleTheme }: HeaderProps) {
               className="font-bold leading-tight text-gray-900 dark:text-white"
               style={{ fontSize: 'clamp(1.1rem, 2.5vw, 1.5rem)', letterSpacing: '-0.01em' }}
             >
-              Filter Sakti EBIS
+              Filter EBIS
             </h1>
             <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">
               Data Analysis & Filtering Tool
