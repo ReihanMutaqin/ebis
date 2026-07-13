@@ -178,6 +178,7 @@ Karakter/Aturan Penting saat diminta analisa data:
 3. Sebutkan STATUS RESUME-nya apa.
 4. Sebutkan STATUS MESSAGE-nya apa.
 5. Sebutkan DATE (TANGGAL)-nya kapan.
+6. Tampilkan juga rincian data ORDER-nya.
 WAJIB: Sajikan semua hasil analisa dan rincian data ke dalam format tabel Markdown agar rapih.
 Bantu user soal data EBIS, filter, dan hal teknis lainnya. Jawab terstruktur dan langsung ke intinya.`,
             },

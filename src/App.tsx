@@ -34,6 +34,7 @@ export default function App() {
     const witelCounts: Record<string, number> = {};
     const orderStateCounts: Record<string, number> = {};
     const msgCounts: Record<string, number> = {};
+    const orderCounts: Record<string, number> = {};
 
     rows.forEach(r => {
       const s = r['STATUS RESUME'] || 'KOSONG';
@@ -41,12 +42,14 @@ export default function App() {
       const witel = r['WITEL_OLD'] || 'KOSONG';
       const date = r['ORDER DATE'] || r['TGL ORDER'] || r['DATE'] || 'KOSONG';
       const msg = r['STATUS MESSAGE'] || 'KOSONG';
+      const order = r['ORDER'] || 'KOSONG';
 
       statusCounts[s] = (statusCounts[s] || 0) + 1;
       stoCounts[sto] = (stoCounts[sto] || 0) + 1;
       witelCounts[witel] = (witelCounts[witel] || 0) + 1;
       orderStateCounts[date] = (orderStateCounts[date] || 0) + 1;
       msgCounts[msg] = (msgCounts[msg] || 0) + 1;
+      orderCounts[order] = (orderCounts[order] || 0) + 1;
     });
 
     // Helper function to get top N items
@@ -63,8 +66,9 @@ export default function App() {
     const wit = getTop(witelCounts, 15);
     const dates = getTop(orderStateCounts, 15);
     const topMsg = getTop(msgCounts, 5);
+    const ord = getTop(orderCounts, 15);
 
-    return `Data Terfilter (yang sedang ditampilkan di tabel saat ini): ${rows.length} baris.\nWITEL (Top 15): [${wit}]\nSTO (Top 15): [${sto}]\nStatus (Top 15): [${st}]\nDate (Top 15): [${dates}]\nTop Status Msg: [${topMsg}]`;
+    return `Data Terfilter (yang sedang ditampilkan di tabel saat ini): ${rows.length} baris.\nWITEL (Top 15): [${wit}]\nSTO (Top 15): [${sto}]\nStatus (Top 15): [${st}]\nDate (Top 15): [${dates}]\nOrder (Top 15): [${ord}]\nTop Status Msg: [${topMsg}]`;
   }, [data, filters.filteredData]);
 
   const chat = useChat(dataSummary);
