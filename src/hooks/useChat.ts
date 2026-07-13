@@ -36,8 +36,8 @@ export function useChat(dataSummary: string) {
   const [draft, setDraft] = useState(() => {
     try { return localStorage.getItem('ebis_chat_draft') || ''; } catch { return ''; }
   });
-  const [aiProvider, setAiProviderState] = useState<'R' | 'D'>(() => {
-    try { return (localStorage.getItem('ebis_ai_provider') as 'R' | 'D') || 'D'; } catch { return 'D'; }
+  const [aiProvider, setAiProviderState] = useState<'R' | 'R2' | 'D'>(() => {
+    try { return (localStorage.getItem('ebis_ai_provider') as 'R' | 'R2' | 'D') || 'D'; } catch { return 'D'; }
   });
   const [isTyping, setIsTyping] = useState(false);
   const [isDataAttached, setIsDataAttachedState] = useState(() => {
@@ -55,7 +55,7 @@ export function useChat(dataSummary: string) {
     });
   }, []);
 
-  const setAiProvider = useCallback((val: 'R' | 'D') => {
+  const setAiProvider = useCallback((val: 'R' | 'R2' | 'D') => {
     setAiProviderState(val);
     try { localStorage.setItem('ebis_ai_provider', val); } catch { /* ignore */ }
   }, []);
@@ -124,7 +124,10 @@ export function useChat(dataSummary: string) {
     const isGroq = aiProvider === 'D';
     const key = isGroq ? import.meta.env.VITE_GROQ_API_KEY : import.meta.env.VITE_OPENROUTER_API_KEY;
     const apiUrl = isGroq ? 'https://api.groq.com/openai/v1/chat/completions' : 'https://openrouter.ai/api/v1/chat/completions';
-    const modelUsed = isGroq ? 'llama-3.1-8b-instant' : 'tencent/hy3:free';
+    
+    let modelUsed = 'llama-3.1-8b-instant';
+    if (aiProvider === 'R') modelUsed = 'tencent/hy3:free';
+    if (aiProvider === 'R2') modelUsed = 'cognitivecomputations/dolphin-mistral-24b-venice-edition:free';
 
     if (!key) {
       setMessages(prev => [...prev, {

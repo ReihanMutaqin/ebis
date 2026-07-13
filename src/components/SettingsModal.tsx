@@ -5,8 +5,8 @@ interface SettingsModalProps {
   onClose: () => void;
   isDark: boolean;
   onToggleTheme: () => void;
-  aiProvider: 'R' | 'D';
-  onProviderChange: (val: 'R' | 'D') => void;
+  aiProvider: 'R' | 'R2' | 'D';
+  onProviderChange: (val: 'R' | 'R2' | 'D') => void;
 }
 
 export function SettingsModal({ isOpen, onClose, isDark, onToggleTheme, aiProvider, onProviderChange }: SettingsModalProps) {
@@ -40,18 +40,24 @@ export function SettingsModal({ isOpen, onClose, isDark, onToggleTheme, aiProvid
             <label className="block pro-section-title mb-1.5 flex items-center gap-1.5">
               Provider AI
             </label>
-            <div className="flex gap-2">
-              <button
-                onClick={() => onProviderChange('R')}
-                className={`flex-1 py-2 rounded-lg border text-sm font-medium transition-colors ${aiProvider === 'R' ? 'border-blue-500 bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300' : 'border-gray-200 text-gray-600 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-800'}`}
-              >
-                AI R (OpenRouter)
-              </button>
+            <div className="flex flex-col gap-2">
               <button
                 onClick={() => onProviderChange('D')}
-                className={`flex-1 py-2 rounded-lg border text-sm font-medium transition-colors ${aiProvider === 'D' ? 'border-green-500 bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-300' : 'border-gray-200 text-gray-600 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-800'}`}
+                className={`w-full py-2 px-3 rounded-lg border text-sm font-medium transition-colors text-left ${aiProvider === 'D' ? 'border-green-500 bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-300' : 'border-gray-200 text-gray-600 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-800'}`}
               >
-                AI D (Groq)
+                🤖 AI D (Groq - LLaMA 3.1)
+              </button>
+              <button
+                onClick={() => onProviderChange('R')}
+                className={`w-full py-2 px-3 rounded-lg border text-sm font-medium transition-colors text-left ${aiProvider === 'R' ? 'border-blue-500 bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300' : 'border-gray-200 text-gray-600 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-800'}`}
+              >
+                🌐 AI R (OpenRouter - Tencent)
+              </button>
+              <button
+                onClick={() => onProviderChange('R2')}
+                className={`w-full py-2 px-3 rounded-lg border text-sm font-medium transition-colors text-left ${aiProvider === 'R2' ? 'border-purple-500 bg-purple-50 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300' : 'border-gray-200 text-gray-600 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-800'}`}
+              >
+                🐬 AI R2 (OpenRouter - Dolphin)
               </button>
             </div>
           </div>
