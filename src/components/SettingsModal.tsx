@@ -1,4 +1,4 @@
-import { X, Sun, Moon, KeyRound, Settings } from 'lucide-react';
+import { X, Sun, Moon, Settings } from 'lucide-react';
 
 interface SettingsModalProps {
   isOpen: boolean;
