@@ -49,19 +49,22 @@ export default function App() {
       msgCounts[msg] = (msgCounts[msg] || 0) + 1;
     });
 
-    const st = Object.entries(statusCounts).map(([k, v]) => `${k}: ${v}`).join(', ');
-    const sto = Object.entries(stoCounts).map(([k, v]) => `${k}: ${v}`).join(', ');
-    const wit = Object.entries(witelCounts).map(([k, v]) => `${k}: ${v}`).join(', ');
-    const ord = Object.entries(orderStateCounts).map(([k, v]) => `${k}: ${v}`).join(', ');
-    
-    // Top 5 status messages to avoid context overflow
-    const topMsg = Object.entries(msgCounts)
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 5)
-      .map(([k, v]) => `${k.substring(0, 30)}: ${v}`)
-      .join(' | ');
+    // Helper function to get top N items
+    const getTop = (obj: Record<string, number>, limit: number) => {
+      return Object.entries(obj)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, limit)
+        .map(([k, v]) => `${k.length > 30 ? k.substring(0, 30) + '...' : k}: ${v}`)
+        .join(' | ');
+    };
 
-    return `Total data: ${rows.length} baris.\nWITEL: [${wit}]\nSTO: [${sto}]\nStatus: [${st}]\nOrder State: [${ord}]\nTop Status Msg: [${topMsg}]`;
+    const st = getTop(statusCounts, 15);
+    const sto = getTop(stoCounts, 15);
+    const wit = getTop(witelCounts, 15);
+    const ord = getTop(orderStateCounts, 15);
+    const topMsg = getTop(msgCounts, 5);
+
+    return `Total data: ${rows.length} baris.\nWITEL (Top 15): [${wit}]\nSTO (Top 15): [${sto}]\nStatus (Top 15): [${st}]\nOrder State (Top 15): [${ord}]\nTop Status Msg: [${topMsg}]`;
   }, [data, filters.filteredData]);
 
   const chat = useChat(dataSummary);
