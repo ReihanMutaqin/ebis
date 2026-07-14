@@ -74,7 +74,8 @@ export default function App() {
       TANGGAL: r['LAST UPDATE STATUS'] || r['ORDER DATE'] || r['TGL ORDER'] || '',
       WITEL: r['WITEL_OLD'] || '',
       STO: r['STO'] || '',
-      STATUS: r['STATUS RESUME'] || ''
+      STATUS: r['STATUS RESUME'] || '',
+      "STATUS MESSAGE": r['STATUS MESSAGE'] || ''
     }));
 
     return `Data Terfilter (yang sedang ditampilkan di tabel saat ini): ${rows.length} baris.
