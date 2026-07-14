@@ -88,7 +88,7 @@ export const PLAYLISTS: Playlist[] = [
     key: 'indonesia',
     name: 'Indonesia Hits',
     desc: 'Lagu Tanah Air',
-    url: 'https://open.spotify.com/embed/playlist/37i9dQZF1EQqkOPvHGajmW?utm_source=generator',
+    url: 'https://open.spotify.com/embed/playlist/0YwsIE2snT3jzhdojbvibe?utm_source=generator&si=1fc1a3be242f4613',
     icon: '\ud83c\uddee\ud83c\udde9',
     color: '#0d6efd',
   },
