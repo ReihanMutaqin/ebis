@@ -35,8 +35,13 @@ export function MusicPlayer({ onToast }: MusicPlayerProps) {
         borderRadius: '12px',
       }}
     >
-      <div className="font-bold mb-3 flex items-center gap-2" style={{ color: '#e94560' }}>
-        🎵 MUSIC PLAYER
+      <div className="flex flex-col mb-3">
+        <div className="font-bold flex items-center gap-2" style={{ color: '#e94560' }}>
+          🎵 MUSIC PLAYER
+        </div>
+        <p className="text-xs text-gray-400 mt-1 italic font-vt">
+          * Login ke Spotify Web terlebih dahulu untuk mendengarkan lagu full (bukan preview)
+        </p>
       </div>
 
       <div className="grid grid-cols-2 gap-2 mb-3">
