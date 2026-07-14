@@ -44,6 +44,45 @@ export function ChatAssistant({
   const [showMusic, setShowMusic] = useState(false);
   const [lastUserMsg, setLastUserMsg] = useState('');
 
+  // Drag state for Music Player
+  const [musicPos, setMusicPos] = useState({ x: 0, y: 0 });
+  const [isDraggingMusic, setIsDraggingMusic] = useState(false);
+  const dragRef = useRef({ isDragging: false, startX: 0, startY: 0, initialX: 0, initialY: 0 });
+
+  useEffect(() => {
+    // Reset position when chat toggles to avoid off-screen issues
+    setMusicPos({ x: 0, y: 0 });
+  }, [isOpen]);
+
+  const handlePointerDown = (e: React.PointerEvent) => {
+    if ((e.target as HTMLElement).closest('button, input, iframe')) return;
+    setIsDraggingMusic(true);
+    dragRef.current = {
+      isDragging: true,
+      startX: e.clientX,
+      startY: e.clientY,
+      initialX: musicPos.x,
+      initialY: musicPos.y,
+    };
+    e.currentTarget.setPointerCapture(e.pointerId);
+  };
+
+  const handlePointerMove = (e: React.PointerEvent) => {
+    if (!dragRef.current.isDragging) return;
+    const dx = e.clientX - dragRef.current.startX;
+    const dy = e.clientY - dragRef.current.startY;
+    setMusicPos({
+      x: dragRef.current.initialX + dx,
+      y: dragRef.current.initialY + dy,
+    });
+  };
+
+  const handlePointerUp = (e: React.PointerEvent) => {
+    dragRef.current.isDragging = false;
+    setIsDraggingMusic(false);
+    e.currentTarget.releasePointerCapture(e.pointerId);
+  };
+
   useEffect(() => {
     if (chatBodyRef.current) {
       chatBodyRef.current.scrollTop = chatBodyRef.current.scrollHeight;
@@ -438,14 +477,20 @@ export function ChatAssistant({
     {/* Floating Music Player */}
     {showMusic && (
       <div 
-        className={`fixed z-[10010] transition-all duration-500 ease-in-out ${isOpen ? 'bottom-[90px] right-[390px] opacity-100' : 'bottom-[20px] left-[20px] opacity-90 hover:opacity-100'}`}
+        className={`fixed z-[10010] ${!isDraggingMusic ? 'transition-all duration-500 ease-in-out' : ''} ${isOpen ? 'bottom-[90px] right-[390px] opacity-100' : 'bottom-[20px] left-[20px] opacity-90 hover:opacity-100'}`}
         style={{
           width: '350px',
           boxShadow: '8px 8px 0px rgba(0,0,0,0.8)',
           borderRadius: '12px',
+          transform: `translate(${musicPos.x}px, ${musicPos.y}px)`,
+          touchAction: 'none',
         }}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerUp}
       >
-        <MusicPlayer onToast={onToast} onClose={() => setShowMusic(false)} />
+        <MusicPlayer onToast={onToast} onClose={() => { setShowMusic(false); setMusicPos({x: 0, y: 0}); }} />
       </div>
     )}
     </>
