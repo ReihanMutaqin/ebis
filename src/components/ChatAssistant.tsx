@@ -145,34 +145,35 @@ export function ChatAssistant({
     );
   };
 
-  if (!isOpen) {
-    return (
+  return (
+    <>
       <button
         onClick={toggleChat}
-        className="fixed bottom-5 right-5 z-[9999] w-[60px] h-[60px] rounded-full bg-[#facc15] border-[3px] border-black flex items-center justify-center cursor-pointer"
+        className={`fixed bottom-5 right-5 z-[9999] w-[60px] h-[60px] rounded-full bg-[#facc15] border-[3px] border-black flex items-center justify-center cursor-pointer transition-transform duration-300 ${isOpen ? 'scale-0' : 'scale-100'}`}
         style={{
           boxShadow: '4px 4px 0px #000',
-          animation: 'pulse-ring 2s infinite',
+          animation: isOpen ? 'none' : 'pulse-ring 2s infinite',
+          pointerEvents: isOpen ? 'none' : 'auto',
         }}
       >
         <span className="text-2xl">🤖</span>
       </button>
-    );
-  }
 
-  return (
-    <div
-      className="fixed z-[10000] flex flex-col bg-white dark:bg-[#16213e] border-2 border-black"
-      style={{
-        bottom: isMaximized ? '10vh' : '90px',
-        right: isMaximized ? '10vw' : '20px',
-        width: isMaximized ? '80vw' : '350px',
-        height: isMaximized ? '80vh' : '500px',
-        maxWidth: isMaximized ? '1000px' : '90vw',
-        boxShadow: '8px 8px 0px rgba(0,0,0,0.8)',
-        transition: 'all 0.3s ease',
-      }}
-    >
+      <div
+        className="fixed z-[10000] flex flex-col bg-white dark:bg-[#16213e] border-2 border-black"
+        style={{
+          bottom: isMaximized ? '10vh' : '90px',
+          right: isMaximized ? '10vw' : '20px',
+          width: isMaximized ? '80vw' : '350px',
+          height: isMaximized ? '80vh' : '500px',
+          maxWidth: isMaximized ? '1000px' : '90vw',
+          boxShadow: isOpen ? '8px 8px 0px rgba(0,0,0,0.8)' : 'none',
+          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+          opacity: isOpen ? 1 : 0,
+          pointerEvents: isOpen ? 'auto' : 'none',
+          transform: isOpen ? 'translateY(0) scale(1)' : 'translateY(20px) scale(0.95)',
+        }}
+      >
       {/* Header */}
       <div className="flex items-center justify-between px-3 py-2 bg-[#facc15] border-b border-black">
         <div className="flex items-center gap-2">
@@ -435,5 +436,6 @@ export function ChatAssistant({
         </div>
       )}
     </div>
+    </>
   );
 }
