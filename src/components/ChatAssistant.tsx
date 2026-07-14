@@ -314,8 +314,6 @@ export function ChatAssistant({
             </div>
           </div>
         )}
-
-        {showMusic && <MusicPlayer onToast={onToast} />}
       </div>
 
       {/* Quick actions bar */}
@@ -436,6 +434,20 @@ export function ChatAssistant({
         </div>
       )}
     </div>
+
+    {/* Floating Music Player */}
+    {showMusic && (
+      <div 
+        className={`fixed z-[10010] transition-all duration-500 ease-in-out ${isOpen ? 'bottom-[90px] right-[390px] opacity-100' : 'bottom-[20px] left-[20px] opacity-90 hover:opacity-100'}`}
+        style={{
+          width: '350px',
+          boxShadow: '8px 8px 0px rgba(0,0,0,0.8)',
+          borderRadius: '12px',
+        }}
+      >
+        <MusicPlayer onToast={onToast} onClose={() => setShowMusic(false)} />
+      </div>
+    )}
     </>
   );
 }

@@ -1,12 +1,13 @@
 import { useState } from 'react';
-import { Search } from 'lucide-react';
+import { Search, X } from 'lucide-react';
 import { PLAYLISTS } from '@/types';
 
 interface MusicPlayerProps {
   onToast: (msg: string) => void;
+  onClose?: () => void;
 }
 
-export function MusicPlayer({ onToast }: MusicPlayerProps) {
+export function MusicPlayer({ onToast, onClose }: MusicPlayerProps) {
   const [activePlaylist, setActivePlaylist] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -36,8 +37,15 @@ export function MusicPlayer({ onToast }: MusicPlayerProps) {
       }}
     >
       <div className="flex flex-col mb-3">
-        <div className="font-bold flex items-center gap-2" style={{ color: '#e94560' }}>
-          🎵 MUSIC PLAYER
+        <div className="flex items-center justify-between">
+          <div className="font-bold flex items-center gap-2" style={{ color: '#e94560' }}>
+            🎵 MUSIC PLAYER
+          </div>
+          {onClose && (
+            <button onClick={onClose} className="p-1 hover:bg-white/10 rounded-full cursor-pointer text-gray-300 transition-colors">
+              <X size={16} />
+            </button>
+          )}
         </div>
         <p className="text-xs text-gray-400 mt-1 italic font-vt">
           * Login ke Spotify Web terlebih dahulu untuk mendengarkan lagu full (bukan preview)
