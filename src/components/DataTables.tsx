@@ -15,17 +15,7 @@ export function DataTables({ data, headers, filteredData, onToast }: DataTablesP
   const [selectedBulan, setSelectedBulan] = useState('');
   const [selectedUnit, setSelectedUnit] = useState('');
 
-  const getBulan = useCallback((raw: string) => {
-    if (!raw) return '';
-    const [datePart] = raw.split(' ');
-    if (!datePart) return '';
-    const parts = datePart.split('-');
-    if (parts.length < 2) return '';
-    const m = parts[1];
-    const monthIndex = parseInt(m, 10) - 1;
-    const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-    return isNaN(monthIndex) ? '' : (months[monthIndex] || '');
-  }, []);
+
 
   const formatEBISDate = useCallback((raw: string): string => {
     if (!raw) return '';
