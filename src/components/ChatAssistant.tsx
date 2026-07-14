@@ -265,6 +265,36 @@ export function ChatAssistant({
                     >
                       📋 Copy
                     </button>
+                    <button
+                      onClick={() => {
+                        let tsv = '';
+                        const lines = msg.content.split('\n');
+                        let inTable = false;
+                        for (const line of lines) {
+                          const trimmed = line.trim();
+                          if (trimmed.startsWith('|') && trimmed.endsWith('|')) {
+                            // Skip markdown table separator lines
+                            if (trimmed.match(/^\|([\s-:]+\|)+$/)) continue;
+                            
+                            tsv += trimmed.slice(1, -1).split('|').map(c => c.trim()).join('\t') + '\n';
+                            inTable = true;
+                          } else if (inTable) {
+                            tsv += '\n';
+                            inTable = false;
+                          }
+                        }
+                        
+                        if (tsv.trim()) {
+                          navigator.clipboard.writeText(tsv.trim());
+                          onToast('✅ Tabel disalin ke format Excel!');
+                        } else {
+                          onToast('❌ Tidak ada tabel yang ditemukan');
+                        }
+                      }}
+                      className="text-xs flex items-center gap-1 px-2 py-1 border border-black hover:bg-gray-100 dark:hover:bg-[#0f3460] transition-colors cursor-pointer"
+                    >
+                      📊 Copy Tabel
+                    </button>
                   </div>
                 )}
               </div>
