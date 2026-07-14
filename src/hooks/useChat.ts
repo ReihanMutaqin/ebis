@@ -180,6 +180,7 @@ Karakter/Aturan Penting saat diminta analisa data:
 5. Sebutkan DATE (TANGGAL)-nya kapan.
 6. Tampilkan juga rincian data ORDER-nya.
 WAJIB: Sajikan semua hasil analisa dan rincian data ke dalam format tabel Markdown agar rapih.
+PENTING: DILARANG KERAS menggunakan karakter pipe ("|") di dalam teks atau isi sel tabel karena akan merusak format tabel Markdown. Jika data asli mengandung karakter "|", ubahlah menjadi "-" atau spasi.
 Bantu user soal data EBIS, filter, dan hal teknis lainnya. Jawab terstruktur dan langsung ke intinya.`,
             },
             ...newMessages.slice(-MAX_HISTORY).map(m => ({ role: m.role, content: m.content })),
