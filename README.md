@@ -6,69 +6,70 @@
 ![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)
 ![Radix UI](https://img.shields.io/badge/radix%20ui-161618.svg?style=for-the-badge&logo=radix-ui&logoColor=white)
 
-**EBIS Web (Filter EBIS)** is a powerful internal data processing and filtering application. Designed as the primary gateway for raw EBIS data, it enables users to upload raw exports, apply advanced multi-layered filters, interact with data via an AI Assistant, and export the refined dataset to be consumed by the **EBIS Task Tracker**.
+**EBIS Web (Filter EBIS)** adalah aplikasi internal canggih untuk pemrosesan dan penyaringan data. Dirancang sebagai pintu gerbang utama untuk mengolah data mentah EBIS, aplikasi ini memungkinkan pengguna untuk mengunggah file *export* mentah, menerapkan filter berlapis secara dinamis, berinteraksi dengan data menggunakan Asisten AI, dan mengekspor hasil akhirnya untuk digunakan oleh aplikasi **EBIS Task Tracker**.
 
-## ✨ Key Features
+## ✨ Fitur Utama
 
-### 📁 Advanced Data Processing
-- **Smart File Parsing**: Easily upload and parse large raw data files from the main EBIS system.
-- **Dynamic Filtering Engine**: Filter hundreds of rows instantly by WITEL, STO, Order Date, Status, and Custom Search queries.
-- **Data Table View**: Clean, paginated, and responsive data table to preview the results.
+### 📁 Pemrosesan Data Canggih
+- **Smart File Parsing**: Unggah dan ekstrak file data mentah berukuran besar dari sistem EBIS utama dengan sangat mudah.
+- **Dynamic Filtering Engine**: Saring ratusan baris data secara instan berdasarkan WITEL, STO, Tanggal Order, Status, hingga pencarian kata kunci kustom.
+- **Tampilan Tabel Data**: Tabel data yang bersih, responsif, dan dilengkapi *pagination* untuk melihat pratinjau hasil filter.
 
-### 🤖 AI Chat Assistant
-- **Context-Aware AI**: Chat directly with your data. The built-in AI reads the filtered data summary and can answer questions about frequencies, top STOs, and specific status bottlenecks.
-- **Multi-Provider Support**: Switch AI providers directly from the Settings menu.
-- **Speech Integration**: Supports voice input for hands-free querying.
+### 🤖 Asisten AI Terintegrasi
+- **Chat Dengan Data Anda**: Asisten AI bawaan yang mampu membaca ringkasan data yang telah difilter. AI ini dapat menjawab berbagai pertanyaan terkait data, mencari tahu STO dengan tugas terbanyak, hingga mengidentifikasi status-status yang menjadi *bottleneck*.
+- **Pilihan Provider AI**: Ganti dan pilih *provider* AI (seperti Groq, OpenAI, dll) langsung dari menu Pengaturan (*Settings*).
+- **Fitur Suara (Speech Input)**: Dukungan perintah suara untuk bertanya kepada AI tanpa perlu mengetik.
 
-### 📤 Seamless Ecosystem Integration
-- **One-Click Export**: Click "Export to Task Tracker" to generate a standardized JSON file (`ebis_export_xxx.json`). This file bridges the gap and can be directly imported into the EBIS Task Tracker application for field technicians.
+### 📤 Integrasi Ekosistem
+- **One-Click Export**: Cukup dengan satu tombol "Export to Task Tracker", aplikasi akan langsung membuat file JSON terstandarisasi (`ebis_export_xxx.json`). File ini berfungsi sebagai jembatan yang dapat diimpor langsung ke dalam aplikasi **EBIS Task Tracker** untuk para teknisi lapangan.
 
-### 🎨 Modern UI/UX
-- **Shadcn UI Components**: Built on top of Radix UI for accessible, unstyled, and highly customizable components.
-- **Dark & Light Mode**: Native theme switching support for better accessibility and user preference.
+### 🎨 Desain UI/UX Modern
+- **Komponen Shadcn UI**: Dibangun di atas fondasi Radix UI untuk menghasilkan komponen web yang aksesibel, ringan, dan sangat mudah dikustomisasi.
+- **Mode Gelap (Dark Mode)**: Mendukung perpindahan antara mode terang dan gelap secara *native* demi kenyamanan mata pengguna.
 
-## 🛠️ Tech Stack
+## 🛠️ Teknologi yang Digunakan
 
 - **Framework**: React 19 + Vite
-- **Language**: TypeScript
+- **Bahasa**: TypeScript
 - **Styling**: Tailwind CSS + Shadcn UI (Radix UI)
-- **Forms & Validation**: React Hook Form + Zod
-- **Icons**: Lucide React
-- **Date Handling**: date-fns
+- **Form & Validasi**: React Hook Form + Zod
+- **Ikon**: Lucide React
+- **Pemrosesan Tanggal**: date-fns
 
-## 🚀 Getting Started
+## 🚀 Panduan Instalasi
 
-### Prerequisites
-Make sure you have Node.js (v20+) and npm installed on your machine.
+### Persyaratan
+Pastikan Anda sudah menginstal Node.js (minimal versi 20) dan npm di komputer Anda.
 
-### Installation
+### Langkah-langkah
 
-1. Clone the repository and navigate to the `ebis-web` directory:
+1. *Clone* repositori ini dan masuk ke folder `ebis-web`:
    ```bash
+   git clone https://github.com/username-anda/ebis-web.git
    cd ebis-web
    ```
 
-2. Install the dependencies:
+2. Instal semua dependensi:
    ```bash
    npm install
    ```
 
-### Running the App Locally
+### Menjalankan Aplikasi Secara Lokal
 
-Start the Vite development server:
+Jalankan server pengembangan Vite:
 ```bash
 npm run dev
 ```
 
-The application will be available at `http://localhost:5173`.
+Aplikasi akan bisa diakses melalui `http://localhost:5173`.
 
-## 📦 Build for Production
+## 📦 Build untuk Produksi
 
-To create a production-ready build:
+Untuk membuat *build* aplikasi yang siap diluncurkan ke tahap produksi (*production-ready*):
 ```bash
 npm run build
 ```
-The optimized files will be generated in the `dist` folder.
+File hasil optimasi akan di-generate dan diletakkan di dalam folder `dist`.
 
 ---
-*Developed by Reihan x Dheo*
+*Dikembangkan oleh Reihan x Dheo*
