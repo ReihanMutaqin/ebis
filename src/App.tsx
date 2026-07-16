@@ -130,6 +130,26 @@ ${JSON.stringify(sampleRows)}`;
         {fileInfo && <DataInfo info={fileInfo} />}
 
         {fileInfo && (
+          <div className="mb-5 flex justify-end">
+            <button
+              onClick={() => {
+                const blob = new Blob([JSON.stringify(filters.filteredData)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `ebis_export_${new Date().getTime()}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+                addToast('Data berhasil diekspor untuk Tracker!', 3000);
+              }}
+              className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg shadow-sm text-sm font-semibold flex items-center gap-2 transition-colors"
+            >
+              Export to Task Tracker
+            </button>
+          </div>
+        )}
+
+        {fileInfo && (
           <FilterPanel
             filters={filters.filters}
             uniqueWitels={filters.uniqueWitels}
