@@ -48,7 +48,7 @@ export function FileUpload({ onFileSelect }: FileUploadProps) {
       <input
         ref={fileInputRef}
         type="file"
-        accept=".txt,.csv"
+        accept=".txt,.csv,.xls,.xlsx"
         onChange={handleChange}
         className="hidden"
       />
@@ -85,7 +85,7 @@ export function FileUpload({ onFileSelect }: FileUploadProps) {
               <FolderOpen size={28} className="text-blue-500" />
             </div>
             <p className="font-semibold text-base text-gray-700 dark:text-gray-300">Seret file ke sini</p>
-            <p className="text-sm text-gray-400">atau klik untuk pilih file EBIS (.txt / .csv)</p>
+            <p className="text-sm text-gray-400">atau klik untuk pilih file EBIS (.xls / .txt)</p>
           </div>
         )}
       </div>
@@ -113,7 +113,7 @@ export function FileUpload({ onFileSelect }: FileUploadProps) {
       {/* Info */}
       <p className="text-center text-xs text-gray-400 mt-3 flex items-center justify-center gap-1">
         <FileText size={12} />
-        Format yang didukung: .txt, .csv (data EBIS dari xpro.telkom.co.id)
+        Format yang didukung: .xls, .txt, .csv (data EBIS dari xpro.telkom.co.id)
       </p>
     </div>
   );
