@@ -34,7 +34,7 @@ export default function HomePage() {
             <Upload className="w-8 h-8" />
           </div>
           <h2 className="text-xl font-bold text-slate-800 mb-2">Import Data</h2>
-          <p className="text-slate-500 text-center text-sm">Upload file CSV dari EXPRO Web utama untuk disinkronisasi.</p>
+          <p className="text-slate-500 text-center text-sm">Upload file Excel/XLS dari EXPRO Web utama untuk disinkronisasi.</p>
         </Link>
       </div>
     </div>
