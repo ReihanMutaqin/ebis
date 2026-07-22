@@ -413,6 +413,12 @@ export function DataTable({ data }: DataTableProps) {
                   {selectedRow.technicianName || 'Belum diambil.'}
                 </span>
               </div>
+              <div className="bg-indigo-50/50 p-4 rounded-xl border border-indigo-100 shadow-sm md:col-span-2">
+                <span className="block text-[11px] font-bold text-indigo-500 uppercase tracking-wider mb-1">DI UPDATE OLEH / TELEGRAM</span>
+                <span className="block text-sm font-semibold text-indigo-900 break-words">
+                  {selectedRow.telegramHandle || selectedRow.updatedBy || '-'}
+                </span>
+              </div>
             </div>
           </div>
         </div>

@@ -49,8 +49,15 @@ export default function TechnicianView() {
     if (!selectedTask) return;
 
     const formData = new FormData(e.currentTarget);
+    let handle = (formData.get("telegramHandle") as string || "").trim();
+    if (handle && !handle.startsWith('@') && !handle.startsWith('-')) {
+      handle = `@${handle}`;
+    }
+
     const updates = {
       technicianName: formData.get("technicianName") as string,
+      telegramHandle: handle,
+      updatedBy: handle || (selectedTask.updatedBy || ''),
       trackerStatus: formData.get("trackerStatus") as any,
       notes: formData.get("notes") as string,
     };
@@ -282,6 +289,10 @@ export default function TechnicianView() {
                       <span className="text-slate-500">Tgl Order:</span>
                       <span className="font-semibold">{(selectedTask.orderDate || '').split(' ')[0] || '-'}</span>
                     </div>
+                    <div className="flex justify-between border-b pb-1 border-slate-200">
+                      <span className="text-slate-500">Di Update Oleh / Telegram:</span>
+                      <span className="font-semibold text-blue-600">{selectedTask.telegramHandle || selectedTask.updatedBy || '-'}</span>
+                    </div>
                     <div className="pt-1">
                       <span className="text-slate-500 block mb-1">Status Resume:</span>
                       <span className="font-mono bg-white px-2 py-1 rounded block">{selectedTask.statusResume || '-'}</span>
@@ -315,6 +326,15 @@ export default function TechnicianView() {
                       required
                       className="w-full bg-white border border-slate-300 rounded-lg p-2.5 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                       placeholder="Masukkan nama Anda"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Username / @ Telegram Teknisi</label>
+                    <input 
+                      name="telegramHandle"
+                      defaultValue={selectedTask.telegramHandle || selectedTask.updatedBy || ''}
+                      className="w-full bg-white border border-slate-300 rounded-lg p-2.5 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                      placeholder="Contoh: @UsernameTelegram"
                     />
                   </div>
                   <div>
@@ -373,6 +393,16 @@ export default function TechnicianView() {
               <p className="text-slate-600 text-center text-sm mb-6">Apakah data update yang Anda masukkan sudah benar?</p>
               
               <div className="bg-slate-50 p-3 rounded-lg border border-slate-100 mb-6 space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-slate-500">Nama Teknisi:</span>
+                  <span className="font-bold text-slate-800">{confirmData.technicianName}</span>
+                </div>
+                {confirmData.telegramHandle && (
+                  <div className="flex justify-between">
+                    <span className="text-slate-500">Telegram:</span>
+                    <span className="font-semibold text-blue-600">{confirmData.telegramHandle}</span>
+                  </div>
+                )}
                 <div className="flex justify-between">
                   <span className="text-slate-500">Status Baru:</span>
                   <span className={`font-bold ${getStatusColor(confirmData.trackerStatus).split(' ')[1]}`}>{confirmData.trackerStatus}</span>

@@ -13,6 +13,8 @@ export interface TaskData {
   unit?: string;
   paket?: string;
   technicianName: string;
+  telegramHandle?: string;
+  updatedBy?: string;
   trackerStatus: 'Pending' | 'On Progress' | 'Completed' | 'Kendala' | 'Cancel';
   notes: string;
   internet: string;
