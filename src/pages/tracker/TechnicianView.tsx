@@ -39,9 +39,15 @@ export default function TechnicianView() {
 
   async function loadTasks() {
     setLoading(true);
-    const data = await getTasksByWitel(selectedWitel);
-    setTasks(data);
-    setLoading(false);
+    try {
+      const data = await getTasksByWitel(selectedWitel);
+      setTasks(data || []);
+    } catch (e) {
+      console.error("Failed to load tasks in TechnicianView:", e);
+      setTasks([]);
+    } finally {
+      setLoading(false);
+    }
   }
 
   const handleUpdate = async (e: React.FormEvent<HTMLFormElement>) => {

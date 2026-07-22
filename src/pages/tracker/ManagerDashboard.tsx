@@ -30,6 +30,17 @@ const formatMonth = (yyyyMm: string) => {
   return mIdx >= 0 && mIdx < 12 ? `${mNames[mIdx]} ${year}` : yyyyMm;
 };
 
+const safeFormatDate = (dateStr?: string, formatStr: string = 'dd/MM HH:mm') => {
+  if (!dateStr) return '-';
+  try {
+    const parsed = new Date(dateStr);
+    if (!isValid(parsed)) return dateStr.split(' ')[0] || '-';
+    return format(parsed, formatStr, { locale: id });
+  } catch (e) {
+    return dateStr.split(' ')[0] || '-';
+  }
+};
+
 export default function ManagerDashboard() {
   const [tasks, setTasks] = useState<TaskData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -46,9 +57,15 @@ export default function ManagerDashboard() {
 
   useEffect(() => {
     async function fetchTasks() {
-      const all = await getAllTasks();
-      setTasks(all);
-      setLoading(false);
+      try {
+        const all = await getAllTasks();
+        setTasks(all || []);
+      } catch (e) {
+        console.error("Failed to fetch tasks in ManagerDashboard:", e);
+        setTasks([]);
+      } finally {
+        setLoading(false);
+      }
     }
     fetchTasks();
   }, []);
@@ -190,6 +207,8 @@ export default function ManagerDashboard() {
     
     const exportData = filteredTasks.map(t => ({
       'Order ID': t.order,
+      'WO ID': t.woId || '-',
+      'NIK Teknisi': t.nik || '-',
       'Witel': t.witel,
       'STO': t.sto,
       'Customer Name': t.customerName,
@@ -201,7 +220,7 @@ export default function ManagerDashboard() {
       'Status': t.trackerStatus,
       'Status Message': t.statusMessage || '-',
       'Notes': t.notes || '-',
-      'Last Update App': format(new Date(t.updatedAt), "dd MMM yyyy HH:mm", { locale: id })
+      'Last Update App': safeFormatDate(t.updatedAt, "dd MMM yyyy HH:mm")
     }));
 
     const worksheet = XLSX.utils.json_to_sheet(exportData);
@@ -583,7 +602,7 @@ export default function ManagerDashboard() {
                     </span>
                   </div>
                   <span className="text-xs text-slate-400 flex items-center gap-1">
-                    <Clock className="w-3 h-3" /> {format(new Date(t.updatedAt), 'dd/MM HH:mm')}
+                    <Clock className="w-3 h-3" /> {safeFormatDate(t.updatedAt, 'dd/MM HH:mm')}
                   </span>
                 </div>
                 <div className="pl-2">
@@ -662,7 +681,7 @@ export default function ManagerDashboard() {
                     {t.witel} - {t.sto}
                   </span>
                   <span className="text-xs text-slate-400 flex items-center gap-1 ml-auto">
-                    <Clock className="w-3 h-3" /> {format(new Date(t.updatedAt), 'HH:mm')}
+                    <Clock className="w-3 h-3" /> {safeFormatDate(t.updatedAt, 'HH:mm')}
                   </span>
                 </div>
               </div>
