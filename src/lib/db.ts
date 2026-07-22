@@ -216,7 +216,9 @@ export async function syncToGoogleSheets(task: Partial<TaskData>) {
 
   try {
     const payload = {
-      orderId: task.order || task.id,
+      orderId: task.order || task.id || '',
+      order: task.order || task.id || '',
+      id: task.id || task.order || '',
       woId: task.woId || '-',
       nik: task.nik || '-',
       customerName: task.customerName || '-',
@@ -248,7 +250,9 @@ export async function syncBulkToGoogleSheets(tasks: TaskData[]) {
 
   try {
     const payload = tasks.map(task => ({
-      orderId: task.order || task.id,
+      orderId: task.order || task.id || '',
+      order: task.order || task.id || '',
+      id: task.id || task.order || '',
       woId: task.woId || '-',
       nik: task.nik || '-',
       customerName: task.customerName || '-',
