@@ -236,8 +236,36 @@ export async function syncToGoogleSheets(task: Partial<TaskData>) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     }).catch(err => console.error('Google Sheets web sync error:', err));
+export async function syncBulkToGoogleSheets(tasks: TaskData[]) {
+  const url = GOOGLE_SHEETS_WEBHOOK_URL;
+  if (!url || !tasks || tasks.length === 0) return null;
+
+  try {
+    const payload = tasks.map(task => ({
+      orderId: task.order || task.id,
+      woId: task.woId || '-',
+      nik: task.nik || '-',
+      customerName: task.customerName || '-',
+      sto: task.sto || '-',
+      witel: task.witel || '-',
+      trackerStatus: task.trackerStatus || 'Pending',
+      technicianName: task.technicianName || '-',
+      notes: task.notes || '-',
+      statusResume: task.statusResume || '-',
+      statusMessage: task.statusMessage || '-',
+      updatedAt: task.updatedAt || new Date().toISOString(),
+      updatedBy: task.updatedBy || '-'
+    }));
+
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ bulkTasks: payload })
+    });
+    return await res.json();
   } catch (e) {
-    console.error('Failed to trigger Google Sheets web sync:', e);
+    console.error('Failed to trigger bulk Google Sheets web sync:', e);
+    return null;
   }
 }
 

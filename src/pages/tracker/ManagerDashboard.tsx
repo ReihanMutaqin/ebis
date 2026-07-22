@@ -1,12 +1,12 @@
 import { useState, useEffect, useMemo } from "react";
-import { getAllTasks } from "../../lib/db";
+import { getAllTasks, syncBulkToGoogleSheets } from "../../lib/db";
 import type { TaskData } from "../../lib/db";
 import { 
   PieChart, Pie, Cell, Tooltip, ResponsiveContainer, 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend,
   LineChart, Line
 } from 'recharts';
-import { Loader2, Download, Briefcase, Users, AlertTriangle, CheckCircle, Clock, Activity, Calendar as CalendarIcon, MapPin, X } from "lucide-react";
+import { Loader2, Download, Briefcase, Users, AlertTriangle, CheckCircle, Clock, Activity, Calendar as CalendarIcon, MapPin, X, RefreshCw } from "lucide-react";
 import { DataTable } from "../../components/tracker/DataTable";
 import * as XLSX from 'xlsx';
 import { format, parseISO, isValid } from 'date-fns';
@@ -44,6 +44,7 @@ const safeFormatDate = (dateStr?: string, formatStr: string = 'dd/MM HH:mm') => 
 export default function ManagerDashboard() {
   const [tasks, setTasks] = useState<TaskData[]>([]);
   const [loading, setLoading] = useState(true);
+  const [syncingSheets, setSyncingSheets] = useState(false);
   const [selectedWitel, setSelectedWitel] = useState<string>("ALL");
   const [selectedDate, setSelectedDate] = useState<string>("ALL");
   
@@ -307,6 +308,26 @@ export default function ManagerDashboard() {
           >
             <Download className="w-4 h-4" />
             <span>Export Excel</span>
+          </button>
+
+          <button 
+            onClick={async () => {
+              setSyncingSheets(true);
+              try {
+                const targetData = filteredTasks.length > 0 ? filteredTasks : tasks;
+                await syncBulkToGoogleSheets(targetData);
+                alert(`Berhasil menyinkronkan ${targetData.length} data ke Google Spreadsheet! Tab STO di Google Sheet telah terisi.`);
+              } catch (e) {
+                alert("Gagal sync ke Google Spreadsheet.");
+              } finally {
+                setSyncingSheets(false);
+              }
+            }}
+            disabled={syncingSheets}
+            className="flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-4 py-2.5 rounded-xl font-semibold transition-all shadow-sm hover:shadow-md active:scale-95 w-full lg:w-auto disabled:opacity-50"
+          >
+            {syncingSheets ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
+            <span>Sync ke Google Sheet</span>
           </button>
         </div>
       </div>
