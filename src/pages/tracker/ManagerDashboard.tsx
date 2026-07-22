@@ -708,9 +708,9 @@ export default function ManagerDashboard() {
 
       {/* Pop-up Modal Detail */}
       {modalData && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 animate-in fade-in duration-200">
-          <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={closeModal}></div>
-          <div className="relative w-full max-w-6xl bg-white rounded-2xl shadow-2xl flex flex-col h-[85vh] transform scale-100 animate-in zoom-in-95 duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
+          <div className="absolute inset-0 bg-slate-900/60 transition-opacity" onClick={closeModal}></div>
+          <div className="relative w-full max-w-6xl bg-white rounded-2xl shadow-2xl flex flex-col h-[85vh] overflow-hidden z-10">
             <div className="flex items-center justify-between p-5 border-b border-slate-100 bg-white rounded-t-2xl z-10 shrink-0">
               <div>
                 <h2 className="text-xl font-bold text-slate-800">{modalTitle}</h2>
@@ -725,10 +725,8 @@ export default function ManagerDashboard() {
                 <X className="w-6 h-6" />
               </button>
             </div>
-            <div className="flex-1 overflow-hidden bg-slate-50 rounded-b-2xl flex flex-col p-2">
-              <div className="overflow-auto custom-scrollbar flex-1 bg-white rounded-xl shadow-sm border border-slate-100">
-                <DataTable data={modalData} />
-              </div>
+            <div className="flex-1 overflow-y-auto bg-slate-50 p-3">
+              <DataTable data={modalData} />
             </div>
           </div>
         </div>

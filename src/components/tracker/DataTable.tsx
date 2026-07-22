@@ -51,6 +51,21 @@ export function DataTable({ data }: DataTableProps) {
   const filterRef = useRef<HTMLDivElement>(null);
 
   const [exportStatus, setExportStatus] = useState<string>("ALL");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(25);
+
+  // Memoize unique filter values per column for maximum speed
+  const uniqueValuesByColumn = useMemo(() => {
+    const result: Record<ColumnKey, string[]> = {} as any;
+    COLUMNS.forEach(col => {
+      const set = new Set<string>();
+      data.forEach(d => {
+        set.add(getFilterValue(col.key, String(d[col.key] || '')));
+      });
+      result[col.key] = Array.from(set).sort();
+    });
+    return result;
+  }, [data]);
 
   // Close filter dropdown when clicking outside
   useEffect(() => {
@@ -207,13 +222,19 @@ export function DataTable({ data }: DataTableProps) {
           if (!activeFilters.has(val)) {
             return false;
           }
-        }
-      }
-      return true;
-    });
-
     return result;
   }, [data, filters, searchTerm]);
+
+  // Reset pagination when search or filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filters, searchTerm]);
+
+  const totalPages = Math.ceil(filteredData.length / pageSize) || 1;
+  const paginatedData = useMemo(() => {
+    const start = (currentPage - 1) * pageSize;
+    return filteredData.slice(start, start + pageSize);
+  }, [filteredData, currentPage, pageSize]);
 
   const toggleFilter = (col: ColumnKey, val: string) => {
     setFilters(prev => {
@@ -296,12 +317,12 @@ export function DataTable({ data }: DataTableProps) {
           <thead className="text-xs text-slate-600 bg-slate-100 uppercase sticky top-0 z-20 shadow-sm ring-1 ring-slate-200">
             <tr>
               {COLUMNS.map(col => {
-                const uniqueVals = Array.from(new Set(data.map(d => getFilterValue(col.key, String(d[col.key] || ''))))).sort();
+                const uniqueVals = uniqueValuesByColumn[col.key] || [];
                 const isActive = filters[col.key] && filters[col.key].size > 0;
                 const isOpen = openFilter === col.key;
                 
                 return (
-                  <th key={col.key} className="px-5 py-4 border-b border-slate-200 font-extrabold whitespace-nowrap bg-slate-100/95 backdrop-blur-sm relative">
+                  <th key={col.key} className="px-5 py-4 border-b border-slate-200 font-extrabold whitespace-nowrap bg-slate-100/95 relative">
                     <div 
                       className="flex items-center justify-between gap-3 cursor-pointer hover:text-blue-600 select-none group transition-colors duration-200"
                       onClick={() => setOpenFilter(isOpen ? null : col.key)}
@@ -313,8 +334,8 @@ export function DataTable({ data }: DataTableProps) {
                     {isOpen && (
                       <div ref={filterRef} className="absolute top-full mt-2 left-0 bg-white border border-slate-200 rounded-xl shadow-xl w-64 z-50 normal-case font-normal text-slate-700 ring-1 ring-black/5">
                         <div className="p-2 border-b border-slate-100 flex justify-between gap-2">
-                          <button onClick={() => selectAll(col.key, uniqueVals)} className="text-xs text-blue-600 hover:underline">Semua</button>
-                          <button onClick={() => clearFilter(col.key)} className="text-xs text-red-600 hover:underline">Clear</button>
+                          <button onClick={() => selectAll(col.key, uniqueVals)} className="text-xs text-blue-600 hover:underline font-semibold">Semua</button>
+                          <button onClick={() => clearFilter(col.key)} className="text-xs text-red-600 hover:underline font-semibold">Clear</button>
                         </div>
                         <div className="max-h-48 overflow-y-auto p-2 space-y-1">
                           {uniqueVals.map(val => {
@@ -341,11 +362,11 @@ export function DataTable({ data }: DataTableProps) {
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100 bg-white">
-            {filteredData.length > 0 ? (
-              filteredData.map((row, i) => (
+            {paginatedData.length > 0 ? (
+              paginatedData.map((row, i) => (
                 <tr 
                   key={row.id || i} 
-                  className="hover:bg-blue-50/60 transition-colors duration-200 cursor-pointer group"
+                  className="hover:bg-blue-50/60 transition-colors duration-150 cursor-pointer group"
                   onClick={() => setSelectedRow(row)}
                 >
                   {COLUMNS.map(col => {
@@ -356,7 +377,7 @@ export function DataTable({ data }: DataTableProps) {
                       displayVal = getFilterValue(col.key, displayVal);
                     }
                     return (
-                      <td key={col.key} className="px-5 py-4 text-slate-700 font-medium truncate max-w-[220px] group-hover:text-slate-900" title={String(row[col.key] || '')}>
+                      <td key={col.key} className="px-5 py-3.5 text-slate-700 font-medium truncate max-w-[220px] group-hover:text-slate-900" title={String(row[col.key] || '')}>
                         {displayVal || '-'}
                       </td>
                     );
@@ -373,6 +394,40 @@ export function DataTable({ data }: DataTableProps) {
           </tbody>
         </table>
       </div>
+
+      {totalPages > 1 && (
+        <div className="p-4 border-t border-slate-200 flex flex-col sm:flex-row justify-between items-center bg-slate-50 text-xs font-semibold text-slate-600 gap-3">
+          <div>
+            Menampilkan halaman {currentPage} dari {totalPages} ({filteredData.length} total data)
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+              className="px-3 py-1.5 rounded-lg border border-slate-300 bg-white hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors shadow-sm"
+            >
+              Sebelumnya
+            </button>
+            <span className="px-2 font-bold text-slate-800">{currentPage} / {totalPages}</span>
+            <button
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+              className="px-3 py-1.5 rounded-lg border border-slate-300 bg-white hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors shadow-sm"
+            >
+              Berikutnya
+            </button>
+            <select
+              value={pageSize}
+              onChange={(e) => setPageSize(Number(e.target.value))}
+              className="ml-2 border border-slate-300 rounded-lg p-1.5 bg-white outline-none font-semibold text-slate-700 shadow-sm"
+            >
+              <option value={25}>25 / hal</option>
+              <option value={50}>50 / hal</option>
+              <option value={100}>100 / hal</option>
+            </select>
+          </div>
+        </div>
+      )}
 
       {selectedRow && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm transition-opacity">
