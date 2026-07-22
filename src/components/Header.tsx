@@ -1,4 +1,5 @@
 import { Settings, Sun, Moon, BarChart2 } from 'lucide-react';
+import { Link } from 'react-router';
 
 interface HeaderProps {
   onSettings: () => void;
@@ -33,14 +34,12 @@ export function Header({ onSettings, isDark, onToggleTheme }: HeaderProps) {
 
         {/* Right controls */}
         <div className="flex items-center gap-2">
-          <a
-            href="https://teknisi-seven.vercel.app"
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            to="/tracker"
             className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg text-sm font-semibold shadow-sm transition-colors mr-2"
           >
             Buka Tracker Teknisi
-          </a>
+          </Link>
           <button
             onClick={onToggleTheme}
             className="pro-btn pro-btn-ghost !px-2.5 !py-2"
