@@ -8,6 +8,7 @@ import { ChatAssistant } from '@/components/ChatAssistant';
 import { SettingsModal } from '@/components/SettingsModal';
 import { LoadingModal } from '@/components/LoadingModal';
 import { ToastContainer } from '@/components/Toast';
+import { SyncResultModal } from '@/components/SyncResultModal';
 import { useFileParser } from '@/hooks/useFileParser';
 import { useFilters } from '@/hooks/useFilters';
 import { useChat } from '@/hooks/useChat';
@@ -25,6 +26,7 @@ export default function MainFilterPage() {
   const speech = useSpeech();
   const [showSettings, setShowSettings] = useState(false);
   const [toasts, setToasts] = useState<ToastData[]>([]);
+  const [syncResult, setSyncResult] = useState<{ added: number; duplicates: number } | null>(null);
 
   // Build data summary for chat context
   const dataSummary = useMemo(() => {
@@ -136,7 +138,7 @@ ${JSON.stringify(sampleRows)}`;
               onClick={async () => {
                 try {
                   const result = await importDataToFirestore(filters.filteredData);
-                  window.alert(`🎉 Berhasil Mengirim Data ke Tracker!\n\nStatistik Sinkronisasi:\n- Data Baru Ditambahkan: ${result.added}\n- Data Lama Diperbarui: ${result.duplicates}\n\nSilakan buka halaman Tracker untuk melihat hasilnya.`);
+                  setSyncResult(result);
                 } catch (error: any) {
                   window.alert(`Gagal menyimpan data: ${error.message}`);
                 }
@@ -213,6 +215,13 @@ ${JSON.stringify(sampleRows)}`;
 
       {/* Toasts */}
       <ToastContainer toasts={toasts} onRemove={removeToast} />
+
+      {/* Sync Result Modal */}
+      <SyncResultModal
+        isOpen={!!syncResult}
+        onClose={() => setSyncResult(null)}
+        result={syncResult}
+      />
     </div>
   );
 }
