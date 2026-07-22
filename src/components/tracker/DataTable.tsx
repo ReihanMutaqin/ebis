@@ -8,7 +8,7 @@ interface DataTableProps {
   data: TaskData[];
 }
 
-type ColumnKey = 'witel' | 'sto' | 'orderDate' | 'unit' | 'paket' | 'order' | 'internet' | 'customerName' | 'address' | 'trackerStatus' | 'statusMessage';
+type ColumnKey = 'witel' | 'sto' | 'orderDate' | 'unit' | 'paket' | 'order' | 'woId' | 'nik' | 'internet' | 'customerName' | 'address' | 'trackerStatus' | 'statusMessage';
 
 const COLUMNS: { key: ColumnKey, label: string }[] = [
   { key: 'witel', label: 'WITEL' },
@@ -17,6 +17,8 @@ const COLUMNS: { key: ColumnKey, label: string }[] = [
   { key: 'unit', label: 'UNIT' },
   { key: 'paket', label: 'PAKET' },
   { key: 'order', label: 'NO ORDER' },
+  { key: 'woId', label: 'WO ID' },
+  { key: 'nik', label: 'NIK TEKNISI' },
   { key: 'internet', label: 'NO INTERNET / TELP' },
   { key: 'customerName', label: 'NAMA PELANGGAN' },
   { key: 'address', label: 'ALAMAT' },

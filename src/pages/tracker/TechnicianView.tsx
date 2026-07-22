@@ -58,6 +58,8 @@ export default function TechnicianView() {
       technicianName: formData.get("technicianName") as string,
       telegramHandle: handle,
       updatedBy: handle || (selectedTask.updatedBy || ''),
+      woId: (formData.get("woId") as string || '').trim(),
+      nik: (formData.get("nik") as string || '').trim(),
       trackerStatus: formData.get("trackerStatus") as any,
       notes: formData.get("notes") as string,
     };
@@ -278,6 +280,14 @@ export default function TechnicianView() {
                   <h3 className="text-sm font-bold tracking-wider text-slate-400 uppercase mb-3">Sistem Utama (EBIS)</h3>
                   <div className="bg-slate-100 p-3 rounded-lg text-sm text-slate-700 space-y-2">
                     <div className="flex justify-between border-b pb-1 border-slate-200">
+                      <span className="text-slate-500">WO ID:</span>
+                      <span className="font-semibold text-slate-900">{selectedTask.woId || '-'}</span>
+                    </div>
+                    <div className="flex justify-between border-b pb-1 border-slate-200">
+                      <span className="text-slate-500">NIK Teknisi:</span>
+                      <span className="font-semibold text-slate-900">{selectedTask.nik || '-'}</span>
+                    </div>
+                    <div className="flex justify-between border-b pb-1 border-slate-200">
                       <span className="text-slate-500">Internet:</span>
                       <span className="font-semibold">{selectedTask.internet || '-'}</span>
                     </div>
@@ -336,6 +346,26 @@ export default function TechnicianView() {
                       className="w-full bg-white border border-slate-300 rounded-lg p-2.5 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                       placeholder="Contoh: @UsernameTelegram"
                     />
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-1">WO ID</label>
+                      <input 
+                        name="woId"
+                        defaultValue={selectedTask.woId || ''}
+                        className="w-full bg-white border border-slate-300 rounded-lg p-2.5 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-sm"
+                        placeholder="WO123456"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-1">NIK Teknisi</label>
+                      <input 
+                        name="nik"
+                        defaultValue={selectedTask.nik || ''}
+                        className="w-full bg-white border border-slate-300 rounded-lg p-2.5 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-sm"
+                        placeholder="12345678"
+                      />
+                    </div>
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-slate-700 mb-1">Status Lapangan</label>
@@ -401,6 +431,18 @@ export default function TechnicianView() {
                   <div className="flex justify-between">
                     <span className="text-slate-500">Telegram:</span>
                     <span className="font-semibold text-blue-600">{confirmData.telegramHandle}</span>
+                  </div>
+                )}
+                {confirmData.woId && (
+                  <div className="flex justify-between">
+                    <span className="text-slate-500">WO ID:</span>
+                    <span className="font-bold text-slate-800">{confirmData.woId}</span>
+                  </div>
+                )}
+                {confirmData.nik && (
+                  <div className="flex justify-between">
+                    <span className="text-slate-500">NIK Teknisi:</span>
+                    <span className="font-bold text-slate-800">{confirmData.nik}</span>
                   </div>
                 )}
                 <div className="flex justify-between">

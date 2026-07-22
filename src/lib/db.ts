@@ -6,6 +6,8 @@ export interface TaskData {
   id: string; // The ORDER number will be the ID
   witel: string;
   order: string;
+  woId?: string;
+  nik?: string;
   statusResume: string;
   customerName: string;
   address: string;
@@ -48,6 +50,8 @@ export async function importDataToFirestore(dataList: any[]): Promise<{ added: n
           id: orderId,
           witel: item['WITEL_OLD'] || 'UNKNOWN',
           order: orderId,
+          woId: item['WO ID'] || item['WO'] || '',
+          nik: item['NIK'] || item['NIK TEKNISI'] || '',
           statusResume: item['STATUS RESUME'] || '',
           customerName: item['NAMA CUST'] || '',
           address: item['ALAMAT'] || '',
@@ -145,6 +149,8 @@ export async function importDataToFirestore(dataList: any[]): Promise<{ added: n
         id: orderId,
         witel: item['WITEL_OLD'] || 'UNKNOWN',
         order: orderId,
+        woId: item['WO ID'] || item['WO'] || '',
+        nik: item['NIK'] || item['NIK TEKNISI'] || '',
         statusResume: item['STATUS RESUME'] || '',
         customerName: item['NAMA CUST'] || '',
         address: item['ALAMAT'] || '',
