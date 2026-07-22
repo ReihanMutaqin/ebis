@@ -3,7 +3,7 @@ import { CheckCircle2, Info } from 'lucide-react';
 interface SyncResultModalProps {
   isOpen: boolean;
   onClose: () => void;
-  result: { added: number; duplicates: number } | null;
+  result: { added: number; duplicates: number; unchanged: number } | null;
 }
 
 export function SyncResultModal({ isOpen, onClose, result }: SyncResultModalProps) {
@@ -48,6 +48,12 @@ export function SyncResultModal({ isOpen, onClose, result }: SyncResultModalProp
               <span className="text-sm font-semibold text-slate-600 dark:text-slate-300">Data Diperbarui (Update)</span>
               <span className={`text-lg font-black ${result.duplicates > 0 ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400 dark:text-slate-500'}`}>
                 {result.duplicates}
+              </span>
+            </div>
+            <div className="flex items-center justify-between p-3.5 rounded-xl bg-slate-50 dark:bg-slate-700/50 border border-slate-100 dark:border-slate-700">
+              <span className="text-sm font-semibold text-slate-600 dark:text-slate-300">Data Sudah Ada (Dilewati)</span>
+              <span className={`text-lg font-black ${result.unchanged > 0 ? 'text-amber-500 dark:text-amber-400' : 'text-slate-400 dark:text-slate-500'}`}>
+                {result.unchanged}
               </span>
             </div>
           </div>

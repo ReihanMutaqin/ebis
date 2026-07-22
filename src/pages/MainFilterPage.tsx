@@ -26,7 +26,7 @@ export default function MainFilterPage() {
   const speech = useSpeech();
   const [showSettings, setShowSettings] = useState(false);
   const [toasts, setToasts] = useState<ToastData[]>([]);
-  const [syncResult, setSyncResult] = useState<{ added: number; duplicates: number } | null>(null);
+  const [syncResult, setSyncResult] = useState<{ added: number; duplicates: number; unchanged: number } | null>(null);
 
   // Build data summary for chat context
   const dataSummary = useMemo(() => {
@@ -138,7 +138,8 @@ ${JSON.stringify(sampleRows)}`;
               onClick={async () => {
                 try {
                   const result = await importDataToFirestore(filters.filteredData);
-                  setSyncResult(result);
+                  const unchanged = filters.filteredData.length - (result.added + result.duplicates);
+                  setSyncResult({ ...result, unchanged });
                 } catch (error: any) {
                   window.alert(`Gagal menyimpan data: ${error.message}`);
                 }
