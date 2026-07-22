@@ -174,6 +174,13 @@ export async function importDataToFirestore(dataList: any[]): Promise<{ added: n
 
   if (batchCount > 0) {
     await batch.commit();
+    // Auto-sync to Google Sheets in background after Excel import!
+    try {
+      const allTasks = await getAllTasks();
+      syncBulkToGoogleSheets(allTasks);
+    } catch (e) {
+      console.error("Auto Google Sheets sync after import error:", e);
+    }
   }
   
   return { added, duplicates };
