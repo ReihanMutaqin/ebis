@@ -14,13 +14,11 @@ import { useChat } from '@/hooks/useChat';
 import { useTheme } from '@/hooks/useTheme';
 import { useSpeech } from '@/hooks/useSpeech';
 import type { ToastData } from '@/types';
-import { useNavigate } from 'react-router';
 import { importDataToFirestore } from '@/lib/db';
 
 let toastId = 0;
 
 export default function MainFilterPage() {
-  const navigate = useNavigate();
   const { data, headers, fileInfo, isLoading, parseFile } = useFileParser();
   const filters = useFilters(data);
   const theme = useTheme();
