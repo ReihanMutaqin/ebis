@@ -138,10 +138,9 @@ ${JSON.stringify(sampleRows)}`;
               onClick={async () => {
                 try {
                   const result = await importDataToFirestore(filters.filteredData);
-                  addToast(`Berhasil! (${result.added} baru, ${result.duplicates} diupdate).`, 3000);
-                  navigate('/tracker');
+                  window.alert(`🎉 Berhasil Mengirim Data ke Tracker!\n\nStatistik Sinkronisasi:\n- Data Baru Ditambahkan: ${result.added}\n- Data Lama Diperbarui: ${result.duplicates}\n\nSilakan buka halaman Tracker untuk melihat hasilnya.`);
                 } catch (error: any) {
-                  addToast(`Gagal menyimpan data: ${error.message}`, 5000);
+                  window.alert(`Gagal menyimpan data: ${error.message}`);
                 }
               }}
               className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg shadow-sm text-sm font-semibold flex items-center gap-2 transition-colors"
