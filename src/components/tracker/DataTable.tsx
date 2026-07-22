@@ -222,6 +222,11 @@ export function DataTable({ data }: DataTableProps) {
           if (!activeFilters.has(val)) {
             return false;
           }
+        }
+      }
+      return true;
+    });
+
     return result;
   }, [data, filters, searchTerm]);
 
