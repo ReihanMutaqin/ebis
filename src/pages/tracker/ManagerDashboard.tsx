@@ -3,6 +3,8 @@ import { getAllTasks, syncBulkToGoogleSheets } from "../../lib/db";
 import type { TaskData } from "../../lib/db";
 import { sendTelegramManualReminder } from "../../lib/telegram";
 import { setDashboardAuthenticated } from "../../components/tracker/ProtectedRoute";
+import { StatusModal } from "../../components/tracker/StatusModal";
+import type { StatusModalState } from "../../components/tracker/StatusModal";
 import { 
   PieChart, Pie, Cell, Tooltip, ResponsiveContainer, 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend,
@@ -58,6 +60,15 @@ export default function ManagerDashboard() {
   // Modal State
   const [modalData, setModalData] = useState<TaskData[] | null>(null);
   const [modalTitle, setModalTitle] = useState<string>("");
+
+  // Status/Loading Notification Modal State
+  const [statusModal, setStatusModal] = useState<StatusModalState>({
+    isOpen: false,
+    status: "loading",
+    title: "",
+    message: "",
+    count: 0
+  });
 
   useEffect(() => {
     async function fetchTasks() {
@@ -316,12 +327,28 @@ export default function ManagerDashboard() {
           <button 
             onClick={async () => {
               setSyncingSheets(true);
+              setStatusModal({
+                isOpen: true,
+                status: "loading",
+                title: "Sinkronisasi Google Sheet",
+                message: "Sedang mengunggah dan menyinkronkan data work order ke Google Spreadsheet..."
+              });
               try {
                 const targetData = filteredTasks.length > 0 ? filteredTasks : tasks;
                 await syncBulkToGoogleSheets(targetData);
-                alert(`Berhasil menyinkronkan ${targetData.length} data ke Google Spreadsheet! Tab STO di Google Sheet telah terisi.`);
+                setStatusModal({
+                  isOpen: true,
+                  status: "success",
+                  title: "Sinkronisasi Berhasil!",
+                  message: `Berhasil menyinkronkan ${targetData.length} data work order ke Google Spreadsheet. Tab STO di Google Sheet telah terisi.`
+                });
               } catch (e) {
-                alert("Gagal sync ke Google Spreadsheet.");
+                setStatusModal({
+                  isOpen: true,
+                  status: "error",
+                  title: "Gagal Sync Google Sheet",
+                  message: "Terjadi kesalahan saat menyinkronkan data ke Google Spreadsheet."
+                });
               } finally {
                 setSyncingSheets(false);
               }
@@ -336,12 +363,38 @@ export default function ManagerDashboard() {
           <button 
             onClick={async () => {
               setSendingReminder(true);
+              setStatusModal({
+                isOpen: true,
+                status: "loading",
+                title: "Mengirim Reminder Telegram",
+                message: "Sedang menyebarkan ringkasan reminder work order per WITEL ke pengguna Telegram..."
+              });
               try {
                 const targetData = filteredTasks.length > 0 ? filteredTasks : tasks;
                 const result = await sendTelegramManualReminder(targetData);
-                alert(result.message);
+                if (result.success) {
+                  setStatusModal({
+                    isOpen: true,
+                    status: "success",
+                    title: "Reminder Berhasil Terkirim!",
+                    message: result.message,
+                    count: result.count
+                  });
+                } else {
+                  setStatusModal({
+                    isOpen: true,
+                    status: "error",
+                    title: "Gagal Mengirim Reminder",
+                    message: result.message
+                  });
+                }
               } catch (e: any) {
-                alert("Gagal mengirim reminder Telegram: " + e.message);
+                setStatusModal({
+                  isOpen: true,
+                  status: "error",
+                  title: "Gagal Mengirim Reminder",
+                  message: e.message
+                });
               } finally {
                 setSendingReminder(false);
               }
@@ -790,6 +843,12 @@ export default function ManagerDashboard() {
           </div>
         </div>
       )}
+
+      {/* Status & Loading Custom Popup Modal */}
+      <StatusModal
+        {...statusModal}
+        onClose={() => setStatusModal(prev => ({ ...prev, isOpen: false }))}
+      />
 
       <style>{`
         .custom-scrollbar::-webkit-scrollbar {
