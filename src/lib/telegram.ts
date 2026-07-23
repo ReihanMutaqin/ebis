@@ -1,6 +1,6 @@
 import { getAllTasks, getAllRecipientProfiles } from './db';
 
-const DEFAULT_BOT_TOKEN = typeof window !== 'undefined' && window.atob
+const DEFAULT_BOT_TOKEN = typeof window !== 'undefined' && typeof window.atob === 'function'
   ? atob("ODg0NDg5ODMzNzpBQUhNSEx5ekxjVU42Wm5uaFRvTko5UXhkWWRBc256UHM=")
   : "";
 
