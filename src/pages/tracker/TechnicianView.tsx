@@ -340,7 +340,7 @@ export default function TechnicianView() {
                       name="technicianName"
                       defaultValue={selectedTask.technicianName}
                       required
-                      className="w-full bg-white border border-slate-300 rounded-lg p-2.5 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                      className="w-full bg-white text-slate-900 border border-slate-300 rounded-lg p-2.5 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                       placeholder="Masukkan nama Anda"
                     />
                   </div>
@@ -349,7 +349,7 @@ export default function TechnicianView() {
                     <input 
                       name="telegramHandle"
                       defaultValue={selectedTask.telegramHandle || selectedTask.updatedBy || ''}
-                      className="w-full bg-white border border-slate-300 rounded-lg p-2.5 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                      className="w-full bg-white text-slate-900 border border-slate-300 rounded-lg p-2.5 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                       placeholder="Contoh: @UsernameTelegram"
                     />
                   </div>
@@ -359,7 +359,7 @@ export default function TechnicianView() {
                       <input 
                         name="woId"
                         defaultValue={selectedTask.woId || ''}
-                        className="w-full bg-white border border-slate-300 rounded-lg p-2.5 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-sm"
+                        className="w-full bg-white text-slate-900 border border-slate-300 rounded-lg p-2.5 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-sm"
                         placeholder="WO123456"
                       />
                     </div>
@@ -368,7 +368,7 @@ export default function TechnicianView() {
                       <input 
                         name="nik"
                         defaultValue={selectedTask.nik || ''}
-                        className="w-full bg-white border border-slate-300 rounded-lg p-2.5 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-sm"
+                        className="w-full bg-white text-slate-900 border border-slate-300 rounded-lg p-2.5 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-sm"
                         placeholder="12345678"
                       />
                     </div>
@@ -378,7 +378,7 @@ export default function TechnicianView() {
                     <select 
                       name="trackerStatus"
                       defaultValue={selectedTask.trackerStatus}
-                      className="w-full bg-white border border-slate-300 rounded-lg p-2.5 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 font-medium"
+                      className="w-full bg-white text-slate-900 border border-slate-300 rounded-lg p-2.5 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 font-medium"
                     >
                       <option value="Pending">Pending</option>
                       <option value="On Progress">On Progress</option>
@@ -393,7 +393,7 @@ export default function TechnicianView() {
                       name="notes"
                       defaultValue={selectedTask.notes}
                       rows={4}
-                      className="w-full bg-white border border-slate-300 rounded-lg p-2.5 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 resize-none text-sm"
+                      className="w-full bg-white text-slate-900 border border-slate-300 rounded-lg p-2.5 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 resize-none text-sm"
                       placeholder="Contoh: Kabel putus di tiang utama, butuh tim splicing..."
                     ></textarea>
                   </div>
