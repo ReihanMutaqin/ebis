@@ -332,41 +332,59 @@ export async function getAllTechnicians(): Promise<any[]> {
 export async function getAllRecipientProfiles(): Promise<any[]> {
   if (isLocalMode()) return [];
   const profilesMap = new Map<string, any>();
+  const usernameToTech = new Map<string, any>();
 
   try {
     const techSnap = await getDocs(collection(db, "ebis_technicians"));
     techSnap.forEach(d => {
       const data = d.data();
-      if (data.chatId) {
-        profilesMap.set(String(data.chatId), {
-          chatId: String(data.chatId),
-          name: data.name,
-          username: data.username,
-          sto: (data.sto || '').toUpperCase().trim(),
-          witel: (data.witel || '').toUpperCase().trim()
-        });
+      const cleanUser = data.username ? String(data.username).replace(/^@/, '').trim().toLowerCase() : '';
+      const rawChatId = data.chatId ? String(data.chatId).trim() : '';
+
+      const techObj = {
+        chatId: /^\d+$/.test(rawChatId) ? rawChatId : '',
+        name: data.name || '',
+        username: cleanUser ? `@${cleanUser}` : (data.username || ''),
+        sto: (data.sto || '').toUpperCase().trim(),
+        witel: (data.witel || '').toUpperCase().trim()
+      };
+
+      if (techObj.chatId) {
+        profilesMap.set(techObj.chatId, techObj);
+      }
+      if (cleanUser) {
+        usernameToTech.set(cleanUser, techObj);
       }
     });
 
     const chatSnap = await getDocs(collection(db, "ebis_chats"));
     chatSnap.forEach(d => {
       const data = d.data();
-      if (data.chatId) {
-        const existing = profilesMap.get(String(data.chatId)) || {};
-        profilesMap.set(String(data.chatId), {
-          chatId: String(data.chatId),
-          name: data.name || existing.name,
-          username: data.username || existing.username,
-          sto: data.sto || existing.sto || '',
-          witel: data.witel || existing.witel || ''
-        });
+      const rawChatId = data.chatId ? String(data.chatId).trim() : '';
+      if (!/^\d+$/.test(rawChatId)) return;
+
+      const cleanUser = data.username ? String(data.username).replace(/^@/, '').trim().toLowerCase() : '';
+
+      let existing = profilesMap.get(rawChatId);
+      if (!existing && cleanUser && usernameToTech.has(cleanUser)) {
+        existing = usernameToTech.get(cleanUser);
       }
+
+      const mergedProfile = {
+        chatId: rawChatId,
+        name: data.name || existing?.name || '',
+        username: data.username || existing?.username || '',
+        sto: existing?.sto || (data.sto || '').toUpperCase().trim(),
+        witel: data.witel || existing?.witel || ''
+      };
+
+      profilesMap.set(rawChatId, mergedProfile);
     });
   } catch (e) {
     console.error("Failed to fetch recipient profiles:", e);
   }
 
-  return Array.from(profilesMap.values());
+  return Array.from(profilesMap.values()).filter(p => /^\d+$/.test(p.chatId));
 }
 
 export async function getAllRecipientChatIds(): Promise<string[]> {
