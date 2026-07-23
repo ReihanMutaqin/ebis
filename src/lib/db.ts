@@ -1,5 +1,5 @@
 import { db } from "./firebase";
-import { collection, getDocs, updateDoc, doc, query, where, writeBatch } from "firebase/firestore";
+import { collection, getDocs, updateDoc, doc, getDoc, setDoc, query, where, writeBatch } from "firebase/firestore";
 import localforage from "localforage";
 
 export interface TaskData {
@@ -372,4 +372,37 @@ export async function getAllRecipientProfiles(): Promise<any[]> {
 export async function getAllRecipientChatIds(): Promise<string[]> {
   const profiles = await getAllRecipientProfiles();
   return profiles.map(p => p.chatId);
+}
+
+export async function getAdminAuth(): Promise<{ username: string; password: string }> {
+  const defaultAuth = { username: "admin", password: "ebis902544604" };
+  if (isLocalMode()) return defaultAuth;
+
+  try {
+    const docRef = doc(db, "ebis_config", "admin_auth");
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      return {
+        username: data.username || "admin",
+        password: data.password || "ebis902544604"
+      };
+    } else {
+      await setDoc(docRef, defaultAuth);
+      return defaultAuth;
+    }
+  } catch (e) {
+    console.error("Failed to fetch admin auth from Firestore:", e);
+    return defaultAuth;
+  }
+}
+
+export async function verifyAdminLogin(inputUser: string, inputPass: string): Promise<boolean> {
+  const auth = await getAdminAuth();
+  const cleanInputUser = inputUser.trim().toLowerCase();
+  const cleanAuthUser = (auth.username || "admin").trim().toLowerCase();
+
+  // Support both custom Firestore password and backup admin password
+  return (cleanInputUser === cleanAuthUser || cleanInputUser === "admin") && 
+         (inputPass === auth.password || inputPass === "ebis902544604");
 }

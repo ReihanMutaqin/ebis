@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Lock, User, Key, LogIn, Eye, EyeOff, AlertCircle, ShieldCheck } from "lucide-react";
+import { verifyAdminLogin } from "../../lib/db";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -29,32 +30,24 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
     setAuthenticated(isDashboardAuthenticated());
   }, []);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setLoading(true);
 
-    setTimeout(() => {
-      const validUsers: Record<string, string> = {
-        admin: "admin123",
-        manager: "manager123",
-        ebis: "ebis2026",
-        telkom: "telkom123"
-      };
-
-      const cleanUser = username.trim().toLowerCase();
-      const matchPass = validUsers[cleanUser];
-
-      if (matchPass && matchPass === password) {
+    try {
+      const isValid = await verifyAdminLogin(username, password);
+      if (isValid) {
         setDashboardAuthenticated(true);
         setAuthenticated(true);
-      } else if (!cleanUser || !password) {
-        setError("Silakan isi username dan password.");
       } else {
         setError("Username atau password salah!");
       }
+    } catch (err: any) {
+      setError("Terjadi kesalahan saat memverifikasi login.");
+    } finally {
       setLoading(false);
-    }, 400);
+    }
   };
 
   if (authenticated) {
@@ -146,7 +139,7 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
         <div className="border-t border-slate-100 pt-4 mt-6 text-center">
           <div className="inline-flex items-center gap-2 text-xs font-semibold text-slate-500 bg-slate-50 px-3.5 py-2 rounded-xl border border-slate-200">
             <ShieldCheck className="w-4 h-4 text-emerald-500" />
-            <span>Kredensial Default: <code>admin</code> / <code>admin123</code></span>
+            <span>Hubungi Admin jika butuh akses: <code>@Rei219</code></span>
           </div>
         </div>
       </div>
