@@ -4,6 +4,7 @@ import HomePage from "./pages/tracker/HomePage";
 import TechnicianView from "./pages/tracker/TechnicianView";
 import ManagerDashboard from "./pages/tracker/ManagerDashboard";
 import TrackerLayout from "./components/tracker/TrackerLayout";
+import ProtectedRoute from "./components/tracker/ProtectedRoute";
 
 export default function App() {
   return (
@@ -12,7 +13,14 @@ export default function App() {
       <Route path="/tracker" element={<TrackerLayout />}>
         <Route index element={<HomePage />} />
         <Route path="technician" element={<TechnicianView />} />
-        <Route path="manager" element={<ManagerDashboard />} />
+        <Route 
+          path="manager" 
+          element={
+            <ProtectedRoute>
+              <ManagerDashboard />
+            </ProtectedRoute>
+          } 
+        />
       </Route>
     </Routes>
   );

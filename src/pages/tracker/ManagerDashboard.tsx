@@ -2,12 +2,13 @@ import { useState, useEffect, useMemo } from "react";
 import { getAllTasks, syncBulkToGoogleSheets } from "../../lib/db";
 import type { TaskData } from "../../lib/db";
 import { sendTelegramManualReminder } from "../../lib/telegram";
+import { setDashboardAuthenticated } from "../../components/tracker/ProtectedRoute";
 import { 
   PieChart, Pie, Cell, Tooltip, ResponsiveContainer, 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend,
   LineChart, Line
 } from 'recharts';
-import { Loader2, Download, Briefcase, Users, AlertTriangle, CheckCircle, Clock, Activity, Calendar as CalendarIcon, MapPin, X, RefreshCw, Bell } from "lucide-react";
+import { Loader2, Download, Briefcase, Users, AlertTriangle, CheckCircle, Clock, Activity, Calendar as CalendarIcon, MapPin, X, RefreshCw, Bell, LogOut } from "lucide-react";
 import { DataTable } from "../../components/tracker/DataTable";
 import * as XLSX from 'xlsx';
 import { format, parseISO, isValid } from 'date-fns';
@@ -351,6 +352,20 @@ export default function ManagerDashboard() {
           >
             {sendingReminder ? <Loader2 className="w-4 h-4 animate-spin" /> : <Bell className="w-4 h-4" />}
             <span>Kirim Reminder Telegram</span>
+          </button>
+
+          <button 
+            onClick={() => {
+              if (confirm("Apakah Anda yakin ingin keluar dari Dashboard Manager?")) {
+                setDashboardAuthenticated(false);
+                window.location.reload();
+              }
+            }}
+            className="flex items-center justify-center gap-2 bg-slate-100 hover:bg-red-50 text-slate-700 hover:text-red-600 px-3.5 py-2.5 rounded-xl font-semibold transition-all border border-slate-200 hover:border-red-200 active:scale-95 w-full lg:w-auto"
+            title="Keluar dari Dashboard Manager"
+          >
+            <LogOut className="w-4 h-4" />
+            <span>Logout</span>
           </button>
         </div>
       </div>
