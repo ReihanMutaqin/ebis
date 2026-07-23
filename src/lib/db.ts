@@ -24,6 +24,7 @@ export interface TaskData {
   sto: string;
   orderDate: string;
   updatedAt: string;
+  isAnomaly?: boolean;
 }
 
 const COLLECTION_NAME = "ebis_tasks";
@@ -237,7 +238,8 @@ export async function syncToGoogleSheets(task: Partial<TaskData>) {
       statusResume: task.statusResume || '-',
       statusMessage: task.statusMessage || '-',
       updatedAt: task.updatedAt || new Date().toISOString(),
-      updatedBy: task.updatedBy || '-'
+      updatedBy: task.updatedBy || '-',
+      isAnomaly: task.isAnomaly || false
     };
 
     fetch(url, {
@@ -316,17 +318,43 @@ export async function updateTaskStatus(id: string, updates: Partial<TaskData>) {
   }
 }
 
-export async function deleteTask(id: string): Promise<void> {
+export async function hideTaskToAnomaly(id: string): Promise<void> {
   if (isLocalMode()) {
     const all = await localforage.getItem<Record<string, TaskData>>(COLLECTION_NAME) || {};
     if (all[id]) {
+      const anomalyAll = await localforage.getItem<Record<string, TaskData>>('ebis_tasks_anomaly') || {};
+      anomalyAll[id] = { ...all[id], trackerStatus: 'Cancel', notes: 'Hidden/Anomali' };
+      await localforage.setItem('ebis_tasks_anomaly', anomalyAll);
       delete all[id];
       await localforage.setItem(COLLECTION_NAME, all);
+      
+      // Trigger sync for anomaly
+      const anomalyTask = { ...anomalyAll[id], isAnomaly: true };
+      syncToGoogleSheets(anomalyTask);
     }
     return;
   }
+  
   const docRef = doc(db, COLLECTION_NAME, id);
-  await deleteDoc(docRef);
+  const docSnap = await getDoc(docRef);
+  
+  if (docSnap.exists()) {
+    const taskData = docSnap.data() as TaskData;
+    
+    // Save to anomaly collection
+    const anomalyDocRef = doc(db, 'ebis_tasks_anomaly', id);
+    await setDoc(anomalyDocRef, {
+      ...taskData,
+      isAnomaly: true,
+      hiddenAt: new Date().toISOString()
+    });
+    
+    // Delete from main collection
+    await deleteDoc(docRef);
+    
+    // Trigger webhook
+    syncToGoogleSheets({ ...taskData, isAnomaly: true, trackerStatus: 'Cancel' });
+  }
 }
 
 export async function getAllTechnicians(): Promise<any[]> {

@@ -1,7 +1,7 @@
 import { useState, useMemo, useRef, useEffect } from "react";
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
-import { deleteTask } from "../../lib/db";
+import { hideTaskToAnomaly } from "../../lib/db";
 import type { TaskData } from "../../lib/db";
 import { Filter, X, Download, Search, Trash2 } from "lucide-react";
 
@@ -443,19 +443,19 @@ export function DataTable({ data }: DataTableProps) {
               <div className="flex gap-2">
                 <button 
                   onClick={async () => {
-                    if (window.confirm(`Yakin ingin menghapus Order ${selectedRow.order}? Data yang dihapus tidak bisa dikembalikan.`)) {
+                    if (window.confirm(`Yakin ingin menyembunyikan Order ${selectedRow.order}? Order akan dipindahkan ke database anomali.`)) {
                       try {
-                        await deleteTask(selectedRow.id);
-                        alert('Order berhasil dihapus!');
+                        await hideTaskToAnomaly(selectedRow.id);
+                        alert('Order berhasil disembunyikan dan dipindah ke anomali!');
                         window.location.reload();
                       } catch (e) {
                         console.error(e);
-                        alert('Gagal menghapus order.');
+                        alert('Gagal menyembunyikan order.');
                       }
                     }
                   }}
                   className="p-2 bg-white hover:bg-red-500 hover:text-white text-slate-400 rounded-full transition-colors shadow-sm ring-1 ring-slate-200 hover:ring-red-500"
-                  title="Hapus Order"
+                  title="Sembunyikan Order (Anomali)"
                 >
                   <Trash2 className="w-5 h-5" />
                 </button>
