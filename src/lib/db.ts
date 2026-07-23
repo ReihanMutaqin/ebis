@@ -329,25 +329,47 @@ export async function getAllTechnicians(): Promise<any[]> {
   }
 }
 
-export async function getAllRecipientChatIds(): Promise<string[]> {
+export async function getAllRecipientProfiles(): Promise<any[]> {
   if (isLocalMode()) return [];
-  const chatIds = new Set<string>();
+  const profilesMap = new Map<string, any>();
 
   try {
     const techSnap = await getDocs(collection(db, "ebis_technicians"));
     techSnap.forEach(d => {
       const data = d.data();
-      if (data.chatId) chatIds.add(String(data.chatId));
+      if (data.chatId) {
+        profilesMap.set(String(data.chatId), {
+          chatId: String(data.chatId),
+          name: data.name,
+          username: data.username,
+          sto: (data.sto || '').toUpperCase().trim(),
+          witel: (data.witel || '').toUpperCase().trim()
+        });
+      }
     });
 
     const chatSnap = await getDocs(collection(db, "ebis_chats"));
     chatSnap.forEach(d => {
       const data = d.data();
-      if (data.chatId) chatIds.add(String(data.chatId));
+      if (data.chatId) {
+        const existing = profilesMap.get(String(data.chatId)) || {};
+        profilesMap.set(String(data.chatId), {
+          chatId: String(data.chatId),
+          name: data.name || existing.name,
+          username: data.username || existing.username,
+          sto: data.sto || existing.sto || '',
+          witel: data.witel || existing.witel || ''
+        });
+      }
     });
   } catch (e) {
-    console.error("Failed to fetch recipient chat IDs:", e);
+    console.error("Failed to fetch recipient profiles:", e);
   }
 
-  return Array.from(chatIds);
+  return Array.from(profilesMap.values());
+}
+
+export async function getAllRecipientChatIds(): Promise<string[]> {
+  const profiles = await getAllRecipientProfiles();
+  return profiles.map(p => p.chatId);
 }
