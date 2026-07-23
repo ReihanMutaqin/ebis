@@ -98,8 +98,10 @@ export async function importDataToFirestore(dataList: any[]): Promise<{ added: n
   }
   
   const querySnapshot = await getDocs(collection(db, COLLECTION_NAME));
+  const compSnapshot = await getDocs(collection(db, "ebis_tasks_completed"));
   const existingDocs = new Map<string, TaskData>();
   querySnapshot.forEach(d => existingDocs.set(d.id, d.data() as TaskData));
+  compSnapshot.forEach(d => existingDocs.set(d.id, d.data() as TaskData));
 
   const batch = writeBatch(db);
   let batchCount = 0;
@@ -116,7 +118,8 @@ export async function importDataToFirestore(dataList: any[]): Promise<{ added: n
       
       if (old.statusMessage !== newStatusMessage || needsAutoComplete) {
         duplicates++;
-        const docRef = doc(db, COLLECTION_NAME, orderId);
+        const targetCollection = isCompleted ? "ebis_tasks_completed" : COLLECTION_NAME;
+        const docRef = doc(db, targetCollection, orderId);
         
         const updateData: any = {
           witel: item['WITEL_OLD'] || old.witel || 'UNKNOWN',
@@ -136,6 +139,9 @@ export async function importDataToFirestore(dataList: any[]): Promise<{ added: n
         if (isCompleted) {
           updateData.trackerStatus = 'Completed';
           updateData.technicianName = 'SISTEM';
+          batch.delete(doc(db, COLLECTION_NAME, orderId)); // Ensure removed from active
+        } else {
+          batch.delete(doc(db, "ebis_tasks_completed", orderId)); // Ensure removed from completed
         }
 
         batch.set(docRef, updateData, { merge: true });
@@ -145,7 +151,8 @@ export async function importDataToFirestore(dataList: any[]): Promise<{ added: n
       added++;
       existingDocs.set(orderId, {} as TaskData); // avoid counting duplicates within same json
       
-      const docRef = doc(db, COLLECTION_NAME, orderId);
+      const targetCollection = isCompleted ? "ebis_tasks_completed" : COLLECTION_NAME;
+      const docRef = doc(db, targetCollection, orderId);
       const task: TaskData = {
         id: orderId,
         witel: item['WITEL_OLD'] || 'UNKNOWN',
@@ -193,12 +200,14 @@ export async function getTasksByWitel(witel: string): Promise<TaskData[]> {
     return Object.values(all).filter(t => t.witel === witel);
   }
 
-  const q = query(collection(db, COLLECTION_NAME), where("witel", "==", witel));
-  const querySnapshot = await getDocs(q);
+  const q1 = query(collection(db, COLLECTION_NAME), where("witel", "==", witel));
+  const q2 = query(collection(db, "ebis_tasks_completed"), where("witel", "==", witel));
+  
+  const [snap1, snap2] = await Promise.all([getDocs(q1), getDocs(q2)]);
+  
   const tasks: TaskData[] = [];
-  querySnapshot.forEach((doc) => {
-    tasks.push(doc.data() as TaskData);
-  });
+  snap1.forEach((doc) => tasks.push(doc.data() as TaskData));
+  snap2.forEach((doc) => tasks.push(doc.data() as TaskData));
   return tasks;
 }
 
@@ -208,11 +217,14 @@ export async function getAllTasks(): Promise<TaskData[]> {
     return Object.values(all);
   }
 
-  const querySnapshot = await getDocs(collection(db, COLLECTION_NAME));
+  const [snap1, snap2] = await Promise.all([
+    getDocs(collection(db, COLLECTION_NAME)),
+    getDocs(collection(db, "ebis_tasks_completed"))
+  ]);
+  
   const tasks: TaskData[] = [];
-  querySnapshot.forEach((doc) => {
-    tasks.push(doc.data() as TaskData);
-  });
+  snap1.forEach((doc) => tasks.push(doc.data() as TaskData));
+  snap2.forEach((doc) => tasks.push(doc.data() as TaskData));
   return tasks;
 }
 
@@ -300,12 +312,30 @@ export async function updateTaskStatus(id: string, updates: Partial<TaskData>) {
     return;
   }
 
-  const docRef = doc(db, COLLECTION_NAME, id);
+  // Find the task first
+  let docRef = doc(db, COLLECTION_NAME, id);
+  let docSnap = await getDoc(docRef);
+  let isCompletedCollection = false;
+  
+  if (!docSnap.exists()) {
+    docRef = doc(db, "ebis_tasks_completed", id);
+    docSnap = await getDoc(docRef);
+    isCompletedCollection = true;
+  }
+
+  if (!docSnap.exists()) return; // Not found
+  
   const updatedAt = new Date().toISOString();
-  await updateDoc(docRef, {
-    ...updates,
-    updatedAt: updatedAt
-  });
+  const existingData = docSnap.data();
+  const newData = { ...existingData, ...updates, updatedAt };
+
+  if (updates.trackerStatus === 'Completed') {
+    await setDoc(doc(db, "ebis_tasks_completed", id), newData);
+    if (!isCompletedCollection) await deleteDoc(doc(db, COLLECTION_NAME, id));
+  } else {
+    await setDoc(doc(db, COLLECTION_NAME, id), newData);
+    if (isCompletedCollection) await deleteDoc(doc(db, "ebis_tasks_completed", id));
+  }
 
   try {
     const all = await getAllTasks();
