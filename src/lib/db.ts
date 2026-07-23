@@ -398,11 +398,40 @@ export async function getAdminAuth(): Promise<{ username: string; password: stri
 }
 
 export async function verifyAdminLogin(inputUser: string, inputPass: string): Promise<boolean> {
-  const auth = await getAdminAuth();
   const cleanInputUser = inputUser.trim().toLowerCase();
-  const cleanAuthUser = (auth.username || "admin").trim().toLowerCase();
+  const cleanInputPass = inputPass.trim();
 
-  // Support both custom Firestore password and backup admin password
-  return (cleanInputUser === cleanAuthUser || cleanInputUser === "admin") && 
-         (inputPass === auth.password || inputPass === "ebis902544604");
+  if (!cleanInputUser || !cleanInputPass) return false;
+
+  if (isLocalMode()) {
+    return (cleanInputUser === "admin" || cleanInputUser === "admin2") && 
+           (cleanInputPass === "ebis902544604" || cleanInputPass === "pass123");
+  }
+
+  try {
+    // 1. Check ebis_admins collection for specific username document
+    const docRef = doc(db, "ebis_admins", cleanInputUser);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      if (data.password && data.password.trim() === cleanInputPass) {
+        return true;
+      }
+    }
+
+    // 2. Check legacy ebis_config/admin_auth
+    const legacyAuth = await getAdminAuth();
+    if (cleanInputUser === (legacyAuth.username || "admin").toLowerCase() && cleanInputPass === legacyAuth.password.trim()) {
+      return true;
+    }
+
+    // 3. Fallback default account
+    if (cleanInputUser === "admin" && cleanInputPass === "ebis902544604") {
+      return true;
+    }
+  } catch (e) {
+    console.error("Error verifying admin login:", e);
+  }
+
+  return false;
 }
