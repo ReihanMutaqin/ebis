@@ -54,6 +54,7 @@ export function DataTable({ data }: DataTableProps) {
   const [exportStatus, setExportStatus] = useState<string>("ALL");
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(25);
+  const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set());
 
   // Memoize unique filter values per column for maximum speed
   const uniqueValuesByColumn = useMemo(() => {
@@ -202,6 +203,21 @@ export function DataTable({ data }: DataTableProps) {
     saveAs(blob, `export_${exportStatus === 'ALL' ? 'semua' : exportStatus}_${new Date().getTime()}.xlsx`);
   };
 
+  const handleBatchAnomaly = async () => {
+    if (selectedRows.size === 0) return;
+    if (window.confirm(`Yakin ingin menyembunyikan ${selectedRows.size} order ke database anomali?`)) {
+      try {
+        const promises = Array.from(selectedRows).map(id => hideTaskToAnomaly(id));
+        await Promise.all(promises);
+        alert(`${selectedRows.size} order berhasil disembunyikan dan dipindah ke anomali!`);
+        window.location.reload();
+      } catch (e) {
+        console.error(e);
+        alert('Terjadi kesalahan saat memindahkan order ke anomali.');
+      }
+    }
+  };
+
   const filteredData = useMemo(() => {
     let result = data;
     
@@ -284,6 +300,15 @@ export function DataTable({ data }: DataTableProps) {
           </div>
         </div>
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
+          {selectedRows.size > 0 && (
+            <button 
+              onClick={handleBatchAnomaly}
+              className="flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-semibold text-sm transition-colors shadow-sm"
+            >
+              <Trash2 className="w-4 h-4" />
+              Batch Anomali ({selectedRows.size})
+            </button>
+          )}
           <div className="relative flex-1 sm:flex-none">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <Search className="w-4 h-4 text-slate-400" />
@@ -322,6 +347,22 @@ export function DataTable({ data }: DataTableProps) {
         <table className="w-full text-sm text-left border-collapse">
           <thead className="text-xs text-slate-600 bg-slate-100 uppercase sticky top-0 z-20 shadow-sm ring-1 ring-slate-200">
             <tr>
+              <th className="px-4 py-4 border-b border-slate-200 bg-slate-100/95 sticky left-0 z-30">
+                <input
+                  type="checkbox"
+                  className="rounded border-slate-300 text-blue-600 focus:ring-blue-500 w-4 h-4 cursor-pointer"
+                  checked={paginatedData.length > 0 && paginatedData.every(row => selectedRows.has(row.id))}
+                  onChange={(e) => {
+                    const newSet = new Set(selectedRows);
+                    if (e.target.checked) {
+                      paginatedData.forEach(row => newSet.add(row.id));
+                    } else {
+                      paginatedData.forEach(row => newSet.delete(row.id));
+                    }
+                    setSelectedRows(newSet);
+                  }}
+                />
+              </th>
               {COLUMNS.map(col => {
                 const uniqueVals = uniqueValuesByColumn[col.key] || [];
                 const isActive = filters[col.key] && filters[col.key].size > 0;
@@ -377,30 +418,50 @@ export function DataTable({ data }: DataTableProps) {
           </thead>
           <tbody className="divide-y divide-slate-100 bg-white">
             {paginatedData.length > 0 ? (
-              paginatedData.map((row, i) => (
-                <tr 
-                  key={row.id || i} 
-                  className="hover:bg-blue-50/60 transition-colors duration-150 cursor-pointer group"
-                  onClick={() => setSelectedRow(row)}
-                >
-                  {COLUMNS.map(col => {
-                    let displayVal = String(row[col.key] || '');
-                    if (col.key === 'orderDate') {
-                      displayVal = displayVal.split(' ')[0]; // Only show YYYY-MM-DD, hide time
-                    } else {
-                      displayVal = getFilterValue(col.key, displayVal);
-                    }
-                    return (
-                      <td key={col.key} className="px-5 py-3.5 text-slate-700 font-medium truncate max-w-[220px] group-hover:text-slate-900" title={String(row[col.key] || '')}>
-                        {displayVal || '-'}
-                      </td>
-                    );
-                  })}
-                </tr>
-              ))
+              paginatedData.map((row, i) => {
+                const isSelected = selectedRows.has(row.id);
+                return (
+                  <tr 
+                    key={row.id || i} 
+                    className={`hover:bg-blue-50/60 transition-colors duration-150 cursor-pointer group ${isSelected ? 'bg-blue-50/80' : ''}`}
+                    onClick={() => setSelectedRow(row)}
+                  >
+                    <td className="px-4 py-3 border-slate-100 sticky left-0 z-10 bg-inherit" onClick={e => e.stopPropagation()}>
+                      <input
+                        type="checkbox"
+                        className="rounded border-slate-300 text-blue-600 focus:ring-blue-500 w-4 h-4 cursor-pointer"
+                        checked={isSelected}
+                        onChange={(e) => {
+                          e.stopPropagation();
+                          const newSet = new Set(selectedRows);
+                          if (e.target.checked) {
+                            newSet.add(row.id);
+                          } else {
+                            newSet.delete(row.id);
+                          }
+                          setSelectedRows(newSet);
+                        }}
+                      />
+                    </td>
+                    {COLUMNS.map(col => {
+                      let displayVal = String(row[col.key] || '');
+                      if (col.key === 'orderDate') {
+                        displayVal = displayVal.split(' ')[0]; // Only show YYYY-MM-DD, hide time
+                      } else {
+                        displayVal = getFilterValue(col.key, displayVal);
+                      }
+                      return (
+                        <td key={col.key} className="px-5 py-3.5 text-slate-700 font-medium truncate max-w-[220px] group-hover:text-slate-900" title={String(row[col.key] || '')}>
+                          {displayVal || '-'}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                );
+              })
             ) : (
               <tr>
-                <td colSpan={COLUMNS.length} className="px-5 py-12 text-center">
+                <td colSpan={COLUMNS.length + 1} className="px-5 py-12 text-center">
                   <div className="text-slate-400 font-medium text-lg">Tidak ada data yang sesuai filter.</div>
                 </td>
               </tr>
