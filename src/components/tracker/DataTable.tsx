@@ -339,11 +339,19 @@ export function DataTable({ data }: DataTableProps) {
                     
                     {isOpen && (
                       <div ref={filterRef} className="absolute top-full mt-2 left-0 bg-white border border-slate-200 rounded-xl shadow-xl w-64 z-50 normal-case font-normal text-slate-700 ring-1 ring-black/5">
-                        <div className="p-2 border-b border-slate-100 flex justify-between gap-2">
-                          <button onClick={() => selectAll(col.key, uniqueVals)} className="text-xs text-blue-600 hover:underline font-semibold">Semua</button>
-                          <button onClick={() => clearFilter(col.key)} className="text-xs text-red-600 hover:underline font-semibold">Clear</button>
-                        </div>
                         <div className="max-h-48 overflow-y-auto p-2 space-y-1">
+                          <label className="flex items-center gap-2 p-1 hover:bg-slate-50 rounded cursor-pointer border-b border-slate-100 mb-1 pb-2">
+                            <input 
+                              type="checkbox" 
+                              className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                              checked={(filters[col.key]?.size || 0) === uniqueVals.length && uniqueVals.length > 0}
+                              onChange={(e) => {
+                                if (e.target.checked) selectAll(col.key, uniqueVals);
+                                else clearFilter(col.key);
+                              }}
+                            />
+                            <span className="text-xs font-semibold">(Pilih Semua)</span>
+                          </label>
                           {uniqueVals.map(val => {
                             const checked = filters[col.key]?.has(val);
                             const displayVal = val;
