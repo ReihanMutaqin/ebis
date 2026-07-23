@@ -1,5 +1,5 @@
 import { db } from "./firebase";
-import { collection, getDocs, updateDoc, doc, getDoc, setDoc, query, where, writeBatch } from "firebase/firestore";
+import { collection, getDocs, updateDoc, doc, getDoc, setDoc, query, where, writeBatch, deleteDoc } from "firebase/firestore";
 import localforage from "localforage";
 
 export interface TaskData {
@@ -314,6 +314,19 @@ export async function updateTaskStatus(id: string, updates: Partial<TaskData>) {
   } catch (e) {
     console.error('Error fetching updated task for Google Sheets web sync:', e);
   }
+}
+
+export async function deleteTask(id: string): Promise<void> {
+  if (isLocalMode()) {
+    const all = await localforage.getItem<Record<string, TaskData>>(COLLECTION_NAME) || {};
+    if (all[id]) {
+      delete all[id];
+      await localforage.setItem(COLLECTION_NAME, all);
+    }
+    return;
+  }
+  const docRef = doc(db, COLLECTION_NAME, id);
+  await deleteDoc(docRef);
 }
 
 export async function getAllTechnicians(): Promise<any[]> {

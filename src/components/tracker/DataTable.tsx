@@ -1,8 +1,9 @@
 import { useState, useMemo, useRef, useEffect } from "react";
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
+import { deleteTask } from "../../lib/db";
 import type { TaskData } from "../../lib/db";
-import { Filter, X, Download, Search } from "lucide-react";
+import { Filter, X, Download, Search, Trash2 } from "lucide-react";
 
 interface DataTableProps {
   data: TaskData[];
@@ -439,12 +440,33 @@ export function DataTable({ data }: DataTableProps) {
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col transform transition-all">
             <div className="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50 rounded-t-2xl">
               <h2 className="text-xl font-extrabold text-slate-800 tracking-tight">Detail Order: {selectedRow.order}</h2>
-              <button 
-                onClick={() => setSelectedRow(null)}
-                className="p-2 bg-white hover:bg-red-500 hover:text-white text-slate-400 rounded-full transition-colors shadow-sm ring-1 ring-slate-200 hover:ring-red-500"
-              >
-                <X className="w-5 h-5" />
-              </button>
+              <div className="flex gap-2">
+                <button 
+                  onClick={async () => {
+                    if (window.confirm(`Yakin ingin menghapus Order ${selectedRow.order}? Data yang dihapus tidak bisa dikembalikan.`)) {
+                      try {
+                        await deleteTask(selectedRow.id);
+                        alert('Order berhasil dihapus!');
+                        window.location.reload();
+                      } catch (e) {
+                        console.error(e);
+                        alert('Gagal menghapus order.');
+                      }
+                    }
+                  }}
+                  className="p-2 bg-white hover:bg-red-500 hover:text-white text-slate-400 rounded-full transition-colors shadow-sm ring-1 ring-slate-200 hover:ring-red-500"
+                  title="Hapus Order"
+                >
+                  <Trash2 className="w-5 h-5" />
+                </button>
+                <button 
+                  onClick={() => setSelectedRow(null)}
+                  className="p-2 bg-white hover:bg-slate-500 hover:text-white text-slate-400 rounded-full transition-colors shadow-sm ring-1 ring-slate-200 hover:ring-slate-500"
+                  title="Tutup"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
             </div>
             
             <div className="p-6 overflow-y-auto grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50/30">
