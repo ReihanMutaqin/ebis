@@ -1,7 +1,7 @@
 import { getAllTasks, getAllRecipientChatIds } from './db';
 
-const TELEGRAM_BOT_TOKEN = "8844898337:AAHMHLyzLcUN6Znnh7ToNJzQdxdYaAsnzPs";
-const BOT_REMINDER_API = "https://ebis-bot.vercel.app/api/reminder";
+const TELEGRAM_BOT_TOKEN = import.meta.env.VITE_TELEGRAM_BOT_TOKEN || "";
+const BOT_REMINDER_API = import.meta.env.VITE_TELEGRAM_BOT_URL || "https://ebis-bot.vercel.app/api/reminder";
 
 export function formatDailyReminderTextWeb(tasks: any[]) {
   const now = new Date();
