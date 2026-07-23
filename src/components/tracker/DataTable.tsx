@@ -3,7 +3,7 @@ import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
 import { hideTaskToAnomaly } from "../../lib/db";
 import type { TaskData } from "../../lib/db";
-import { Filter, X, Download, Search, Trash2 } from "lucide-react";
+import { Filter, X, Download, Search, Trash2, AlertTriangle, Loader2, CheckCircle2 } from "lucide-react";
 
 interface DataTableProps {
   data: TaskData[];
@@ -55,6 +55,9 @@ export function DataTable({ data }: DataTableProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(25);
   const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set());
+  
+  const [showBatchModal, setShowBatchModal] = useState(false);
+  const [batchStatus, setBatchStatus] = useState<"confirm" | "loading" | "success" | "error">("confirm");
 
   // Memoize unique filter values per column for maximum speed
   const uniqueValuesByColumn = useMemo(() => {
@@ -204,17 +207,17 @@ export function DataTable({ data }: DataTableProps) {
   };
 
   const handleBatchAnomaly = async () => {
-    if (selectedRows.size === 0) return;
-    if (window.confirm(`Yakin ingin menyembunyikan ${selectedRows.size} order ke database anomali?`)) {
-      try {
-        const promises = Array.from(selectedRows).map(id => hideTaskToAnomaly(id));
-        await Promise.all(promises);
-        alert(`${selectedRows.size} order berhasil disembunyikan dan dipindah ke anomali!`);
+    setBatchStatus("loading");
+    try {
+      const promises = Array.from(selectedRows).map(id => hideTaskToAnomaly(id));
+      await Promise.all(promises);
+      setBatchStatus("success");
+      setTimeout(() => {
         window.location.reload();
-      } catch (e) {
-        console.error(e);
-        alert('Terjadi kesalahan saat memindahkan order ke anomali.');
-      }
+      }, 1500);
+    } catch (e) {
+      console.error(e);
+      setBatchStatus("error");
     }
   };
 
@@ -302,7 +305,10 @@ export function DataTable({ data }: DataTableProps) {
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
           {selectedRows.size > 0 && (
             <button 
-              onClick={handleBatchAnomaly}
+              onClick={() => {
+                setBatchStatus("confirm");
+                setShowBatchModal(true);
+              }}
               className="flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-semibold text-sm transition-colors shadow-sm"
             >
               <Trash2 className="w-4 h-4" />
@@ -576,6 +582,81 @@ export function DataTable({ data }: DataTableProps) {
           </div>
         </div>
       )}
+      {/* Batch Anomaly Custom Modal */}
+      {showBatchModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl p-6 overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="text-center space-y-4">
+              
+              <div className="flex justify-center">
+                {batchStatus === "confirm" && (
+                  <div className="w-16 h-16 bg-amber-50 text-amber-500 rounded-full flex items-center justify-center mb-2">
+                    <AlertTriangle className="w-8 h-8" />
+                  </div>
+                )}
+                {batchStatus === "loading" && (
+                  <div className="w-16 h-16 bg-blue-50 text-blue-500 rounded-full flex items-center justify-center mb-2">
+                    <Loader2 className="w-8 h-8 animate-spin" />
+                  </div>
+                )}
+                {batchStatus === "success" && (
+                  <div className="w-16 h-16 bg-emerald-50 text-emerald-500 rounded-full flex items-center justify-center mb-2 animate-in zoom-in">
+                    <CheckCircle2 className="w-8 h-8" />
+                  </div>
+                )}
+                {batchStatus === "error" && (
+                  <div className="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center mb-2">
+                    <X className="w-8 h-8" />
+                  </div>
+                )}
+              </div>
+
+              <div>
+                <h3 className="text-xl font-bold text-slate-800">
+                  {batchStatus === "confirm" && "Pindah ke Anomali?"}
+                  {batchStatus === "loading" && "Memproses..."}
+                  {batchStatus === "success" && "Berhasil!"}
+                  {batchStatus === "error" && "Gagal Memproses"}
+                </h3>
+                <p className="text-sm text-slate-500 mt-2">
+                  {batchStatus === "confirm" && `Anda akan memindahkan ${selectedRows.size} order yang dipilih ke database Anomali. Order ini akan disembunyikan dari tabel utama.`}
+                  {batchStatus === "loading" && "Sedang memindahkan data ke database anomali, mohon tunggu sebentar."}
+                  {batchStatus === "success" && "Semua order yang dipilih telah berhasil dipindahkan. Memuat ulang halaman..."}
+                  {batchStatus === "error" && "Terjadi kesalahan saat memindahkan order. Silakan coba lagi."}
+                </p>
+              </div>
+
+              {batchStatus === "confirm" && (
+                <div className="flex justify-center gap-3 pt-4">
+                  <button
+                    onClick={() => setShowBatchModal(false)}
+                    className="px-4 py-2 rounded-lg font-semibold text-slate-600 hover:bg-slate-100 transition-colors"
+                  >
+                    Batal
+                  </button>
+                  <button
+                    onClick={handleBatchAnomaly}
+                    className="px-4 py-2 rounded-lg font-semibold bg-red-600 hover:bg-red-700 text-white shadow-sm shadow-red-500/30 transition-colors"
+                  >
+                    Ya, Pindahkan
+                  </button>
+                </div>
+              )}
+              {batchStatus === "error" && (
+                <div className="flex justify-center gap-3 pt-4">
+                  <button
+                    onClick={() => setShowBatchModal(false)}
+                    className="px-4 py-2 rounded-lg font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors"
+                  >
+                    Tutup
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
