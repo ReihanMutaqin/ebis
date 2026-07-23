@@ -267,10 +267,22 @@ export async function syncToGoogleSheets(task: Partial<TaskData>) {
 
 export async function syncBulkToGoogleSheets(tasks: TaskData[]) {
   const url = GOOGLE_SHEETS_WEBHOOK_URL;
-  if (!url || !tasks || tasks.length === 0) return null;
+  if (!url) return null;
 
   try {
-    const payload = tasks.map(task => ({
+    let anomalies: TaskData[] = [];
+    if (!isLocalMode()) {
+      const q = await getDocs(collection(db, "ebis_tasks_anomaly"));
+      q.forEach(d => anomalies.push(d.data() as TaskData));
+    } else {
+      const all = await localforage.getItem<Record<string, TaskData>>('ebis_tasks_anomaly') || {};
+      anomalies = Object.values(all);
+    }
+
+    const allTasksToSync = [...tasks, ...anomalies];
+    if (allTasksToSync.length === 0) return null;
+
+    const payload = allTasksToSync.map(task => ({
       orderId: task.order || task.id || '',
       order: task.order || task.id || '',
       id: task.id || task.order || '',
@@ -285,7 +297,8 @@ export async function syncBulkToGoogleSheets(tasks: TaskData[]) {
       statusResume: task.statusResume || '-',
       statusMessage: task.statusMessage || '-',
       updatedAt: task.updatedAt || new Date().toISOString(),
-      updatedBy: task.updatedBy || '-'
+      updatedBy: task.updatedBy || '-',
+      isAnomaly: task.isAnomaly || false
     }));
 
     await fetch(url, {
