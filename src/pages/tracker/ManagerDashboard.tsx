@@ -1,12 +1,13 @@
 import { useState, useEffect, useMemo } from "react";
 import { getAllTasks, syncBulkToGoogleSheets } from "../../lib/db";
 import type { TaskData } from "../../lib/db";
+import { sendTelegramManualReminder } from "../../lib/telegram";
 import { 
   PieChart, Pie, Cell, Tooltip, ResponsiveContainer, 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend,
   LineChart, Line
 } from 'recharts';
-import { Loader2, Download, Briefcase, Users, AlertTriangle, CheckCircle, Clock, Activity, Calendar as CalendarIcon, MapPin, X, RefreshCw } from "lucide-react";
+import { Loader2, Download, Briefcase, Users, AlertTriangle, CheckCircle, Clock, Activity, Calendar as CalendarIcon, MapPin, X, RefreshCw, Bell } from "lucide-react";
 import { DataTable } from "../../components/tracker/DataTable";
 import * as XLSX from 'xlsx';
 import { format, parseISO, isValid } from 'date-fns';
@@ -45,6 +46,7 @@ export default function ManagerDashboard() {
   const [tasks, setTasks] = useState<TaskData[]>([]);
   const [loading, setLoading] = useState(true);
   const [syncingSheets, setSyncingSheets] = useState(false);
+  const [sendingReminder, setSendingReminder] = useState(false);
   const [selectedWitel, setSelectedWitel] = useState<string>("ALL");
   const [selectedDate, setSelectedDate] = useState<string>("ALL");
   
@@ -328,6 +330,27 @@ export default function ManagerDashboard() {
           >
             {syncingSheets ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
             <span>Sync ke Google Sheet</span>
+          </button>
+
+          <button 
+            onClick={async () => {
+              setSendingReminder(true);
+              try {
+                const targetData = filteredTasks.length > 0 ? filteredTasks : tasks;
+                const result = await sendTelegramManualReminder(targetData);
+                alert(result.message);
+              } catch (e: any) {
+                alert("Gagal mengirim reminder Telegram: " + e.message);
+              } finally {
+                setSendingReminder(false);
+              }
+            }}
+            disabled={sendingReminder}
+            className="flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white px-4 py-2.5 rounded-xl font-semibold transition-all shadow-sm hover:shadow-md active:scale-95 w-full lg:w-auto disabled:opacity-50"
+            title="Kirim notifikasi ringkasan reminder ke seluruh pengguna Telegram"
+          >
+            {sendingReminder ? <Loader2 className="w-4 h-4 animate-spin" /> : <Bell className="w-4 h-4" />}
+            <span>Kirim Reminder Telegram</span>
           </button>
         </div>
       </div>

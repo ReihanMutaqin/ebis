@@ -315,3 +315,39 @@ export async function updateTaskStatus(id: string, updates: Partial<TaskData>) {
     console.error('Error fetching updated task for Google Sheets web sync:', e);
   }
 }
+
+export async function getAllTechnicians(): Promise<any[]> {
+  if (isLocalMode()) return [];
+  try {
+    const querySnapshot = await getDocs(collection(db, "ebis_technicians"));
+    const techs: any[] = [];
+    querySnapshot.forEach((d) => techs.push(d.data()));
+    return techs;
+  } catch (e) {
+    console.error("Failed to fetch technicians:", e);
+    return [];
+  }
+}
+
+export async function getAllRecipientChatIds(): Promise<string[]> {
+  if (isLocalMode()) return [];
+  const chatIds = new Set<string>();
+
+  try {
+    const techSnap = await getDocs(collection(db, "ebis_technicians"));
+    techSnap.forEach(d => {
+      const data = d.data();
+      if (data.chatId) chatIds.add(String(data.chatId));
+    });
+
+    const chatSnap = await getDocs(collection(db, "ebis_chats"));
+    chatSnap.forEach(d => {
+      const data = d.data();
+      if (data.chatId) chatIds.add(String(data.chatId));
+    });
+  } catch (e) {
+    console.error("Failed to fetch recipient chat IDs:", e);
+  }
+
+  return Array.from(chatIds);
+}
