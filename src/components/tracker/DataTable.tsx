@@ -343,7 +343,7 @@ export function DataTable({ data }: DataTableProps) {
         </div>
       </div>
       
-      <div className="overflow-x-auto max-h-[600px] relative rounded-b-2xl">
+      <div className="overflow-x-auto max-h-[600px] min-h-[400px] relative rounded-b-2xl">
         <table className="w-full text-sm text-left border-collapse">
           <thead className="text-xs text-slate-600 bg-slate-100 uppercase sticky top-0 z-20 shadow-sm ring-1 ring-slate-200">
             <tr>
