@@ -253,7 +253,9 @@ export async function syncToGoogleSheets(task: Partial<TaskData>) {
       notes: task.notes || '-',
       statusResume: task.statusResume || '-',
       statusMessage: task.statusMessage || '-',
-      updatedAt: task.updatedAt || new Date().toISOString(),
+      updatedAt: (task.updatedBy && task.updatedBy !== '-') 
+                   ? (task.updatedAt || new Date().toISOString()) 
+                   : (task.orderDate || task.updatedAt || new Date().toISOString()),
       updatedBy: task.updatedBy || '-',
       isAnomaly: task.isAnomaly || false
     };
@@ -300,7 +302,9 @@ export async function syncBulkToGoogleSheets(tasks: TaskData[]) {
       notes: task.notes || '-',
       statusResume: task.statusResume || '-',
       statusMessage: task.statusMessage || '-',
-      updatedAt: task.updatedAt || new Date().toISOString(),
+      updatedAt: (task.updatedBy && task.updatedBy !== '-') 
+                   ? (task.updatedAt || new Date().toISOString()) 
+                   : (task.orderDate || task.updatedAt || new Date().toISOString()),
       updatedBy: task.updatedBy || '-',
       isAnomaly: task.isAnomaly || false
     }));
