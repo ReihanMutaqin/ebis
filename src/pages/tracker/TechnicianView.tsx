@@ -121,11 +121,11 @@ export default function TechnicianView() {
   if (searchQuery) {
     const q = searchQuery.toLowerCase();
     filteredTasks = filteredTasks.filter(t => 
-      (t.order?.toLowerCase() || '').includes(q) ||
-      (t.customerName?.toLowerCase() || '').includes(q) ||
-      (t.address?.toLowerCase() || '').includes(q) ||
-      (t.woId?.toLowerCase() || '').includes(q) ||
-      (t.nik?.toLowerCase() || '').includes(q)
+      String(t.order || '').toLowerCase().includes(q) ||
+      String(t.customerName || '').toLowerCase().includes(q) ||
+      String(t.address || '').toLowerCase().includes(q) ||
+      String(t.woId || '').toLowerCase().includes(q) ||
+      String(t.nik || '').toLowerCase().includes(q)
     );
   }
 
@@ -139,11 +139,11 @@ export default function TechnicianView() {
     }
     if (searchQuery) {
       const q = searchQuery.toLowerCase();
-      const match = (t.order?.toLowerCase() || '').includes(q) ||
-                    (t.customerName?.toLowerCase() || '').includes(q) ||
-                    (t.address?.toLowerCase() || '').includes(q) ||
-                    (t.woId?.toLowerCase() || '').includes(q) ||
-                    (t.nik?.toLowerCase() || '').includes(q);
+      const match = String(t.order || '').toLowerCase().includes(q) ||
+                    String(t.customerName || '').toLowerCase().includes(q) ||
+                    String(t.address || '').toLowerCase().includes(q) ||
+                    String(t.woId || '').toLowerCase().includes(q) ||
+                    String(t.nik || '').toLowerCase().includes(q);
       if (!match) return false;
     }
     return true;
