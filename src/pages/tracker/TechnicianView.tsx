@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { getTasksByWitel, updateTaskStatus } from "../../lib/db";
 import type { TaskData } from "../../lib/db";
-import { MapPin, User, CheckCircle, AlertTriangle, Loader2 } from "lucide-react";
+import { MapPin, User, CheckCircle, AlertTriangle, Loader2, Search } from "lucide-react";
 
 const formatMonth = (yyyyMm: string) => {
   const [year, month] = yyyyMm.split('-');
@@ -19,6 +19,7 @@ export default function TechnicianView() {
   const [selectedSto, setSelectedSto] = useState<string>("");
   const [selectedTrackerStatus, setSelectedTrackerStatus] = useState<string>("");
   const [selectedDate, setSelectedDate] = useState<string>("");
+  const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [selectedTask, setSelectedTask] = useState<TaskData | null>(null);
   const [confirmData, setConfirmData] = useState<any>(null);
@@ -117,6 +118,16 @@ export default function TechnicianView() {
       return m === selectedDate;
     });
   }
+  if (searchQuery) {
+    const q = searchQuery.toLowerCase();
+    filteredTasks = filteredTasks.filter(t => 
+      (t.order?.toLowerCase() || '').includes(q) ||
+      (t.customerName?.toLowerCase() || '').includes(q) ||
+      (t.address?.toLowerCase() || '').includes(q) ||
+      (t.woId?.toLowerCase() || '').includes(q) ||
+      (t.nik?.toLowerCase() || '').includes(q)
+    );
+  }
 
   const tasksForCounts = tasks.filter(t => {
     if (selectedStatusResume && t.statusResume !== selectedStatusResume) return false;
@@ -125,6 +136,15 @@ export default function TechnicianView() {
       const parts = (t.orderDate || '').split(' ')[0].split('-');
       const m = parts.length >= 2 ? `${parts[0]}-${parts[1]}` : '';
       if (m !== selectedDate) return false;
+    }
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      const match = (t.order?.toLowerCase() || '').includes(q) ||
+                    (t.customerName?.toLowerCase() || '').includes(q) ||
+                    (t.address?.toLowerCase() || '').includes(q) ||
+                    (t.woId?.toLowerCase() || '').includes(q) ||
+                    (t.nik?.toLowerCase() || '').includes(q);
+      if (!match) return false;
     }
     return true;
   });
@@ -196,6 +216,21 @@ export default function TechnicianView() {
                   ))}
                 </select>
               </div>
+            </div>
+          )}
+
+          {tasks.length > 0 && (
+            <div className="mt-3 relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <Search className="h-4 w-4 text-slate-400" />
+              </div>
+              <input
+                type="text"
+                placeholder="Cari order, nama pelanggan, alamat, WO, NIK..."
+                className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 text-slate-900 rounded-lg text-sm focus:ring-blue-500 focus:border-blue-500 outline-none"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
             </div>
           )}
         </div>
