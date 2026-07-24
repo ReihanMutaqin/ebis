@@ -13,7 +13,7 @@ const formatMonth = (yyyyMm: string) => {
 
 export default function TechnicianView() {
   const [witels, setWitels] = useState<string[]>([]);
-  const [selectedWitel, setSelectedWitel] = useState<string>("");
+  const [selectedWitel, setSelectedWitel] = useState<string>("ALL");
   const [tasks, setTasks] = useState<TaskData[]>([]);
   const [selectedStatusResume, setSelectedStatusResume] = useState<string>("");
   const [selectedSto, setSelectedSto] = useState<string>("");
@@ -169,7 +169,7 @@ export default function TechnicianView() {
             value={selectedWitel}
             onChange={(e) => setSelectedWitel(e.target.value)}
           >
-            <option value="">-- Pilih WITEL --</option>
+            <option value="ALL">Semua WITEL (ALL)</option>
             {witels.map(w => (
               <option key={w} value={w}>{w}</option>
             ))}

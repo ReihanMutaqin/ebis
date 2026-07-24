@@ -195,6 +195,10 @@ export async function importDataToFirestore(dataList: any[]): Promise<{ added: n
 }
 
 export async function getTasksByWitel(witel: string): Promise<TaskData[]> {
+  if (witel === "ALL" || !witel) {
+    return getAllTasks();
+  }
+
   if (isLocalMode()) {
     const all = await localforage.getItem<Record<string, TaskData>>(COLLECTION_NAME) || {};
     return Object.values(all).filter(t => t.witel === witel);
