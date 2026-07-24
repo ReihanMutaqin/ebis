@@ -5,7 +5,7 @@ const DEFAULT_BOT_TOKEN = typeof window !== 'undefined' && typeof window.atob ==
   : "";
 
 const TELEGRAM_BOT_TOKEN = import.meta.env.VITE_TELEGRAM_BOT_TOKEN || DEFAULT_BOT_TOKEN;
-const BOT_REMINDER_API = import.meta.env.VITE_TELEGRAM_BOT_URL || "https://ebis-bot.vercel.app/api/reminder";
+const BOT_REMINDER_API = import.meta.env.VITE_TELEGRAM_BOT_URL || "https://bot-ebis-telkom.vercel.app/api/reminder";
 
 export function formatDailyReminderTextWeb(tasks: any[], userProfile: any = null) {
   const now = new Date();
