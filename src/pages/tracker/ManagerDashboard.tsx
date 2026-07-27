@@ -429,13 +429,13 @@ export default function ManagerDashboard() {
           onClick={() => openModal('Total Pekerjaan', filteredTasks)}
           className="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 hover:shadow-lg hover:border-blue-300 transition-all group overflow-hidden relative cursor-pointer"
         >
-          <div className="absolute -right-6 -top-6 w-24 h-24 bg-blue-50 rounded-full group-hover:scale-150 transition-transform duration-500 ease-out z-0"></div>
+          <div className="absolute -right-6 -top-6 w-24 h-24 bg-blue-50 dark:bg-blue-900/20 rounded-full group-hover:scale-150 transition-transform duration-500 ease-out z-0"></div>
           <div className="relative z-10 flex justify-between items-start">
             <div>
               <p className="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Total Pekerjaan</p>
               <h3 className="text-3xl font-black text-slate-800 dark:text-slate-100 mt-2">{totalTasks}</h3>
             </div>
-            <div className="p-3 bg-blue-100 text-blue-600 rounded-xl">
+            <div className="p-3 bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 rounded-xl">
               <Briefcase className="w-6 h-6" />
             </div>
           </div>
@@ -445,7 +445,7 @@ export default function ManagerDashboard() {
           onClick={() => openModal('Pekerjaan Selesai', filteredTasks.filter(t => t.trackerStatus === 'Completed'))}
           className="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 hover:shadow-lg hover:border-emerald-300 transition-all group overflow-hidden relative cursor-pointer"
         >
-          <div className="absolute -right-6 -top-6 w-24 h-24 bg-emerald-50 rounded-full group-hover:scale-150 transition-transform duration-500 ease-out z-0"></div>
+          <div className="absolute -right-6 -top-6 w-24 h-24 bg-emerald-50 dark:bg-emerald-900/20 rounded-full group-hover:scale-150 transition-transform duration-500 ease-out z-0"></div>
           <div className="relative z-10 flex justify-between items-start">
             <div>
               <p className="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Completion Rate</p>
@@ -456,7 +456,7 @@ export default function ManagerDashboard() {
                 </span>
               </div>
             </div>
-            <div className="p-3 bg-emerald-100 text-emerald-600 rounded-xl">
+            <div className="p-3 bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400 rounded-xl">
               <CheckCircle className="w-6 h-6" />
             </div>
           </div>
@@ -466,13 +466,13 @@ export default function ManagerDashboard() {
           onClick={() => openModal('Total Kendala', filteredTasks.filter(t => t.trackerStatus === 'Kendala'))}
           className="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 hover:shadow-lg hover:border-amber-300 transition-all group overflow-hidden relative cursor-pointer"
         >
-          <div className="absolute -right-6 -top-6 w-24 h-24 bg-amber-50 rounded-full group-hover:scale-150 transition-transform duration-500 ease-out z-0"></div>
+          <div className="absolute -right-6 -top-6 w-24 h-24 bg-amber-50 dark:bg-amber-900/20 rounded-full group-hover:scale-150 transition-transform duration-500 ease-out z-0"></div>
           <div className="relative z-10 flex justify-between items-start">
             <div>
               <p className="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Total Kendala</p>
               <h3 className="text-3xl font-black text-amber-600 mt-2">{totalKendala}</h3>
             </div>
-            <div className="p-3 bg-amber-100 text-amber-600 rounded-xl">
+            <div className="p-3 bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 rounded-xl">
               <AlertTriangle className="w-6 h-6" />
             </div>
           </div>
@@ -485,13 +485,13 @@ export default function ManagerDashboard() {
           }}
           className="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 hover:shadow-lg hover:border-indigo-300 transition-all group overflow-hidden relative cursor-pointer"
         >
-          <div className="absolute -right-6 -top-6 w-24 h-24 bg-indigo-50 rounded-full group-hover:scale-150 transition-transform duration-500 ease-out z-0"></div>
+          <div className="absolute -right-6 -top-6 w-24 h-24 bg-indigo-50 dark:bg-indigo-900/20 rounded-full group-hover:scale-150 transition-transform duration-500 ease-out z-0"></div>
           <div className="relative z-10 flex justify-between items-start">
             <div>
               <p className="text-sm font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Teknisi Aktif</p>
               <h3 className="text-3xl font-black text-indigo-600 mt-2">{activeTechnicians}</h3>
             </div>
-            <div className="p-3 bg-indigo-100 text-indigo-600 rounded-xl">
+            <div className="p-3 bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400 rounded-xl">
               <Users className="w-6 h-6" />
             </div>
           </div>
@@ -507,7 +507,7 @@ export default function ManagerDashboard() {
           <div className="flex-1 min-h-0">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={trendData} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="currentColor" className="text-slate-100 dark:text-slate-700" />
                 <XAxis 
                   dataKey="date" 
                   tick={{fontSize: 12, fill: '#64748b'}} 
@@ -520,7 +520,7 @@ export default function ManagerDashboard() {
                 />
                 <YAxis tick={{fontSize: 12, fill: '#64748b'}} axisLine={false} tickLine={false} />
                 <Tooltip 
-                  contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)' }}
+                  contentStyle={{ borderRadius: '12px', border: 'none', backgroundColor: 'transparent' }} wrapperClassName="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-xl shadow-lg border border-slate-100 dark:border-slate-700"
                   labelFormatter={(val) => {
                     const d = parseISO(val as string);
                     return isValid(d) ? format(d, 'dd MMMM yyyy', { locale: id }) : val;
@@ -573,7 +573,7 @@ export default function ManagerDashboard() {
                   ))}
                 </Pie>
                 <Tooltip 
-                  contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)' }}
+                  contentStyle={{ borderRadius: '12px', border: 'none', backgroundColor: 'transparent' }} wrapperClassName="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-xl shadow-lg border border-slate-100 dark:border-slate-700"
                   itemStyle={{ fontWeight: 'bold' }}
                 />
                 <Legend iconType="circle" wrapperStyle={{ fontSize: '12px', paddingTop: '10px' }} />
@@ -590,12 +590,12 @@ export default function ManagerDashboard() {
             <div className="flex-1 min-h-0">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={witelData} margin={{ top: 5, right: 0, left: -20, bottom: 5 }}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="currentColor" className="text-slate-100 dark:text-slate-700" />
                   <XAxis dataKey="witel" tick={{fontSize: 12, fill: '#64748b'}} axisLine={false} tickLine={false} />
                   <YAxis tick={{fontSize: 12, fill: '#64748b'}} axisLine={false} tickLine={false} />
                   <Tooltip 
-                    contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)' }}
-                    cursor={{fill: '#f8fafc'}}
+                    contentStyle={{ borderRadius: '12px', border: 'none', backgroundColor: 'transparent' }} wrapperClassName="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-xl shadow-lg border border-slate-100 dark:border-slate-700"
+                    cursor={{fill: "currentColor"}} className="text-slate-50 dark:text-slate-700/50"
                   />
                   <Legend iconType="circle" wrapperStyle={{ fontSize: '12px', paddingTop: '10px' }} />
                   <Bar 
@@ -627,12 +627,12 @@ export default function ManagerDashboard() {
             <div className="flex-1 min-h-0">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={stoData} margin={{ top: 5, right: 0, left: -20, bottom: 5 }}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="currentColor" className="text-slate-100 dark:text-slate-700" />
                   <XAxis dataKey="sto" tick={{fontSize: 11, fill: '#64748b'}} axisLine={false} tickLine={false} interval={0} angle={-45} textAnchor="end" height={60} />
                   <YAxis tick={{fontSize: 12, fill: '#64748b'}} axisLine={false} tickLine={false} />
                   <Tooltip 
-                    contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)' }}
-                    cursor={{fill: '#f8fafc'}}
+                    contentStyle={{ borderRadius: '12px', border: 'none', backgroundColor: 'transparent' }} wrapperClassName="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-xl shadow-lg border border-slate-100 dark:border-slate-700"
+                    cursor={{fill: "currentColor"}} className="text-slate-50 dark:text-slate-700/50"
                   />
                   <Legend iconType="circle" wrapperStyle={{ fontSize: '12px', paddingTop: '10px' }} />
                   <Bar 
@@ -663,12 +663,12 @@ export default function ManagerDashboard() {
           <div className="flex-1 min-h-0">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={serviceTypeData.slice(0, 10)} layout="vertical" margin={{ top: 5, right: 30, left: 60, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} stroke="#f1f5f9" />
+                <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} stroke="currentColor" className="text-slate-100 dark:text-slate-700" />
                 <XAxis type="number" tick={{fontSize: 12, fill: '#64748b'}} axisLine={false} tickLine={false} />
                 <YAxis dataKey="name" type="category" tick={{fontSize: 11, fill: '#475569'}} axisLine={false} tickLine={false} width={150} />
                 <Tooltip 
-                  contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)' }}
-                  cursor={{fill: '#f8fafc'}}
+                  contentStyle={{ borderRadius: '12px', border: 'none', backgroundColor: 'transparent' }} wrapperClassName="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-xl shadow-lg border border-slate-100 dark:border-slate-700"
+                  cursor={{fill: "currentColor"}} className="text-slate-50 dark:text-slate-700/50"
                 />
                 <Bar 
                   dataKey="value" fill="#6366f1" radius={[0, 4, 4, 0]} barSize={20}
@@ -694,7 +694,7 @@ export default function ManagerDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
         <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-amber-200 flex flex-col h-[500px] overflow-hidden relative">
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-400 to-amber-500"></div>
-          <div className="p-5 border-b border-amber-100 bg-amber-50/30">
+          <div className="p-5 border-b border-amber-100 bg-amber-50 dark:bg-amber-900/20/30">
             <h2 className="text-lg font-bold text-amber-800 flex items-center gap-2">
               <AlertTriangle className="w-5 h-5" /> Catatan Kendala Terbaru
             </h2>
@@ -709,7 +709,7 @@ export default function ManagerDashboard() {
                 <div className="flex justify-between items-start mb-2 pl-2">
                   <div>
                     <span className="font-bold text-slate-800 dark:text-slate-100 text-sm block">{t.order}</span>
-                    <span className="text-xs font-semibold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full mt-1 inline-block">
+                    <span className="text-xs font-semibold text-amber-600 bg-amber-50 dark:bg-amber-900/20 px-2 py-0.5 rounded-full mt-1 inline-block">
                       {t.witel} - {t.sto}
                     </span>
                   </div>
@@ -738,7 +738,7 @@ export default function ManagerDashboard() {
         
         <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-blue-200 flex flex-col h-[500px] overflow-hidden relative">
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-400 to-blue-500"></div>
-          <div className="p-5 border-b border-blue-100 bg-blue-50/30">
+          <div className="p-5 border-b border-blue-100 bg-blue-50 dark:bg-blue-900/20/30">
             <h2 className="text-lg font-bold text-blue-800 flex items-center gap-2 mb-4">
               <Users className="w-5 h-5" /> Aktivitas Teknisi Lapangan
             </h2>
