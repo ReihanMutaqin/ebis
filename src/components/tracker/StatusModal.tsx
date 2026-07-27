@@ -17,7 +17,7 @@ export function StatusModal({ isOpen, status, title, message, count, onClose }: 
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-md animate-in fade-in duration-200">
-      <div className="relative w-full max-w-md bg-white rounded-3xl shadow-2xl border border-slate-100 p-6 overflow-hidden animate-in zoom-in-95 duration-300">
+      <div className="relative w-full max-w-md bg-white dark:bg-slate-800 rounded-3xl shadow-2xl border border-slate-100 dark:border-slate-700 p-6 overflow-hidden animate-in zoom-in-95 duration-300">
         
         {/* Top Glow Accent */}
         {status === "loading" && (
@@ -56,10 +56,10 @@ export function StatusModal({ isOpen, status, title, message, count, onClose }: 
 
           {/* Title & Description */}
           <div>
-            <h3 className="text-xl font-extrabold text-slate-900 tracking-tight">
+            <h3 className="text-xl font-extrabold text-slate-900 dark:text-white tracking-tight">
               {title}
             </h3>
-            <p className="text-sm font-medium text-slate-500 mt-2 leading-relaxed px-2">
+            <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mt-2 leading-relaxed px-2">
               {message}
             </p>
           </div>

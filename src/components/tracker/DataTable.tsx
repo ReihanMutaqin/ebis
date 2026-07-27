@@ -295,11 +295,11 @@ export function DataTable({ data }: DataTableProps) {
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden flex flex-col mt-6 transition-all duration-300">
-      <div className="p-5 border-b border-slate-200 flex flex-col sm:flex-row justify-between items-start sm:items-center bg-slate-50/80 gap-4">
+    <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-md border border-slate-200 dark:border-slate-700 overflow-hidden flex flex-col mt-6 transition-all duration-300">
+      <div className="p-5 border-b border-slate-200 dark:border-slate-700 flex flex-col sm:flex-row justify-between items-start sm:items-center bg-slate-50 dark:bg-slate-900/50/80 gap-4">
         <div>
-          <h2 className="text-xl font-extrabold text-slate-800 tracking-tight">Full Detail Order</h2>
-          <div className="text-sm text-slate-500 font-medium mt-1">
+          <h2 className="text-xl font-extrabold text-slate-800 dark:text-slate-100 tracking-tight">Full Detail Order</h2>
+          <div className="text-sm text-slate-500 dark:text-slate-400 font-medium mt-1">
             Menampilkan {filteredData.length} dari {data.length} data
           </div>
         </div>
@@ -318,18 +318,18 @@ export function DataTable({ data }: DataTableProps) {
           )}
           <div className="relative flex-1 sm:flex-none">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <Search className="w-4 h-4 text-slate-400" />
+              <Search className="w-4 h-4 text-slate-400 dark:text-slate-500" />
             </div>
             <input 
               type="text" 
               placeholder="Cari data..." 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-9 pr-4 py-2.5 border border-slate-300 rounded-lg text-sm focus:ring-blue-500 focus:border-blue-500 w-full outline-none transition-all shadow-sm"
+              className="pl-9 pr-4 py-2.5 border border-slate-300 dark:border-slate-600 rounded-lg text-sm focus:ring-blue-500 focus:border-blue-500 w-full outline-none transition-all shadow-sm"
             />
           </div>
           <select
-            className="bg-white border border-slate-300 text-slate-700 rounded-lg p-2.5 text-sm focus:ring-blue-500 focus:border-blue-500 outline-none font-semibold shadow-sm"
+            className="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 rounded-lg p-2.5 text-sm focus:ring-blue-500 focus:border-blue-500 outline-none font-semibold shadow-sm"
             value={exportStatus}
             onChange={(e) => setExportStatus(e.target.value)}
           >
@@ -352,12 +352,12 @@ export function DataTable({ data }: DataTableProps) {
       
       <div className="overflow-x-auto max-h-[600px] min-h-[400px] relative rounded-b-2xl">
         <table className="w-full text-sm text-left border-collapse">
-          <thead className="text-xs text-slate-600 bg-slate-100 uppercase sticky top-0 z-20 shadow-sm ring-1 ring-slate-200">
+          <thead className="text-xs text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 uppercase sticky top-0 z-20 shadow-sm ring-1 ring-slate-200">
             <tr>
-              <th className="px-4 py-4 border-b border-slate-200 bg-slate-100/95 sticky left-0 z-30">
+              <th className="px-4 py-4 border-b border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-700/95 sticky left-0 z-30">
                 <input
                   type="checkbox"
-                  className="rounded border-slate-300 text-blue-600 focus:ring-blue-500 w-4 h-4 cursor-pointer"
+                  className="rounded border-slate-300 dark:border-slate-600 text-blue-600 focus:ring-blue-500 w-4 h-4 cursor-pointer"
                   checked={paginatedData.length > 0 && paginatedData.every(row => selectedRows.has(row.id))}
                   onChange={(e) => {
                     const newSet = new Set(selectedRows);
@@ -376,22 +376,22 @@ export function DataTable({ data }: DataTableProps) {
                 const isOpen = openFilter === col.key;
                 
                 return (
-                  <th key={col.key} className="px-5 py-4 border-b border-slate-200 font-extrabold whitespace-nowrap bg-slate-100/95 relative">
+                  <th key={col.key} className="px-5 py-4 border-b border-slate-200 dark:border-slate-700 font-extrabold whitespace-nowrap bg-slate-100 dark:bg-slate-700/95 relative">
                     <div 
                       className="flex items-center justify-between gap-3 cursor-pointer hover:text-blue-600 select-none group transition-colors duration-200"
                       onClick={() => setOpenFilter(isOpen ? null : col.key)}
                     >
                       {col.label}
-                      <Filter className={`w-4 h-4 transition-transform ${isOpen ? 'text-blue-500 rotate-180' : isActive ? 'text-blue-500' : 'text-slate-400 group-hover:text-blue-400'}`} />
+                      <Filter className={`w-4 h-4 transition-transform ${isOpen ? 'text-blue-500 rotate-180' : isActive ? 'text-blue-500' : 'text-slate-400 dark:text-slate-500 group-hover:text-blue-400'}`} />
                     </div>
                     
                     {isOpen && (
-                      <div ref={filterRef} className="absolute top-full mt-2 left-0 bg-white border border-slate-200 rounded-xl shadow-xl w-64 z-50 normal-case font-normal text-slate-700 ring-1 ring-black/5">
+                      <div ref={filterRef} className="absolute top-full mt-2 left-0 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-xl w-64 z-50 normal-case font-normal text-slate-700 dark:text-slate-300 ring-1 ring-black/5">
                         <div className="max-h-48 overflow-y-auto p-2 space-y-1">
-                          <label className="flex items-center gap-2 p-1 hover:bg-slate-50 rounded cursor-pointer border-b border-slate-100 mb-1 pb-2">
+                          <label className="flex items-center gap-2 p-1 hover:bg-slate-50 dark:bg-slate-900/50 rounded cursor-pointer border-b border-slate-100 dark:border-slate-700 mb-1 pb-2">
                             <input 
                               type="checkbox" 
-                              className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                              className="rounded border-slate-300 dark:border-slate-600 text-blue-600 focus:ring-blue-500"
                               checked={(filters[col.key]?.size || 0) === uniqueVals.length && uniqueVals.length > 0}
                               onChange={(e) => {
                                 if (e.target.checked) selectAll(col.key, uniqueVals);
@@ -404,10 +404,10 @@ export function DataTable({ data }: DataTableProps) {
                             const checked = filters[col.key]?.has(val);
                             const displayVal = val;
                             return (
-                              <label key={val} className="flex items-center gap-2 p-1 hover:bg-slate-50 rounded cursor-pointer">
+                              <label key={val} className="flex items-center gap-2 p-1 hover:bg-slate-50 dark:bg-slate-900/50 rounded cursor-pointer">
                                 <input 
                                   type="checkbox" 
-                                  className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                                  className="rounded border-slate-300 dark:border-slate-600 text-blue-600 focus:ring-blue-500"
                                   checked={checked || false}
                                   onChange={() => toggleFilter(col.key, val)}
                                 />
@@ -423,7 +423,7 @@ export function DataTable({ data }: DataTableProps) {
               })}
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100 bg-white">
+          <tbody className="divide-y divide-slate-100 dark:divide-slate-700/50 bg-white dark:bg-slate-800">
             {paginatedData.length > 0 ? (
               paginatedData.map((row, i) => {
                 const isSelected = selectedRows.has(row.id);
@@ -433,10 +433,10 @@ export function DataTable({ data }: DataTableProps) {
                     className={`hover:bg-blue-50/60 transition-colors duration-150 cursor-pointer group ${isSelected ? 'bg-blue-50/80' : ''}`}
                     onClick={() => setSelectedRow(row)}
                   >
-                    <td className="px-4 py-3 border-slate-100 sticky left-0 z-10 bg-inherit" onClick={e => e.stopPropagation()}>
+                    <td className="px-4 py-3 border-slate-100 dark:border-slate-700 sticky left-0 z-10 bg-inherit" onClick={e => e.stopPropagation()}>
                       <input
                         type="checkbox"
-                        className="rounded border-slate-300 text-blue-600 focus:ring-blue-500 w-4 h-4 cursor-pointer"
+                        className="rounded border-slate-300 dark:border-slate-600 text-blue-600 focus:ring-blue-500 w-4 h-4 cursor-pointer"
                         checked={isSelected}
                         onChange={(e) => {
                           e.stopPropagation();
@@ -458,7 +458,7 @@ export function DataTable({ data }: DataTableProps) {
                         displayVal = getFilterValue(col.key, displayVal);
                       }
                       return (
-                        <td key={col.key} className="px-5 py-3.5 text-slate-700 font-medium truncate max-w-[220px] group-hover:text-slate-900" title={String(row[col.key] || '')}>
+                        <td key={col.key} className="px-5 py-3.5 text-slate-700 dark:text-slate-300 font-medium truncate max-w-[220px] group-hover:text-slate-900 dark:text-white" title={String(row[col.key] || '')}>
                           {displayVal || '-'}
                         </td>
                       );
@@ -469,7 +469,7 @@ export function DataTable({ data }: DataTableProps) {
             ) : (
               <tr>
                 <td colSpan={COLUMNS.length + 1} className="px-5 py-12 text-center">
-                  <div className="text-slate-400 font-medium text-lg">Tidak ada data yang sesuai filter.</div>
+                  <div className="text-slate-400 dark:text-slate-500 font-medium text-lg">Tidak ada data yang sesuai filter.</div>
                 </td>
               </tr>
             )}
@@ -478,7 +478,7 @@ export function DataTable({ data }: DataTableProps) {
       </div>
 
       {totalPages > 1 && (
-        <div className="p-4 border-t border-slate-200 flex flex-col sm:flex-row justify-between items-center bg-slate-50 text-xs font-semibold text-slate-600 gap-3">
+        <div className="p-4 border-t border-slate-200 dark:border-slate-700 flex flex-col sm:flex-row justify-between items-center bg-slate-50 dark:bg-slate-900/50 text-xs font-semibold text-slate-600 dark:text-slate-300 gap-3">
           <div>
             Menampilkan halaman {currentPage} dari {totalPages} ({filteredData.length} total data)
           </div>
@@ -486,22 +486,22 @@ export function DataTable({ data }: DataTableProps) {
             <button
               disabled={currentPage === 1}
               onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-              className="px-3 py-1.5 rounded-lg border border-slate-300 bg-white hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors shadow-sm"
+              className="px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors shadow-sm"
             >
               Sebelumnya
             </button>
-            <span className="px-2 font-bold text-slate-800">{currentPage} / {totalPages}</span>
+            <span className="px-2 font-bold text-slate-800 dark:text-slate-100">{currentPage} / {totalPages}</span>
             <button
               disabled={currentPage === totalPages}
               onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-              className="px-3 py-1.5 rounded-lg border border-slate-300 bg-white hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors shadow-sm"
+              className="px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors shadow-sm"
             >
               Berikutnya
             </button>
             <select
               value={pageSize}
               onChange={(e) => setPageSize(Number(e.target.value))}
-              className="ml-2 border border-slate-300 rounded-lg p-1.5 bg-white outline-none font-semibold text-slate-700 shadow-sm"
+              className="ml-2 border border-slate-300 dark:border-slate-600 rounded-lg p-1.5 bg-white dark:bg-slate-800 outline-none font-semibold text-slate-700 dark:text-slate-300 shadow-sm"
             >
               <option value={25}>25 / hal</option>
               <option value={50}>50 / hal</option>
@@ -513,9 +513,9 @@ export function DataTable({ data }: DataTableProps) {
 
       {selectedRow && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm transition-opacity">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col transform transition-all">
-            <div className="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50 rounded-t-2xl">
-              <h2 className="text-xl font-extrabold text-slate-800 tracking-tight">Detail Order: {selectedRow.order}</h2>
+          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col transform transition-all">
+            <div className="p-5 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-900/50 rounded-t-2xl">
+              <h2 className="text-xl font-extrabold text-slate-800 dark:text-slate-100 tracking-tight">Detail Order: {selectedRow.order}</h2>
               <div className="flex gap-2">
                 <button 
                   onClick={async () => {
@@ -530,14 +530,14 @@ export function DataTable({ data }: DataTableProps) {
                       }
                     }
                   }}
-                  className="p-2 bg-white hover:bg-red-500 hover:text-white text-slate-400 rounded-full transition-colors shadow-sm ring-1 ring-slate-200 hover:ring-red-500"
+                  className="p-2 bg-white dark:bg-slate-800 hover:bg-red-500 hover:text-white text-slate-400 dark:text-slate-500 rounded-full transition-colors shadow-sm ring-1 ring-slate-200 hover:ring-red-500"
                   title="Sembunyikan Order (Anomali)"
                 >
                   <Trash2 className="w-5 h-5" />
                 </button>
                 <button 
                   onClick={() => setSelectedRow(null)}
-                  className="p-2 bg-white hover:bg-slate-500 hover:text-white text-slate-400 rounded-full transition-colors shadow-sm ring-1 ring-slate-200 hover:ring-slate-500"
+                  className="p-2 bg-white dark:bg-slate-800 hover:bg-slate-500 hover:text-white text-slate-400 dark:text-slate-500 rounded-full transition-colors shadow-sm ring-1 ring-slate-200 hover:ring-slate-500"
                   title="Tutup"
                 >
                   <X className="w-5 h-5" />
@@ -545,16 +545,16 @@ export function DataTable({ data }: DataTableProps) {
               </div>
             </div>
             
-            <div className="p-6 overflow-y-auto grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50/30">
+            <div className="p-6 overflow-y-auto grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50 dark:bg-slate-900/50/30">
               {COLUMNS.map(col => {
                 let val = String(selectedRow[col.key] || '');
                 if (col.key === 'orderDate') {
                   val = val.split(' ')[0];
                 }
                 return (
-                  <div key={col.key} className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-                    <span className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">{col.label}</span>
-                    <span className="block text-sm font-semibold text-slate-800 break-words">
+                  <div key={col.key} className="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                    <span className="block text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1">{col.label}</span>
+                    <span className="block text-sm font-semibold text-slate-800 dark:text-slate-100 break-words">
                       {val || '-'}
                     </span>
                   </div>
@@ -586,7 +586,7 @@ export function DataTable({ data }: DataTableProps) {
       {/* Batch Anomaly Custom Modal */}
       {showBatchModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl p-6 overflow-hidden animate-in zoom-in-95 duration-200">
+          <div className="relative w-full max-w-md bg-white dark:bg-slate-800 rounded-2xl shadow-2xl p-6 overflow-hidden animate-in zoom-in-95 duration-200">
             <div className="text-center space-y-4">
               
               <div className="flex justify-center">
@@ -613,13 +613,13 @@ export function DataTable({ data }: DataTableProps) {
               </div>
 
               <div>
-                <h3 className="text-xl font-bold text-slate-800">
+                <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100">
                   {batchStatus === "confirm" && "Pindah ke Anomali?"}
                   {batchStatus === "loading" && "Memproses..."}
                   {batchStatus === "success" && "Berhasil!"}
                   {batchStatus === "error" && "Gagal Memproses"}
                 </h3>
-                <p className="text-sm text-slate-500 mt-2">
+                <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">
                   {batchStatus === "confirm" && `Anda akan memindahkan ${selectedRows.size} order yang dipilih ke database Anomali. Order ini akan disembunyikan dari tabel utama.`}
                   {batchStatus === "loading" && "Sedang memindahkan data ke database anomali, mohon tunggu sebentar."}
                   {batchStatus === "success" && "Semua order yang dipilih telah berhasil dipindahkan. Memuat ulang halaman..."}
@@ -631,7 +631,7 @@ export function DataTable({ data }: DataTableProps) {
                 <div className="flex justify-center gap-3 pt-4">
                   <button
                     onClick={() => setShowBatchModal(false)}
-                    className="px-4 py-2 rounded-lg font-semibold text-slate-600 hover:bg-slate-100 transition-colors"
+                    className="px-4 py-2 rounded-lg font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:bg-slate-700 transition-colors"
                   >
                     Batal
                   </button>
@@ -647,7 +647,7 @@ export function DataTable({ data }: DataTableProps) {
                 <div className="flex justify-center gap-3 pt-4">
                   <button
                     onClick={() => setShowBatchModal(false)}
-                    className="px-4 py-2 rounded-lg font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors"
+                    className="px-4 py-2 rounded-lg font-semibold bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:bg-slate-700 transition-colors"
                   >
                     Tutup
                   </button>
