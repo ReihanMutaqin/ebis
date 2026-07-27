@@ -268,7 +268,7 @@ export default function TechnicianView() {
             <div 
               key={task.id}
               onClick={() => setSelectedTask(task)}
-              className={`p-4 rounded-lg cursor-pointer border transition-all ${selectedTask?.id === task.id ? 'border-blue-500 bg-blue-50 shadow-sm' : 'border-slate-100 dark:border-slate-700 hover:border-blue-300 hover:bg-slate-50 dark:bg-slate-900/50'}`}
+              className={`p-4 rounded-lg cursor-pointer border transition-all ${selectedTask?.id === task.id ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/30 shadow-sm' : 'border-slate-100 dark:border-slate-700 hover:border-blue-300 hover:bg-slate-50 dark:hover:bg-slate-900/50'}`}
             >
               <div className="flex justify-between items-start mb-2">
                 <span className="font-bold text-slate-800 dark:text-slate-100">{task.order}</span>
@@ -289,7 +289,7 @@ export default function TechnicianView() {
       <div className="w-full lg:w-2/3 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden flex flex-col min-h-[50vh]">
         {selectedTask ? (
           <>
-            <div className="p-6 border-b border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50/50">
+            <div className="p-6 border-b border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50">
               <div className="flex justify-between items-start">
                 <div>
                   <h2 className="text-2xl font-bold text-slate-900 dark:text-white">{selectedTask.order}</h2>
@@ -502,7 +502,7 @@ export default function TechnicianView() {
                 <button 
                   onClick={() => setConfirmData(null)}
                   disabled={loading}
-                  className="flex-1 px-4 py-2 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold rounded-lg transition-colors"
+                  className="flex-1 px-4 py-2 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 font-bold rounded-lg transition-colors"
                 >
                   Batal
                 </button>
