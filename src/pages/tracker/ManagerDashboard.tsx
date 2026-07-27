@@ -595,7 +595,7 @@ export default function ManagerDashboard() {
                   <YAxis tick={{fontSize: 12, fill: '#64748b'}} axisLine={false} tickLine={false} />
                   <Tooltip 
                     contentStyle={{ borderRadius: '12px', border: 'none', backgroundColor: 'transparent' }} wrapperClassName="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-xl shadow-lg border border-slate-100 dark:border-slate-700"
-                    cursor={{fill: "currentColor"}} className="text-slate-50 dark:text-slate-700/50"
+                    cursor={{fill: "currentColor", className: "text-slate-50 dark:text-slate-700/50"}}
                   />
                   <Legend iconType="circle" wrapperStyle={{ fontSize: '12px', paddingTop: '10px' }} />
                   <Bar 
@@ -632,7 +632,7 @@ export default function ManagerDashboard() {
                   <YAxis tick={{fontSize: 12, fill: '#64748b'}} axisLine={false} tickLine={false} />
                   <Tooltip 
                     contentStyle={{ borderRadius: '12px', border: 'none', backgroundColor: 'transparent' }} wrapperClassName="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-xl shadow-lg border border-slate-100 dark:border-slate-700"
-                    cursor={{fill: "currentColor"}} className="text-slate-50 dark:text-slate-700/50"
+                    cursor={{fill: "currentColor", className: "text-slate-50 dark:text-slate-700/50"}}
                   />
                   <Legend iconType="circle" wrapperStyle={{ fontSize: '12px', paddingTop: '10px' }} />
                   <Bar 
@@ -668,7 +668,7 @@ export default function ManagerDashboard() {
                 <YAxis dataKey="name" type="category" tick={{fontSize: 11, fill: '#475569'}} axisLine={false} tickLine={false} width={150} />
                 <Tooltip 
                   contentStyle={{ borderRadius: '12px', border: 'none', backgroundColor: 'transparent' }} wrapperClassName="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-xl shadow-lg border border-slate-100 dark:border-slate-700"
-                  cursor={{fill: "currentColor"}} className="text-slate-50 dark:text-slate-700/50"
+                  cursor={{fill: "currentColor", className: "text-slate-50 dark:text-slate-700/50"}}
                 />
                 <Bar 
                   dataKey="value" fill="#6366f1" radius={[0, 4, 4, 0]} barSize={20}
