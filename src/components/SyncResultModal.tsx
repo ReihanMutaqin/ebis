@@ -1,16 +1,44 @@
-import { CheckCircle2, Info } from 'lucide-react';
+import { useState } from 'react';
+import { CheckCircle2, Info, ChevronDown, ChevronUp } from 'lucide-react';
 
 interface SyncResultModalProps {
   isOpen: boolean;
   onClose: () => void;
-  result: { added: number; duplicates: number; unchanged: number } | null;
+  result: { 
+    added: number; 
+    duplicates: number; 
+    unchanged: number;
+    addedItems?: any[];
+    updatedItems?: any[];
+    skippedItems?: any[];
+  } | null;
 }
 
 export function SyncResultModal({ isOpen, onClose, result }: SyncResultModalProps) {
   if (!isOpen || !result) return null;
 
+  const [activeDetail, setActiveDetail] = useState<'added' | 'duplicates' | 'unchanged' | null>(null);
+
   const total = result.added + result.duplicates;
   const isAllExists = total === 0;
+
+  const toggleDetail = (type: 'added' | 'duplicates' | 'unchanged') => {
+    setActiveDetail(prev => prev === type ? null : type);
+  };
+
+  const renderDetailList = (items: any[] | undefined, emptyMessage: string) => {
+    if (!items || items.length === 0) return <div className="text-sm text-slate-500 py-2">{emptyMessage}</div>;
+    return (
+      <div className="mt-2 max-h-40 overflow-y-auto space-y-1 pr-1 custom-scrollbar">
+        {items.map((item, idx) => (
+          <div key={idx} className="text-xs p-2 bg-white dark:bg-slate-800 rounded border border-slate-100 dark:border-slate-700 flex justify-between items-center">
+            <span className="font-medium text-slate-700 dark:text-slate-300">{item['ORDER'] || 'Unknown Order'}</span>
+            <span className="text-slate-500 truncate max-w-[150px]" title={item['NAMA CUST']}>{item['NAMA CUST'] || item['STATUS RESUME'] || ''}</span>
+          </div>
+        ))}
+      </div>
+    );
+  };
 
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-in fade-in duration-200">
@@ -38,23 +66,70 @@ export function SyncResultModal({ isOpen, onClose, result }: SyncResultModalProp
         {/* Content */}
         <div className="p-6">
           <div className="space-y-3">
-            <div className="flex items-center justify-between p-3.5 rounded-xl bg-slate-50 dark:bg-slate-700/50 border border-slate-100 dark:border-slate-700">
-              <span className="text-sm font-semibold text-slate-600 dark:text-slate-300">Data Baru Ditambahkan</span>
-              <span className={`text-lg font-black ${result.added > 0 ? 'text-green-600 dark:text-green-400' : 'text-slate-400 dark:text-slate-500'}`}>
-                {result.added}
-              </span>
+            {/* Added */}
+            <div className="border border-slate-100 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-700/50 overflow-hidden transition-all">
+              <button 
+                onClick={() => toggleDetail('added')}
+                disabled={result.added === 0}
+                className="w-full flex items-center justify-between p-3.5 focus:outline-none hover:bg-slate-100 dark:hover:bg-slate-700/80 transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
+              >
+                <div className="flex items-center gap-2 text-sm font-semibold text-slate-600 dark:text-slate-300">
+                  Data Baru Ditambahkan
+                  {result.added > 0 && (activeDetail === 'added' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />)}
+                </div>
+                <span className={`text-lg font-black ${result.added > 0 ? 'text-green-600 dark:text-green-400' : 'text-slate-400 dark:text-slate-500'}`}>
+                  {result.added}
+                </span>
+              </button>
+              {activeDetail === 'added' && result.added > 0 && (
+                <div className="px-3.5 pb-3.5 pt-0 border-t border-slate-100 dark:border-slate-600/50">
+                  {renderDetailList(result.addedItems, 'Tidak ada data baru')}
+                </div>
+              )}
             </div>
-            <div className="flex items-center justify-between p-3.5 rounded-xl bg-slate-50 dark:bg-slate-700/50 border border-slate-100 dark:border-slate-700">
-              <span className="text-sm font-semibold text-slate-600 dark:text-slate-300">Data Diperbarui (Update)</span>
-              <span className={`text-lg font-black ${result.duplicates > 0 ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400 dark:text-slate-500'}`}>
-                {result.duplicates}
-              </span>
+
+            {/* Updated */}
+            <div className="border border-slate-100 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-700/50 overflow-hidden transition-all">
+              <button 
+                onClick={() => toggleDetail('duplicates')}
+                disabled={result.duplicates === 0}
+                className="w-full flex items-center justify-between p-3.5 focus:outline-none hover:bg-slate-100 dark:hover:bg-slate-700/80 transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
+              >
+                <div className="flex items-center gap-2 text-sm font-semibold text-slate-600 dark:text-slate-300">
+                  Data Diperbarui (Update)
+                  {result.duplicates > 0 && (activeDetail === 'duplicates' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />)}
+                </div>
+                <span className={`text-lg font-black ${result.duplicates > 0 ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400 dark:text-slate-500'}`}>
+                  {result.duplicates}
+                </span>
+              </button>
+              {activeDetail === 'duplicates' && result.duplicates > 0 && (
+                <div className="px-3.5 pb-3.5 pt-0 border-t border-slate-100 dark:border-slate-600/50">
+                  {renderDetailList(result.updatedItems, 'Tidak ada data diperbarui')}
+                </div>
+              )}
             </div>
-            <div className="flex items-center justify-between p-3.5 rounded-xl bg-slate-50 dark:bg-slate-700/50 border border-slate-100 dark:border-slate-700">
-              <span className="text-sm font-semibold text-slate-600 dark:text-slate-300">Data Sudah Ada (Dilewati)</span>
-              <span className={`text-lg font-black ${result.unchanged > 0 ? 'text-amber-500 dark:text-amber-400' : 'text-slate-400 dark:text-slate-500'}`}>
-                {result.unchanged}
-              </span>
+
+            {/* Skipped */}
+            <div className="border border-slate-100 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-700/50 overflow-hidden transition-all">
+              <button 
+                onClick={() => toggleDetail('unchanged')}
+                disabled={result.unchanged === 0}
+                className="w-full flex items-center justify-between p-3.5 focus:outline-none hover:bg-slate-100 dark:hover:bg-slate-700/80 transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
+              >
+                <div className="flex items-center gap-2 text-sm font-semibold text-slate-600 dark:text-slate-300">
+                  Data Sudah Ada (Dilewati)
+                  {result.unchanged > 0 && (activeDetail === 'unchanged' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />)}
+                </div>
+                <span className={`text-lg font-black ${result.unchanged > 0 ? 'text-amber-500 dark:text-amber-400' : 'text-slate-400 dark:text-slate-500'}`}>
+                  {result.unchanged}
+                </span>
+              </button>
+              {activeDetail === 'unchanged' && result.unchanged > 0 && (
+                <div className="px-3.5 pb-3.5 pt-0 border-t border-slate-100 dark:border-slate-600/50">
+                  {renderDetailList(result.skippedItems, 'Tidak ada data dilewati')}
+                </div>
+              )}
             </div>
           </div>
 

@@ -33,9 +33,12 @@ function isLocalMode() {
   return !import.meta.env.VITE_FIREBASE_API_KEY || import.meta.env.VITE_FIREBASE_API_KEY === "dummy-api-key";
 }
 
-export async function importDataToFirestore(dataList: any[]): Promise<{ added: number, duplicates: number }> {
+export async function importDataToFirestore(dataList: any[]): Promise<{ added: number, duplicates: number, addedItems: any[], updatedItems: any[], skippedItems: any[] }> {
   let added = 0;
   let duplicates = 0;
+  const addedItems: any[] = [];
+  const updatedItems: any[] = [];
+  const skippedItems: any[] = [];
 
   if (isLocalMode()) {
     console.log("Running in Local Storage Mode");
@@ -69,6 +72,7 @@ export async function importDataToFirestore(dataList: any[]): Promise<{ added: n
           updatedAt: new Date().toISOString()
         };
         added++;
+        addedItems.push(item);
       } else {
         const old = existing[orderId];
         const needsAutoComplete = isCompleted && old.trackerStatus !== 'Completed';
@@ -90,11 +94,14 @@ export async function importDataToFirestore(dataList: any[]): Promise<{ added: n
             ...(isCompleted ? { trackerStatus: 'Completed', technicianName: 'SISTEM' } : {})
           };
           duplicates++;
+          updatedItems.push(item);
+        } else {
+          skippedItems.push(item);
         }
       }
     });
     await localforage.setItem(COLLECTION_NAME, existing);
-    return { added, duplicates };
+    return { added, duplicates, addedItems, updatedItems, skippedItems };
   }
   
   const querySnapshot = await getDocs(collection(db, COLLECTION_NAME));
@@ -118,6 +125,7 @@ export async function importDataToFirestore(dataList: any[]): Promise<{ added: n
       
       if (old.statusMessage !== newStatusMessage || needsAutoComplete) {
         duplicates++;
+        updatedItems.push(item);
         const targetCollection = isCompleted ? "ebis_tasks_completed" : COLLECTION_NAME;
         const docRef = doc(db, targetCollection, orderId);
         
@@ -146,9 +154,12 @@ export async function importDataToFirestore(dataList: any[]): Promise<{ added: n
 
         batch.set(docRef, updateData, { merge: true });
         batchCount++;
+      } else {
+        skippedItems.push(item);
       }
     } else {
       added++;
+      addedItems.push(item);
       existingDocs.set(orderId, {} as TaskData); // avoid counting duplicates within same json
       
       const targetCollection = isCompleted ? "ebis_tasks_completed" : COLLECTION_NAME;
@@ -191,7 +202,7 @@ export async function importDataToFirestore(dataList: any[]): Promise<{ added: n
     }
   }
   
-  return { added, duplicates };
+  return { added, duplicates, addedItems, updatedItems, skippedItems };
 }
 
 export async function getTasksByWitel(witel: string): Promise<TaskData[]> {
