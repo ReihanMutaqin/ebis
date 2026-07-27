@@ -296,7 +296,7 @@ export function DataTable({ data }: DataTableProps) {
 
   return (
     <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-md border border-slate-200 dark:border-slate-700 overflow-hidden flex flex-col mt-6 transition-all duration-300">
-      <div className="p-5 border-b border-slate-200 dark:border-slate-700 flex flex-col sm:flex-row justify-between items-start sm:items-center bg-slate-50 dark:bg-slate-900/50/80 gap-4">
+      <div className="p-5 border-b border-slate-200 dark:border-slate-700 flex flex-col sm:flex-row justify-between items-start sm:items-center bg-slate-50 dark:bg-slate-900/80 gap-4">
         <div>
           <h2 className="text-xl font-extrabold text-slate-800 dark:text-slate-100 tracking-tight">Full Detail Order</h2>
           <div className="text-sm text-slate-500 dark:text-slate-400 font-medium mt-1">
@@ -325,7 +325,7 @@ export function DataTable({ data }: DataTableProps) {
               placeholder="Cari data..." 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-9 pr-4 py-2.5 border border-slate-300 dark:border-slate-600 rounded-lg text-sm focus:ring-blue-500 focus:border-blue-500 w-full outline-none transition-all shadow-sm"
+              className="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 pl-9 pr-4 py-2.5 border border-slate-300 dark:border-slate-600 rounded-lg text-sm focus:ring-blue-500 focus:border-blue-500 w-full outline-none transition-all shadow-sm"
             />
           </div>
           <select
