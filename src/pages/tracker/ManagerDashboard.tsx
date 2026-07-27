@@ -510,7 +510,7 @@ export default function ManagerDashboard() {
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="currentColor" className="text-slate-100 dark:text-slate-700" />
                 <XAxis 
                   dataKey="date" 
-                  tick={{fontSize: 12, fill: '#64748b'}} 
+                  tick={{fontSize: 12, fill: 'currentColor'}} className="text-slate-500 dark:text-slate-400" 
                   tickFormatter={(val) => {
                     const d = parseISO(val);
                     return isValid(d) ? format(d, 'dd MMM') : val;
@@ -518,7 +518,7 @@ export default function ManagerDashboard() {
                   axisLine={false}
                   tickLine={false}
                 />
-                <YAxis tick={{fontSize: 12, fill: '#64748b'}} axisLine={false} tickLine={false} />
+                <YAxis tick={{fontSize: 12, fill: 'currentColor'}} className="text-slate-500 dark:text-slate-400" axisLine={false} tickLine={false} />
                 <Tooltip 
                   contentStyle={{ borderRadius: '12px', border: 'none', backgroundColor: 'transparent' }} wrapperClassName="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-xl shadow-lg border border-slate-100 dark:border-slate-700"
                   labelFormatter={(val) => {
@@ -591,8 +591,8 @@ export default function ManagerDashboard() {
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={witelData} margin={{ top: 5, right: 0, left: -20, bottom: 5 }}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="currentColor" className="text-slate-100 dark:text-slate-700" />
-                  <XAxis dataKey="witel" tick={{fontSize: 12, fill: '#64748b'}} axisLine={false} tickLine={false} />
-                  <YAxis tick={{fontSize: 12, fill: '#64748b'}} axisLine={false} tickLine={false} />
+                  <XAxis dataKey="witel" tick={{fontSize: 12, fill: 'currentColor'}} className="text-slate-500 dark:text-slate-400" axisLine={false} tickLine={false} />
+                  <YAxis tick={{fontSize: 12, fill: 'currentColor'}} className="text-slate-500 dark:text-slate-400" axisLine={false} tickLine={false} />
                   <Tooltip 
                     contentStyle={{ borderRadius: '12px', border: 'none', backgroundColor: 'transparent' }} wrapperClassName="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-xl shadow-lg border border-slate-100 dark:border-slate-700"
                     cursor={{fill: "currentColor", className: "text-slate-50 dark:text-slate-700/50"}}
@@ -628,8 +628,8 @@ export default function ManagerDashboard() {
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={stoData} margin={{ top: 5, right: 0, left: -20, bottom: 5 }}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="currentColor" className="text-slate-100 dark:text-slate-700" />
-                  <XAxis dataKey="sto" tick={{fontSize: 11, fill: '#64748b'}} axisLine={false} tickLine={false} interval={0} angle={-45} textAnchor="end" height={60} />
-                  <YAxis tick={{fontSize: 12, fill: '#64748b'}} axisLine={false} tickLine={false} />
+                  <XAxis dataKey="sto" tick={{fontSize: 11, fill: 'currentColor'}} className="text-slate-500 dark:text-slate-400" axisLine={false} tickLine={false} interval={0} angle={-45} textAnchor="end" height={60} />
+                  <YAxis tick={{fontSize: 12, fill: 'currentColor'}} className="text-slate-500 dark:text-slate-400" axisLine={false} tickLine={false} />
                   <Tooltip 
                     contentStyle={{ borderRadius: '12px', border: 'none', backgroundColor: 'transparent' }} wrapperClassName="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-xl shadow-lg border border-slate-100 dark:border-slate-700"
                     cursor={{fill: "currentColor", className: "text-slate-50 dark:text-slate-700/50"}}
@@ -664,8 +664,8 @@ export default function ManagerDashboard() {
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={serviceTypeData.slice(0, 10)} layout="vertical" margin={{ top: 5, right: 30, left: 60, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} stroke="currentColor" className="text-slate-100 dark:text-slate-700" />
-                <XAxis type="number" tick={{fontSize: 12, fill: '#64748b'}} axisLine={false} tickLine={false} />
-                <YAxis dataKey="name" type="category" tick={{fontSize: 11, fill: '#475569'}} axisLine={false} tickLine={false} width={150} />
+                <XAxis type="number" tick={{fontSize: 12, fill: 'currentColor'}} className="text-slate-500 dark:text-slate-400" axisLine={false} tickLine={false} />
+                <YAxis dataKey="name" type="category" tick={{fontSize: 11, fill: 'currentColor'}} className="text-slate-600 dark:text-slate-400" axisLine={false} tickLine={false} width={150} />
                 <Tooltip 
                   contentStyle={{ borderRadius: '12px', border: 'none', backgroundColor: 'transparent' }} wrapperClassName="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-xl shadow-lg border border-slate-100 dark:border-slate-700"
                   cursor={{fill: "currentColor", className: "text-slate-50 dark:text-slate-700/50"}}
