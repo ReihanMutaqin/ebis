@@ -3,6 +3,7 @@ import { marked } from 'marked';
 import {
   X, Maximize2, Minimize2, Send, Mic, Info,
   Volume2, VolumeX, MapPin, Trash2, Download, Globe,
+  Eye, Smartphone, Monitor, Tablet, ExternalLink,
 } from 'lucide-react';
 import { MusicPlayer } from './MusicPlayer';
 import type { ChatMessage } from '@/types';
@@ -28,10 +29,56 @@ interface ChatAssistantProps {
 
 const SUGGESTED_PROMPTS = [
   'Cara pakai?',
-  'Apa itu EBIS?',
+  'Buatkan web portofolio',
   'Tips filter',
   'Bantuan',
 ];
+
+function extractWebCode(content: string): string | null {
+  if (!content) return null;
+
+  const htmlMatch = content.match(/```(?:html|xml|svg)\s*([\s\S]*?)```/i);
+  if (htmlMatch && htmlMatch[1].trim()) {
+    let rawHtml = htmlMatch[1].trim();
+
+    const cssMatch = content.match(/```css\s*([\s\S]*?)```/i);
+    const jsMatch = content.match(/```(?:javascript|js)\s*([\s\S]*?)```/i);
+
+    const cssContent = cssMatch ? cssMatch[1].trim() : '';
+    const jsContent = jsMatch ? jsMatch[1].trim() : '';
+
+    if (!rawHtml.includes('<html') && !rawHtml.includes('<!DOCTYPE')) {
+      return `<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>${cssContent}</style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+  ${rawHtml}
+  <script>${jsContent}</script>
+</body>
+</html>`;
+    }
+
+    if (!rawHtml.includes('tailwindcss') && !rawHtml.includes('cdn.tailwindcss.com')) {
+      if (rawHtml.includes('<head>')) {
+        rawHtml = rawHtml.replace('<head>', '<head>\n<script src="https://cdn.tailwindcss.com"></script>\n<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>');
+      }
+    }
+    return rawHtml;
+  }
+
+  if (content.includes('<!DOCTYPE html>') || (content.includes('<html') && content.includes('</html>'))) {
+    const rawMatch = content.match(/(?:<!DOCTYPE html[\s\S]*?>[\s\S]*?<\/html>|<html[\s\S]*?>[\s\S]*?<\/html>)/i);
+    if (rawMatch) return rawMatch[0];
+  }
+
+  return null;
+}
 
 export function ChatAssistant({
   messages, draft, isTyping, isDataAttached, isOpen, isMaximized,
@@ -45,6 +92,8 @@ export function ChatAssistant({
   const [showWebModal, setShowWebModal] = useState(false);
   const [webUrlInput, setWebUrlInput] = useState('');
   const [lastUserMsg, setLastUserMsg] = useState('');
+  const [previewHtml, setPreviewHtml] = useState<string | null>(null);
+  const [previewViewport, setPreviewViewport] = useState<'desktop' | 'tablet' | 'mobile'>('desktop');
 
   // Drag state for Music Player
   const [musicPos, setMusicPos] = useState({ x: 0, y: 0 });
@@ -291,7 +340,15 @@ export function ChatAssistant({
                 )}
 
                 {msg.role === 'assistant' && (
-                  <div className="flex gap-2 mt-2">
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {extractWebCode(msg.content) && (
+                      <button
+                        onClick={() => setPreviewHtml(extractWebCode(msg.content))}
+                        className="text-xs flex items-center gap-1 px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold border border-black rounded transition-all cursor-pointer shadow-sm animate-pulse"
+                      >
+                        <Eye size={13} /> 👁️ Lihat Preview Web (Live)
+                      </button>
+                    )}
                     <button
                       onClick={() => speech.speak(msg.content)}
                       className="text-xs flex items-center gap-1 px-2 py-1 border border-black hover:bg-gray-100 dark:hover:bg-[#0f3460] transition-colors cursor-pointer"
@@ -362,7 +419,7 @@ export function ChatAssistant({
         <button onClick={() => speech.toggleTts()} title="Toggle TTS" className="p-1.5 hover:bg-gray-200 dark:hover:bg-[#1a1a2e] rounded cursor-pointer">
           {speech.ttsEnabled ? <Volume2 size={14} /> : <VolumeX size={14} />}
         </button>
-        <button onClick={() => setShowMusic(p => !p)} title="Music" className="p-1.5 hover:bg-gray-200 dark:hover:bg-[#1a1a2e] rounded cursor-pointer">
+        <button onClick={() => setShowMusic((p: boolean) => !p)} title="Music" className="p-1.5 hover:bg-gray-200 dark:hover:bg-[#1a1a2e] rounded cursor-pointer">
           🎵
         </button>
         <button onClick={() => setShowWebModal(true)} title="Inspect Real Web (🌐)" className="p-1.5 hover:bg-gray-200 dark:hover:bg-[#1a1a2e] rounded cursor-pointer text-blue-600 dark:text-blue-400">
@@ -550,6 +607,88 @@ export function ChatAssistant({
         onPointerCancel={handlePointerUp}
       >
         <MusicPlayer onToast={onToast} onClose={() => { setShowMusic(false); setMusicPos({x: 0, y: 0}); }} />
+      </div>
+    )}
+
+    {/* Live Web Artifact Preview Modal */}
+    {previewHtml && (
+      <div className="fixed inset-0 z-[10005] flex flex-col bg-black/80 backdrop-blur-sm p-2 sm:p-6 font-vt">
+        <div className="flex-1 flex flex-col bg-white dark:bg-[#16213e] border-[3px] border-black rounded-lg overflow-hidden shadow-2xl">
+          {/* Header */}
+          <div className="flex flex-wrap items-center justify-between px-4 py-2.5 bg-[#2563eb] text-white border-b-[3px] border-black gap-2">
+            <div className="flex items-center gap-2">
+              <Eye size={18} className="animate-pulse" />
+              <strong className="text-base font-bold tracking-wide">LIVE WEB ARTIFACT PREVIEW</strong>
+            </div>
+
+            {/* Viewport Switcher */}
+            <div className="flex items-center gap-1 bg-blue-900/60 p-1 rounded border border-blue-300/40">
+              <button
+                onClick={() => setPreviewViewport('desktop')}
+                className={`p-1.5 rounded flex items-center gap-1 text-xs cursor-pointer transition-colors ${previewViewport === 'desktop' ? 'bg-white text-blue-900 font-bold' : 'text-white hover:bg-white/20'}`}
+                title="Desktop View (100%)"
+              >
+                <Monitor size={14} /> <span className="hidden sm:inline">Desktop</span>
+              </button>
+              <button
+                onClick={() => setPreviewViewport('tablet')}
+                className={`p-1.5 rounded flex items-center gap-1 text-xs cursor-pointer transition-colors ${previewViewport === 'tablet' ? 'bg-white text-blue-900 font-bold' : 'text-white hover:bg-white/20'}`}
+                title="Tablet View (768px)"
+              >
+                <Tablet size={14} /> <span className="hidden sm:inline">Tablet</span>
+              </button>
+              <button
+                onClick={() => setPreviewViewport('mobile')}
+                className={`p-1.5 rounded flex items-center gap-1 text-xs cursor-pointer transition-colors ${previewViewport === 'mobile' ? 'bg-white text-blue-900 font-bold' : 'text-white hover:bg-white/20'}`}
+                title="Mobile View (375px)"
+              >
+                <Smartphone size={14} /> <span className="hidden sm:inline">Mobile</span>
+              </button>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => {
+                  const blob = new Blob([previewHtml], { type: 'text/html' });
+                  const url = URL.createObjectURL(blob);
+                  window.open(url, '_blank');
+                }}
+                className="p-1.5 bg-blue-700 hover:bg-blue-800 rounded border border-white/40 text-xs flex items-center gap-1 cursor-pointer font-bold"
+                title="Buka di Tab Baru"
+              >
+                <ExternalLink size={14} /> Tab Baru
+              </button>
+              <button
+                onClick={() => setPreviewHtml(null)}
+                className="p-1.5 bg-red-600 hover:bg-red-700 rounded border border-white/40 cursor-pointer text-white"
+                title="Tutup Preview"
+              >
+                <X size={18} />
+              </button>
+            </div>
+          </div>
+
+          {/* Iframe Viewport */}
+          <div className="flex-1 bg-gray-900 flex items-center justify-center p-2 sm:p-4 overflow-hidden relative">
+            <div
+              className={`h-full bg-white transition-all duration-300 shadow-2xl border-2 border-gray-700 overflow-hidden ${
+                previewViewport === 'mobile'
+                  ? 'w-[375px] max-w-full rounded-[24px] p-2 bg-black'
+                  : previewViewport === 'tablet'
+                  ? 'w-[768px] max-w-full rounded-[16px] p-2 bg-black'
+                  : 'w-full h-full'
+              }`}
+            >
+              <iframe
+                srcDoc={previewHtml}
+                className="w-full h-full border-0 bg-white rounded"
+                title="Live Web Preview"
+                sandbox="allow-scripts allow-modals allow-forms allow-same-origin"
+              />
+            </div>
+          </div>
+        </div>
       </div>
     )}
     </>

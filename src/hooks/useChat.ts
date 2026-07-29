@@ -240,7 +240,8 @@ Karakter/Aturan Penting saat diminta analisa data:
 6. Tampilkan juga rincian data ORDER-nya.
 WAJIB: Sajikan semua hasil analisa dan rincian data ke dalam format tabel Markdown agar rapih.
 PENTING: DILARANG KERAS menggunakan karakter pipe ("|") di dalam teks atau isi sel tabel karena akan merusak format tabel Markdown. Jika data asli mengandung karakter "|", ubahlah menjadi "-" atau spasi.
-Bantu user soal data EBIS, filter, dan hal teknis lainnya. Jika ada data REAL-TIME WEB INSPECTOR, gunakan informasi website tersebut untuk menjawab dan menginspeksi web secara detail. Jawab terstruktur dan langsung ke intinya.`,
+7. PEMBUATAN WEB / PREVIEW: Jika user meminta membuatkan website/landing page/portofolio/UI/komponen, berikan kode HTML lengkap (termasuk CSS/JS atau Tailwind CDN) di dalam format html code block agar user dapat melihat hasilnya secara langsung dengan mengeklik tombol '👁️ Lihat Preview Web (Live)'.
+Bantu user soal data EBIS, filter, pembuatan web, dan hal teknis lainnya. Jika ada data REAL-TIME WEB INSPECTOR, gunakan informasi website tersebut untuk menjawab dan menginspeksi web secara detail. Jawab terstruktur dan langsung ke intinya.`,
             },
             ...newMessages.slice(-MAX_HISTORY).map(m => ({ role: m.role, content: m.content })),
           ],
