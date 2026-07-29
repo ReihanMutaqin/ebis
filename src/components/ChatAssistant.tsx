@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { marked } from 'marked';
 import {
   X, Maximize2, Minimize2, Send, Mic, Info,
-  Volume2, VolumeX, MapPin, Trash2, Download,
+  Volume2, VolumeX, MapPin, Trash2, Download, Globe,
 } from 'lucide-react';
 import { MusicPlayer } from './MusicPlayer';
 import type { ChatMessage } from '@/types';
@@ -42,6 +42,8 @@ export function ChatAssistant({
   const inputRef = useRef<HTMLInputElement>(null);
   const [showShortcuts, setShowShortcuts] = useState(false);
   const [showMusic, setShowMusic] = useState(false);
+  const [showWebModal, setShowWebModal] = useState(false);
+  const [webUrlInput, setWebUrlInput] = useState('');
   const [lastUserMsg, setLastUserMsg] = useState('');
 
   // Drag state for Music Player
@@ -363,6 +365,9 @@ export function ChatAssistant({
         <button onClick={() => setShowMusic(p => !p)} title="Music" className="p-1.5 hover:bg-gray-200 dark:hover:bg-[#1a1a2e] rounded cursor-pointer">
           🎵
         </button>
+        <button onClick={() => setShowWebModal(true)} title="Inspect Real Web (🌐)" className="p-1.5 hover:bg-gray-200 dark:hover:bg-[#1a1a2e] rounded cursor-pointer text-blue-600 dark:text-blue-400">
+          <Globe size={14} />
+        </button>
         <button onClick={getLocation} title="Lokasi" className="p-1.5 hover:bg-gray-200 dark:hover:bg-[#1a1a2e] rounded cursor-pointer">
           <MapPin size={14} />
         </button>
@@ -389,7 +394,7 @@ export function ChatAssistant({
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
           onKeyDown={handleKeyPress}
-          placeholder="Ketik pesan..."
+          placeholder="Ketik pesan atau /inspect <URL>..."
           className="flex-1 pro-input text-sm py-2"
           autoFocus
         />
@@ -415,6 +420,59 @@ export function ChatAssistant({
           <Send size={16} />
         </button>
       </div>
+
+      {/* Real Web Inspector Modal */}
+      {showWebModal && (
+        <div className="absolute inset-0 z-[10001] flex items-center justify-center bg-black/60 p-4">
+          <div className="bg-white dark:bg-[#16213e] border-[3px] border-black p-4 max-w-sm w-full font-vt" style={{ boxShadow: '8px 8px 0px rgba(0,0,0,0.8)' }}>
+            <div className="flex items-center justify-between mb-3 bg-blue-600 text-white -m-4 p-3 mb-4 border-b-[3px] border-black">
+              <h6 className="font-bold text-sm flex items-center gap-2">
+                <Globe size={16} /> REAL WEB INSPECTOR
+              </h6>
+              <button onClick={() => setShowWebModal(false)} className="cursor-pointer">
+                <X size={16} />
+              </button>
+            </div>
+            <p className="text-xs mb-2 text-gray-700 dark:text-gray-300">
+              Masukkan URL website asli yang ingin di-inspect / dianalisa oleh Asisten Sakti:
+            </p>
+            <input
+              type="text"
+              placeholder="https://example.com"
+              value={webUrlInput}
+              onChange={(e) => setWebUrlInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && webUrlInput.trim()) {
+                  sendMessage(`Inspect dan analisa website ini: ${webUrlInput.trim()}`);
+                  setWebUrlInput('');
+                  setShowWebModal(false);
+                }
+              }}
+              className="w-full pro-input text-sm p-2 mb-3 dark:bg-[#0f3460] dark:text-white"
+            />
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => setShowWebModal(false)}
+                className="px-3 py-1 bg-gray-200 dark:bg-gray-700 border-2 border-black text-xs font-bold cursor-pointer"
+              >
+                Batal
+              </button>
+              <button
+                onClick={() => {
+                  if (webUrlInput.trim()) {
+                    sendMessage(`Inspect dan analisa website ini: ${webUrlInput.trim()}`);
+                    setWebUrlInput('');
+                    setShowWebModal(false);
+                  }
+                }}
+                className="px-3 py-1 bg-blue-600 text-white border-2 border-black text-xs font-bold hover:bg-blue-700 cursor-pointer"
+              >
+                🔍 Inspect Web
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Shortcuts Modal */}
       {showShortcuts && (
@@ -457,6 +515,7 @@ export function ChatAssistant({
               </thead>
               <tbody>
                 {[
+                  ['/inspect <URL>', 'Real Web Inspector'],
                   ['/help', 'Bantuan'],
                   ['/tts', 'Toggle audio AI'],
                   ['/export', 'Export chat'],

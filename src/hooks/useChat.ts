@@ -31,6 +31,49 @@ function saveChat(msgs: ChatMessage[]) {
   }
 }
 
+async function fetchWebPageContent(urlStr: string): Promise<{ url: string; content: string }> {
+  let targetUrl = urlStr.trim();
+  if (!/^https?:\/\//i.test(targetUrl)) {
+    targetUrl = `https://${targetUrl}`;
+  }
+  
+  try {
+    const jinaUrl = `https://r.jina.ai/${targetUrl}`;
+    const res = await fetch(jinaUrl, {
+      headers: { 'Accept': 'text/plain, text/markdown' },
+    });
+    if (res.ok) {
+      const text = await res.text();
+      if (text && text.trim().length > 30) {
+        return { url: targetUrl, content: text.slice(0, 8000) };
+      }
+    }
+  } catch (err) {
+    console.warn('Jina web reader error, trying proxy fallback:', err);
+  }
+
+  try {
+    const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`;
+    const res = await fetch(proxyUrl);
+    if (res.ok) {
+      const html = await res.text();
+      const cleanedText = html
+        .replace(/<script\b[^<]*>([\s\S]*?)<\/script>/gi, '')
+        .replace(/<style\b[^<]*>([\s\S]*?)<\/style>/gi, '')
+        .replace(/<[^>]+>/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+      if (cleanedText.length > 20) {
+        return { url: targetUrl, content: cleanedText.slice(0, 8000) };
+      }
+    }
+  } catch (err) {
+    console.error('AllOrigins fallback error:', err);
+  }
+
+  throw new Error(`Gagal membaca isi website (${targetUrl}).`);
+}
+
 export function useChat(dataSummary: string) {
   const [messages, setMessagesState] = useState<ChatMessage[]>(loadChat);
   const [draft, setDraft] = useState(() => {
@@ -158,6 +201,22 @@ export function useChat(dataSummary: string) {
 
       const summary = isDataAttached ? dataSummary || 'Data tersedia.' : 'Mode Cepat: Tanpa data.';
 
+      let webInspectContext = '';
+      const urlMatch = message.match(/(https?:\/\/[^\s]+|[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(?:\/[^\s]*)?)/i);
+      if (urlMatch || message.toLowerCase().startsWith('/inspect') || message.toLowerCase().startsWith('/web')) {
+        let rawUrl = urlMatch ? urlMatch[0] : message.replace(/^\/(inspect|web)\s*/i, '').trim();
+        rawUrl = rawUrl.replace(/[.,)]+$/, '');
+        if (rawUrl) {
+          try {
+            const webResult = await fetchWebPageContent(rawUrl);
+            webInspectContext = `\n\n[REAL-TIME WEB INSPECTOR DATA (${webResult.url})]:\n${webResult.content}`;
+          } catch (webErr) {
+            const errMsg = webErr instanceof Error ? webErr.message : 'Gagal inspect web';
+            webInspectContext = `\n\n[REAL-TIME WEB INSPECTOR NOTICE]: ${errMsg}`;
+          }
+        }
+      }
+
       const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
@@ -171,7 +230,7 @@ export function useChat(dataSummary: string) {
           messages: [
             {
               role: 'system',
-              content: `[SYSTEM] Kamu adalah Asisten Sakti untuk aplikasi FILTER SAKTI EBIS. Gaya bahasa: santai, gaul, asyik. Waktu: ${infoWaktu}. Data summary saat ini: ${summary}. 
+              content: `[SYSTEM] Kamu adalah Asisten Sakti untuk aplikasi FILTER SAKTI EBIS. Gaya bahasa: santai, gaul, asyik. Waktu: ${infoWaktu}. Data summary saat ini: ${summary}.${webInspectContext} 
 Karakter/Aturan Penting saat diminta analisa data:
 1. Tampilkan analisa/rincian data Witel-nya.
 2. Tampilkan analisa/rincian data STO-nya.
@@ -181,7 +240,7 @@ Karakter/Aturan Penting saat diminta analisa data:
 6. Tampilkan juga rincian data ORDER-nya.
 WAJIB: Sajikan semua hasil analisa dan rincian data ke dalam format tabel Markdown agar rapih.
 PENTING: DILARANG KERAS menggunakan karakter pipe ("|") di dalam teks atau isi sel tabel karena akan merusak format tabel Markdown. Jika data asli mengandung karakter "|", ubahlah menjadi "-" atau spasi.
-Bantu user soal data EBIS, filter, dan hal teknis lainnya. Jawab terstruktur dan langsung ke intinya.`,
+Bantu user soal data EBIS, filter, dan hal teknis lainnya. Jika ada data REAL-TIME WEB INSPECTOR, gunakan informasi website tersebut untuk menjawab dan menginspeksi web secara detail. Jawab terstruktur dan langsung ke intinya.`,
             },
             ...newMessages.slice(-MAX_HISTORY).map(m => ({ role: m.role, content: m.content })),
           ],
@@ -253,10 +312,22 @@ Bantu user soal data EBIS, filter, dan hal teknis lainnya. Jawab terstruktur dan
       clearChat();
       return true;
     }
+    if (lower.startsWith('/inspect') || lower.startsWith('/web')) {
+      const url = cmd.replace(/^\/(inspect|web)\s*/i, '').trim();
+      if (!url) {
+        setMessages(prev => [...prev, {
+          role: 'assistant',
+          content: '🌐 **REAL WEB INSPECTOR**\nFormat: `/inspect <URL>` atau `/web <URL>`\nContoh: `/inspect https://telkom.co.id` atau tempelkan link website di chat!',
+          timestamp: Date.now(),
+        }]);
+        return true;
+      }
+    }
     if (lower === '/help' || lower === '/bantuan') {
       setMessages(prev => [...prev, {
         role: 'assistant',
         content: `📋 **DAFTAR COMMAND:**
+\`/inspect <URL>\` - Real Web Inspector (Membaca & Analisa Web Live)
 \`/pasang\` - Sambungkan data ke AI
 \`/lepas\` - Lepas data dari AI
 \`/export\` - Export chat
