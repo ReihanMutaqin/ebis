@@ -51,7 +51,7 @@ export function SettingsModal({ isOpen, onClose, isDark, onToggleTheme, aiProvid
                 onClick={() => onProviderChange('R')}
                 className={`w-full py-2 px-3 rounded-lg border text-sm font-medium transition-colors text-left ${aiProvider === 'R' ? 'border-blue-500 bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300' : 'border-gray-200 text-gray-600 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-800'}`}
               >
-                🌐 AI R (OpenRouter - Tencent)
+                🌐 AI R (OpenRouter - Ling 3.0 Flash)
               </button>
               <button
                 onClick={() => onProviderChange('R2')}

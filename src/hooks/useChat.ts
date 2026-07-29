@@ -126,7 +126,7 @@ export function useChat(dataSummary: string) {
     const apiUrl = isGroq ? 'https://api.groq.com/openai/v1/chat/completions' : 'https://openrouter.ai/api/v1/chat/completions';
     
     let modelUsed = 'llama-3.1-8b-instant';
-    if (aiProvider === 'R') modelUsed = 'tencent/hy3:free';
+    if (aiProvider === 'R') modelUsed = 'inclusionai/ling-3.0-flash:free';
     if (aiProvider === 'R2') modelUsed = 'nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free';
 
     if (!key) {
