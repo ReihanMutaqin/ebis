@@ -247,7 +247,6 @@ Bantu user soal data EBIS, filter, pembuatan web, dan hal teknis lainnya. Jika a
             ...newMessages.slice(-MAX_HISTORY).map(m => ({ role: m.role, content: m.content })),
           ],
           temperature: 0.7,
-          max_tokens: 6000,
         }),
       });
 
