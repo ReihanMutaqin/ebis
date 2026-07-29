@@ -37,47 +37,68 @@ const SUGGESTED_PROMPTS = [
 function extractWebCode(content: string): string | null {
   if (!content) return null;
 
-  const htmlMatch = content.match(/```(?:html|xml|svg)\s*([\s\S]*?)```/i);
-  if (htmlMatch && htmlMatch[1].trim()) {
-    let rawHtml = htmlMatch[1].trim();
+  let htmlSnippet = '';
+  let cssSnippet = '';
+  let jsSnippet = '';
 
-    const cssMatch = content.match(/```css\s*([\s\S]*?)```/i);
-    const jsMatch = content.match(/```(?:javascript|js)\s*([\s\S]*?)```/i);
+  const codeBlocks = content.split(/```(?:html|css|javascript|js|jsx|tsx|xml|svg)?/i);
 
-    const cssContent = cssMatch ? cssMatch[1].trim() : '';
-    const jsContent = jsMatch ? jsMatch[1].trim() : '';
+  for (const block of codeBlocks) {
+    const cleanBlock = block.replace(/```$/g, '').trim();
+    if (!cleanBlock) continue;
 
-    if (!rawHtml.includes('<html') && !rawHtml.includes('<!DOCTYPE')) {
-      return `<!DOCTYPE html>
+    const lower = cleanBlock.toLowerCase();
+    if (lower.includes('<!doctype html') || lower.includes('<html') || lower.includes('<div') || lower.includes('<section') || lower.includes('<header') || lower.includes('<body')) {
+      if (!htmlSnippet || lower.includes('<!doctype') || lower.includes('<html')) {
+        htmlSnippet = cleanBlock;
+      }
+    } else if (cleanBlock.includes('{') && cleanBlock.includes('}') && (cleanBlock.includes('margin') || cleanBlock.includes('padding') || cleanBlock.includes('color') || cleanBlock.includes('background') || cleanBlock.includes('@keyframes'))) {
+      cssSnippet += '\n' + cleanBlock;
+    } else if (cleanBlock.includes('const ') || cleanBlock.includes('function ') || cleanBlock.includes('document.') || cleanBlock.includes('addEventListener')) {
+      jsSnippet += '\n' + cleanBlock;
+    }
+  }
+
+  if (!htmlSnippet) {
+    const startIdx = content.search(/<!DOCTYPE html|<html/i);
+    if (startIdx !== -1) {
+      let raw = content.slice(startIdx);
+      raw = raw.replace(/```[a-z]*/gi, '').trim();
+      htmlSnippet = raw;
+    }
+  }
+
+  if (!htmlSnippet) return null;
+
+  htmlSnippet = htmlSnippet.replace(/```$/g, '').trim();
+
+  if (!htmlSnippet.toLowerCase().includes('<html') && !htmlSnippet.toLowerCase().includes('<!doctype')) {
+    return `<!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <style>${cssContent}</style>
+  <style>${cssSnippet}</style>
 </head>
 <body class="bg-gray-50 text-gray-900">
-  ${rawHtml}
-  <script>${jsContent}</script>
+  ${htmlSnippet}
+  <script>${jsSnippet}</script>
 </body>
 </html>`;
-    }
-
-    if (!rawHtml.includes('tailwindcss') && !rawHtml.includes('cdn.tailwindcss.com')) {
-      if (rawHtml.includes('<head>')) {
-        rawHtml = rawHtml.replace('<head>', '<head>\n<script src="https://cdn.tailwindcss.com"></script>\n<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>');
-      }
-    }
-    return rawHtml;
   }
 
-  if (content.includes('<!DOCTYPE html>') || (content.includes('<html') && content.includes('</html>'))) {
-    const rawMatch = content.match(/(?:<!DOCTYPE html[\s\S]*?>[\s\S]*?<\/html>|<html[\s\S]*?>[\s\S]*?<\/html>)/i);
-    if (rawMatch) return rawMatch[0];
+  let fullDoc = htmlSnippet;
+  if (!fullDoc.includes('cdn.tailwindcss.com')) {
+    if (fullDoc.includes('<head>')) {
+      fullDoc = fullDoc.replace('<head>', '<head>\n<script src="https://cdn.tailwindcss.com"></script>\n<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>');
+    } else {
+      fullDoc = `<script src="https://cdn.tailwindcss.com"></script>\n<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>\n${fullDoc}`;
+    }
   }
 
-  return null;
+  return fullDoc;
 }
 
 export function ChatAssistant({
@@ -272,6 +293,18 @@ export function ChatAssistant({
           {isDataAttached && (
             <span className="text-xs bg-green-600 text-white px-1.5 py-0.5 rounded">DATA ON</span>
           )}
+          {(() => {
+            const latestWeb = [...messages].reverse().map(m => m.role === 'assistant' ? extractWebCode(m.content) : null).find(Boolean);
+            return latestWeb ? (
+              <button
+                onClick={() => setPreviewHtml(latestWeb)}
+                className="text-xs bg-blue-600 hover:bg-blue-700 text-white px-2 py-0.5 rounded font-bold flex items-center gap-1 border border-black cursor-pointer shadow animate-bounce"
+                title="Lihat Live Preview Web Hasil AI"
+              >
+                <Eye size={12} /> Preview Web
+              </button>
+            ) : null;
+          })()}
         </div>
         <div className="flex items-center gap-1">
           <button onClick={() => setShowShortcuts(true)} className="p-1 hover:bg-black/20 rounded" title="Info Shortcut">
