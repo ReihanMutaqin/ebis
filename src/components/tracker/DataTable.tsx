@@ -512,9 +512,9 @@ export function DataTable({ data }: DataTableProps) {
       )}
 
       {selectedRow && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm transition-opacity">
-          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col transform transition-all">
-            <div className="p-5 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-900/50 rounded-t-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm transition-opacity">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col transform transition-all border border-slate-200 dark:border-slate-700 overflow-hidden">
+            <div className="p-5 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-900/80">
               <h2 className="text-xl font-extrabold text-slate-800 dark:text-slate-100 tracking-tight">Detail Order: {selectedRow.order}</h2>
               <div className="flex gap-2">
                 <button 
@@ -530,14 +530,14 @@ export function DataTable({ data }: DataTableProps) {
                       }
                     }
                   }}
-                  className="p-2 bg-white dark:bg-slate-800 hover:bg-red-500 hover:text-white text-slate-400 dark:text-slate-500 rounded-full transition-colors shadow-sm ring-1 ring-slate-200 hover:ring-red-500"
+                  className="p-2 bg-white dark:bg-slate-800 hover:bg-red-500 hover:text-white text-slate-400 dark:text-slate-400 rounded-full transition-colors shadow-sm ring-1 ring-slate-200 dark:ring-slate-700 hover:ring-red-500"
                   title="Sembunyikan Order (Anomali)"
                 >
                   <Trash2 className="w-5 h-5" />
                 </button>
                 <button 
                   onClick={() => setSelectedRow(null)}
-                  className="p-2 bg-white dark:bg-slate-800 hover:bg-slate-500 hover:text-white text-slate-400 dark:text-slate-500 rounded-full transition-colors shadow-sm ring-1 ring-slate-200 hover:ring-slate-500"
+                  className="p-2 bg-white dark:bg-slate-800 hover:bg-slate-500 hover:text-white text-slate-400 dark:text-slate-400 rounded-full transition-colors shadow-sm ring-1 ring-slate-200 dark:ring-slate-700 hover:ring-slate-500"
                   title="Tutup"
                 >
                   <X className="w-5 h-5" />
@@ -545,7 +545,7 @@ export function DataTable({ data }: DataTableProps) {
               </div>
             </div>
             
-            <div className="p-6 overflow-y-auto grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50 dark:bg-slate-900/50/30">
+            <div className="p-6 overflow-y-auto grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50 dark:bg-slate-900/50">
               {COLUMNS.map(col => {
                 let val = String(selectedRow[col.key] || '');
                 if (col.key === 'orderDate') {
@@ -561,21 +561,21 @@ export function DataTable({ data }: DataTableProps) {
                 );
               })}
               
-              <div className="bg-red-50/50 p-4 rounded-xl border border-red-100 shadow-sm md:col-span-2">
-                <span className="block text-[11px] font-bold text-red-500 uppercase tracking-wider mb-1">CATATAN TEKNISI</span>
-                <span className="block text-sm font-semibold text-red-900 break-words">
+              <div className="bg-red-50/60 dark:bg-red-950/30 p-4 rounded-xl border border-red-100 dark:border-red-900/40 shadow-sm md:col-span-2">
+                <span className="block text-[11px] font-bold text-red-500 dark:text-red-400 uppercase tracking-wider mb-1">CATATAN TEKNISI</span>
+                <span className="block text-sm font-semibold text-red-900 dark:text-red-200 break-words">
                   {selectedRow.notes || 'Tidak ada catatan.'}
                 </span>
               </div>
-              <div className="bg-blue-50/50 p-4 rounded-xl border border-blue-100 shadow-sm md:col-span-2">
-                <span className="block text-[11px] font-bold text-blue-500 uppercase tracking-wider mb-1">NAMA TEKNISI</span>
-                <span className="block text-sm font-semibold text-blue-900 break-words">
+              <div className="bg-blue-50/60 dark:bg-blue-950/30 p-4 rounded-xl border border-blue-100 dark:border-blue-900/40 shadow-sm md:col-span-2">
+                <span className="block text-[11px] font-bold text-blue-500 dark:text-blue-400 uppercase tracking-wider mb-1">NAMA TEKNISI</span>
+                <span className="block text-sm font-semibold text-blue-900 dark:text-blue-200 break-words">
                   {selectedRow.technicianName || 'Belum diambil.'}
                 </span>
               </div>
-              <div className="bg-indigo-50/50 p-4 rounded-xl border border-indigo-100 shadow-sm md:col-span-2">
-                <span className="block text-[11px] font-bold text-indigo-500 uppercase tracking-wider mb-1">DI UPDATE OLEH / TELEGRAM</span>
-                <span className="block text-sm font-semibold text-indigo-900 break-words">
+              <div className="bg-indigo-50/60 dark:bg-indigo-950/30 p-4 rounded-xl border border-indigo-100 dark:border-indigo-900/40 shadow-sm md:col-span-2">
+                <span className="block text-[11px] font-bold text-indigo-500 dark:text-indigo-400 uppercase tracking-wider mb-1">DI UPDATE OLEH / TELEGRAM</span>
+                <span className="block text-sm font-semibold text-indigo-900 dark:text-indigo-200 break-words">
                   {selectedRow.telegramHandle || selectedRow.updatedBy || '-'}
                 </span>
               </div>
