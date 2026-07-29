@@ -295,9 +295,9 @@ export default function ManagerDashboard() {
               value={selectedDate}
               onChange={(e) => setSelectedDate(e.target.value)}
             >
-              <option value="ALL">Semua Periode</option>
+              <option value="ALL" className="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200">Semua Periode</option>
               {dates.map(d => (
-                <option key={d} value={d}>{formatMonth(d)}</option>
+                <option key={d} value={d} className="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200">{formatMonth(d)}</option>
               ))}
             </select>
           </div>
@@ -309,9 +309,9 @@ export default function ManagerDashboard() {
               value={selectedWitel}
               onChange={(e) => setSelectedWitel(e.target.value)}
             >
-              <option value="ALL">Semua WITEL</option>
+              <option value="ALL" className="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200">Semua WITEL</option>
               {witels.map(w => (
-                <option key={w} value={w}>{w}</option>
+                <option key={w} value={w} className="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200">{w}</option>
               ))}
             </select>
           </div>
@@ -558,7 +558,8 @@ export default function ManagerDashboard() {
                   stroke="none"
                   label={(props: any) => {
                     const { name, percent } = props;
-                    return (percent && percent > 0) ? `${name} ${(percent * 100).toFixed(0)}%` : '';
+                    // Hanya tampilkan label jika porsi lebih besar dari 3% untuk mencegah tumpang tindih teks
+                    return (percent && percent > 0.03) ? `${name} ${(percent * 100).toFixed(0)}%` : '';
                   }}
                   labelLine={{ stroke: '#cbd5e1', strokeWidth: 1 }}
                   onClick={(data: any) => {
@@ -750,8 +751,8 @@ export default function ManagerDashboard() {
                   value={activityFilterSto}
                   onChange={(e) => setActivityFilterSto(e.target.value)}
                 >
-                  <option value="ALL">Semua STO</option>
-                  {uniqueActivityStos.map(s => <option key={s} value={s}>{s}</option>)}
+                  <option value="ALL" className="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200">Semua STO</option>
+                  {uniqueActivityStos.map(s => <option key={s} value={s} className="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200">{s}</option>)}
                 </select>
               </div>
               <div className="flex-1 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 px-3 py-2 flex items-center shadow-sm">
@@ -761,8 +762,8 @@ export default function ManagerDashboard() {
                   value={activityFilterStatus}
                   onChange={(e) => setActivityFilterStatus(e.target.value)}
                 >
-                  <option value="ALL">Semua Status</option>
-                  {uniqueActivityStatuses.map(s => <option key={s} value={s}>{s}</option>)}
+                  <option value="ALL" className="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200">Semua Status</option>
+                  {uniqueActivityStatuses.map(s => <option key={s} value={s} className="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200">{s}</option>)}
                 </select>
               </div>
             </div>

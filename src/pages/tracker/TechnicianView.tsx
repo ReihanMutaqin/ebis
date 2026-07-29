@@ -169,9 +169,9 @@ export default function TechnicianView() {
             value={selectedWitel}
             onChange={(e) => setSelectedWitel(e.target.value)}
           >
-            <option value="ALL">Semua WITEL (ALL)</option>
+            <option value="ALL" className="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200">Semua WITEL (ALL)</option>
             {witels.map(w => (
-              <option key={w} value={w}>{w}</option>
+              <option key={w} value={w} className="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200">{w}</option>
             ))}
           </select>
 
@@ -184,9 +184,9 @@ export default function TechnicianView() {
                   value={selectedDate}
                   onChange={(e) => setSelectedDate(e.target.value)}
                 >
-                  <option value="">Semua Bulan</option>
+                  <option value="" className="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200">Semua Bulan</option>
                   {uniqueDates.map(d => (
-                    <option key={d} value={d}>{formatMonth(d)}</option>
+                    <option key={d} value={d} className="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200">{formatMonth(d)}</option>
                   ))}
                 </select>
               </div>
@@ -197,9 +197,9 @@ export default function TechnicianView() {
                   value={selectedSto}
                   onChange={(e) => setSelectedSto(e.target.value)}
                 >
-                  <option value="">Semua STO</option>
+                  <option value="" className="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200">Semua STO</option>
                   {uniqueStos.map(s => (
-                    <option key={s} value={s}>{s}</option>
+                    <option key={s} value={s} className="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200">{s}</option>
                   ))}
                 </select>
               </div>
@@ -210,9 +210,9 @@ export default function TechnicianView() {
                   value={selectedStatusResume}
                   onChange={(e) => setSelectedStatusResume(e.target.value)}
                 >
-                  <option value="">Semua Status</option>
+                  <option value="" className="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200">Semua Status</option>
                   {uniqueStatusResumes.map(s => (
-                    <option key={s} value={s}>{s}</option>
+                    <option key={s} value={s} className="bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200">{s}</option>
                   ))}
                 </select>
               </div>
