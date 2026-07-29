@@ -37,68 +37,84 @@ const SUGGESTED_PROMPTS = [
 function extractWebCode(content: string): string | null {
   if (!content) return null;
 
-  let htmlSnippet = '';
-  let cssSnippet = '';
-  let jsSnippet = '';
+  const rawBlocks = content.split(/```(?:html|css|javascript|js|jsx|tsx|xml|svg)?/gi);
 
-  const codeBlocks = content.split(/```(?:html|css|javascript|js|jsx|tsx|xml|svg)?/i);
+  let allHtmlParts: string[] = [];
+  let allCssParts: string[] = [];
+  let allJsParts: string[] = [];
 
-  for (const block of codeBlocks) {
-    const cleanBlock = block.replace(/```$/g, '').trim();
-    if (!cleanBlock) continue;
+  for (let i = 0; i < rawBlocks.length; i++) {
+    let block = rawBlocks[i].replace(/```$/g, '').trim();
+    if (!block) continue;
 
-    const lower = cleanBlock.toLowerCase();
-    if (lower.includes('<!doctype html') || lower.includes('<html') || lower.includes('<div') || lower.includes('<section') || lower.includes('<header') || lower.includes('<body')) {
-      if (!htmlSnippet || lower.includes('<!doctype') || lower.includes('<html')) {
-        htmlSnippet = cleanBlock;
-      }
-    } else if (cleanBlock.includes('{') && cleanBlock.includes('}') && (cleanBlock.includes('margin') || cleanBlock.includes('padding') || cleanBlock.includes('color') || cleanBlock.includes('background') || cleanBlock.includes('@keyframes'))) {
-      cssSnippet += '\n' + cleanBlock;
-    } else if (cleanBlock.includes('const ') || cleanBlock.includes('function ') || cleanBlock.includes('document.') || cleanBlock.includes('addEventListener')) {
-      jsSnippet += '\n' + cleanBlock;
+    const lower = block.toLowerCase();
+    if (!lower.includes('<div') && !lower.includes('<body') && !lower.includes('<!doctype') && lower.includes('{') && lower.includes('}') && (lower.includes('margin') || lower.includes('padding') || lower.includes('color') || lower.includes('background') || lower.includes('@keyframes') || lower.includes('font-family'))) {
+      allCssParts.push(block);
+    } else if (!lower.includes('<div') && !lower.includes('<body') && !lower.includes('<!doctype') && (lower.includes('const ') || lower.includes('let ') || lower.includes('var ') || lower.includes('function ') || lower.includes('document.') || lower.includes('addeventlistener'))) {
+      allJsParts.push(block);
+    } else if (lower.includes('<') && lower.includes('>')) {
+      allHtmlParts.push(block);
     }
   }
 
-  if (!htmlSnippet) {
+  if (allHtmlParts.length === 0) {
     const startIdx = content.search(/<!DOCTYPE html|<html/i);
     if (startIdx !== -1) {
-      let raw = content.slice(startIdx);
-      raw = raw.replace(/```[a-z]*/gi, '').trim();
-      htmlSnippet = raw;
+      let raw = content.slice(startIdx).replace(/```[a-z]*/gi, '').trim();
+      allHtmlParts.push(raw);
     }
   }
 
-  if (!htmlSnippet) return null;
+  if (allHtmlParts.length === 0) return null;
 
-  htmlSnippet = htmlSnippet.replace(/```$/g, '').trim();
+  let combinedHtml = allHtmlParts.join('\n');
+  let combinedCss = allCssParts.join('\n');
+  let combinedJs = allJsParts.join('\n');
 
-  if (!htmlSnippet.toLowerCase().includes('<html') && !htmlSnippet.toLowerCase().includes('<!doctype')) {
-    return `<!DOCTYPE html>
+  const isFullDoc = combinedHtml.toLowerCase().includes('<!doctype') || combinedHtml.toLowerCase().includes('<html');
+
+  if (isFullDoc) {
+    if (combinedCss) {
+      if (combinedHtml.includes('</head>')) {
+        combinedHtml = combinedHtml.replace('</head>', `<style>${combinedCss}</style>\n</head>`);
+      } else {
+        combinedHtml = `<style>${combinedCss}</style>\n` + combinedHtml;
+      }
+    }
+    if (combinedJs) {
+      if (combinedHtml.includes('</body>')) {
+        combinedHtml = combinedHtml.replace('</body>', `<script>${combinedJs}</script>\n</body>`);
+      } else {
+        combinedHtml += `\n<script>${combinedJs}</script>`;
+      }
+    }
+
+    if (!combinedHtml.includes('cdn.tailwindcss.com')) {
+      const cdnTags = `<script src="https://cdn.tailwindcss.com"></script>\n<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>`;
+      if (combinedHtml.includes('<head>')) {
+        combinedHtml = combinedHtml.replace('<head>', `<head>\n${cdnTags}`);
+      } else {
+        combinedHtml = cdnTags + '\n' + combinedHtml;
+      }
+    }
+
+    return combinedHtml;
+  }
+
+  return `<!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <style>${cssSnippet}</style>
+  <style>${combinedCss}</style>
 </head>
-<body class="bg-gray-50 text-gray-900">
-  ${htmlSnippet}
-  <script>${jsSnippet}</script>
+<body class="bg-gray-50 text-gray-900 p-4">
+  ${combinedHtml}
+  <script>${combinedJs}</script>
 </body>
 </html>`;
-  }
-
-  let fullDoc = htmlSnippet;
-  if (!fullDoc.includes('cdn.tailwindcss.com')) {
-    if (fullDoc.includes('<head>')) {
-      fullDoc = fullDoc.replace('<head>', '<head>\n<script src="https://cdn.tailwindcss.com"></script>\n<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>');
-    } else {
-      fullDoc = `<script src="https://cdn.tailwindcss.com"></script>\n<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>\n${fullDoc}`;
-    }
-  }
-
-  return fullDoc;
 }
 
 export function ChatAssistant({
