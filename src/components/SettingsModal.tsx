@@ -1,15 +1,15 @@
-import { X, Sun, Moon, Settings } from 'lucide-react';
+import { X, Sun, Moon, Settings, Cpu, Sparkles, CheckCircle } from 'lucide-react';
 
 interface SettingsModalProps {
   isOpen: boolean;
   onClose: () => void;
   isDark: boolean;
   onToggleTheme: () => void;
-  aiProvider: 'R' | 'R2' | 'D';
-  onProviderChange: (val: 'R' | 'R2' | 'D') => void;
+  aiProvider?: string;
+  onProviderChange?: (val: any) => void;
 }
 
-export function SettingsModal({ isOpen, onClose, isDark, onToggleTheme, aiProvider, onProviderChange }: SettingsModalProps) {
+export function SettingsModal({ isOpen, onClose, isDark, onToggleTheme }: SettingsModalProps) {
   if (!isOpen) return null;
 
   return (
@@ -35,30 +35,29 @@ export function SettingsModal({ isOpen, onClose, isDark, onToggleTheme, aiProvid
         </div>
 
         <div className="space-y-5">
-          {/* AI Provider */}
+          {/* AI Model Info */}
           <div>
             <label className="block pro-section-title mb-1.5 flex items-center gap-1.5">
-              Provider AI
+              <Sparkles size={14} className="text-blue-500" />
+              Model AI Aktif
             </label>
-            <div className="flex flex-col gap-2">
-              <button
-                onClick={() => onProviderChange('D')}
-                className={`w-full py-2 px-3 rounded-lg border text-sm font-medium transition-colors text-left ${aiProvider === 'D' ? 'border-green-500 bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-300' : 'border-gray-200 text-gray-600 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-800'}`}
-              >
-                🤖 AI D (Groq - LLaMA 3.1)
-              </button>
-              <button
-                onClick={() => onProviderChange('R')}
-                className={`w-full py-2 px-3 rounded-lg border text-sm font-medium transition-colors text-left ${aiProvider === 'R' ? 'border-blue-500 bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300' : 'border-gray-200 text-gray-600 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-800'}`}
-              >
-                🌐 AI R (OpenRouter - Ling 3.0 Flash)
-              </button>
-              <button
-                onClick={() => onProviderChange('R2')}
-                className={`w-full py-2 px-3 rounded-lg border text-sm font-medium transition-colors text-left ${aiProvider === 'R2' ? 'border-purple-500 bg-purple-50 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300' : 'border-gray-200 text-gray-600 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-800'}`}
-              >
-                🤖 AI R2 (OpenRouter - Nemotron)
-              </button>
+            <div className="p-3.5 rounded-xl border border-blue-200 dark:border-blue-800/60 bg-blue-50/60 dark:bg-blue-950/30 text-left">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <div className="w-7 h-7 rounded-lg bg-blue-500/10 dark:bg-blue-400/10 flex items-center justify-center">
+                    <Cpu size={15} className="text-blue-600 dark:text-blue-400" />
+                  </div>
+                  <span className="font-bold text-sm text-gray-900 dark:text-gray-100 font-mono">
+                    openrouter/free
+                  </span>
+                </div>
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300">
+                  <CheckCircle size={11} /> Aktif (Free Router)
+                </span>
+              </div>
+              <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
+                <strong>Free Models Router</strong> — Otomatis memilih model AI gratis terbaik dan aktif dari OpenRouter dengan dukungan image understanding, tool calling, analisis data EBIS, serta pembuatan preview web live.
+              </p>
             </div>
           </div>
 

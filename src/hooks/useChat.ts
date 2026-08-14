@@ -79,9 +79,7 @@ export function useChat(dataSummary: string) {
   const [draft, setDraft] = useState(() => {
     try { return localStorage.getItem('ebis_chat_draft') || ''; } catch { return ''; }
   });
-  const [aiProvider, setAiProviderState] = useState<'R' | 'R2' | 'D'>(() => {
-    try { return (localStorage.getItem('ebis_ai_provider') as 'R' | 'R2' | 'D') || 'D'; } catch { return 'D'; }
-  });
+  const [aiProvider, setAiProviderState] = useState<string>(() => 'openrouter/free');
   const [isTyping, setIsTyping] = useState(false);
   const [isDataAttached, setIsDataAttachedState] = useState(() => {
     try { return localStorage.getItem('ebis_data_attached') !== 'false'; } catch { return true; }
@@ -98,9 +96,8 @@ export function useChat(dataSummary: string) {
     });
   }, []);
 
-  const setAiProvider = useCallback((val: 'R' | 'R2' | 'D') => {
+  const setAiProvider = useCallback((val: string) => {
     setAiProviderState(val);
-    try { localStorage.setItem('ebis_ai_provider', val); } catch { /* ignore */ }
   }, []);
 
   const setIsDataAttached = useCallback((val: boolean) => {
@@ -164,18 +161,14 @@ export function useChat(dataSummary: string) {
   const sendMessage = useCallback(async (message: string) => {
     if (!message.trim() || typingRef.current) return;
 
-    const isGroq = aiProvider === 'D';
-    const key = isGroq ? import.meta.env.VITE_GROQ_API_KEY : import.meta.env.VITE_OPENROUTER_API_KEY;
-    const apiUrl = isGroq ? 'https://api.groq.com/openai/v1/chat/completions' : 'https://openrouter.ai/api/v1/chat/completions';
-    
-    let modelUsed = 'llama-3.1-8b-instant';
-    if (aiProvider === 'R') modelUsed = 'inclusionai/ling-3.0-flash:free';
-    if (aiProvider === 'R2') modelUsed = 'nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free';
+    const key = import.meta.env.VITE_OPENROUTER_API_KEY;
+    const apiUrl = 'https://openrouter.ai/api/v1/chat/completions';
+    const modelUsed = 'openrouter/free';
 
     if (!key) {
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: `⚠️ API Key belum diatur untuk ${isGroq ? 'Groq' : 'OpenRouter'} di file .env.`,
+        content: `⚠️ API Key OpenRouter belum diatur di file .env.`,
         timestamp: Date.now(),
       }]);
       return;
@@ -264,17 +257,17 @@ Bantu user soal data EBIS, filter, pembuatan web, dan hal teknis lainnya. Jika a
         throw new Error(data.error.message || 'API Error');
       }
 
-      const botReply = data.choices?.[0]?.message?.content || 'Maaf, API (OpenRouter/Groq) tidak memberikan respons untuk pertanyaan ini. Coba ulangi atau ganti model providernya di pengaturan.';
+      const botReply = data.choices?.[0]?.message?.content || 'Maaf, OpenRouter tidak memberikan respons untuk pertanyaan ini. Coba ulangi pertanyaanmu.';
       const botMsg: ChatMessage = { role: 'assistant', content: botReply, timestamp: Date.now() };
       const finalMessages = [...newMessages, botMsg];
       setMessages(finalMessages);
     } catch (error: unknown) {
       const errMsg = error instanceof Error ? error.message : 'Unknown error';
       let displayMsg = '❌ ' + errMsg;
-      if (errMsg.includes('401')) displayMsg = `❌ API Key tidak valid. Periksa kembali API Key-mu di file .env`;
-      else if (errMsg.includes('402') || errMsg.includes('payment')) displayMsg = `💳 Kuota ${isGroq ? 'Groq' : 'OpenRouter'} habis/terkena limit.`;
-      else if (errMsg.includes('429')) displayMsg = '⏳ Rate limit tercapai. Tunggu sebentar ya...';
-      else if (errMsg.includes('unavailable') || errMsg.includes('free')) displayMsg = '🚫 Model tidak tersedia saat ini. Coba ganti provider di pengaturan.';
+      if (errMsg.includes('401')) displayMsg = `❌ API Key OpenRouter tidak valid. Periksa kembali API Key-mu di file .env`;
+      else if (errMsg.includes('402') || errMsg.includes('payment')) displayMsg = `💳 Kuota OpenRouter habis/terkena limit.`;
+      else if (errMsg.includes('429')) displayMsg = '⏳ Rate limit OpenRouter tercapai. Tunggu sebentar ya...';
+      else if (errMsg.includes('unavailable') || errMsg.includes('free')) displayMsg = '🚫 Model OpenRouter Free sedang sibuk. Coba ulangi beberapa saat lagi.';
       else if (errMsg.includes('Network') || errMsg.includes('fetch')) displayMsg = '📡 Koneksi bermasalah. Cek internet kamu!';
 
       const botMsg: ChatMessage = { role: 'assistant', content: displayMsg, timestamp: Date.now() };
@@ -283,7 +276,7 @@ Bantu user soal data EBIS, filter, pembuatan web, dan hal teknis lainnya. Jika a
       typingRef.current = false;
       setIsTyping(false);
     }
-  }, [aiProvider, messages, dataSummary, isDataAttached, setMessages]);
+  }, [messages, dataSummary, isDataAttached, setMessages]);
 
   const handleCommand = useCallback((cmd: string): boolean => {
     const lower = cmd.toLowerCase();
